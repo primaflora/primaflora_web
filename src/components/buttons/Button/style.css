@@ -1,0 +1,8 @@
+button > p {
+    font-family: Raleway;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 11px 60px;
+    color: white;
+}

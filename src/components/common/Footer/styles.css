@@ -1,0 +1,37 @@
+@tailwind utilities;
+
+.footer-main-container {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: rgba(114, 191, 68, 1);
+    padding: 30px 0;
+}
+
+p {
+    font-family: Raleway;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 23.48px;
+    letter-spacing: 0.03em;
+    text-align: center;
+    color: white;
+}
+
+.footer-contacts {
+    position: absolute;
+    right: 40px;
+}
+
+.footer-contacts > p {
+    font-family: Montserrat;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 24.38px;
+    letter-spacing: 0.03em;
+    text-align: center;
+}
+
+.footer-bottom-text {
+    padding-top: 30px;
+}
