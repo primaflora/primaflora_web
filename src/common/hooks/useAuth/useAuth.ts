@@ -1,7 +1,7 @@
-import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
-import { TUser } from '../../services';
+import { useDispatch } from 'react-redux';
 import { userSliceActions } from '../../../store/modules/user/reducer.ts';
+import { TUser } from '../../services';
 
 export const useAuth = () => {
     const dispatch = useDispatch();
@@ -13,5 +13,18 @@ export const useAuth = () => {
         [dispatch],
     );
 
-    return { setUserData };
+    const clearAll = useCallback(() => {
+        dispatch(userSliceActions.clearUser());
+        dispatch(userSliceActions.clearCategories());
+        dispatch(userSliceActions.clearProducts());
+    }, [dispatch]);
+
+    const setIsAuth = useCallback(
+        (isAuth: boolean) => {
+            dispatch(userSliceActions.setIsAuth(isAuth));
+        },
+        [dispatch],
+    );
+
+    return { setUserData, clearAll, setIsAuth };
 };

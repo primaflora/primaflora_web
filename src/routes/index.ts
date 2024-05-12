@@ -1,6 +1,7 @@
 export * from './Home';
-// export * from './Liked';
-// export * from './Product';
+export * from './LogIn';
+export * from './SignUp';
+export * from './UserInfo';
 // export * from './Profile';
 // export * from './Search';
 // export * from './Settings';

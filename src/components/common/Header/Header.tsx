@@ -1,37 +1,22 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import { Images } from '../../../assets';
+import { useUserData } from '../../../store/tools';
+import { NavLinks } from './components/NavLinks';
 import './styles.css';
-import { Button } from '../../buttons';
+import { UpperHeaderBar } from './components/UpperHeaderBar';
 
 export const Header = () => {
+    const { isAuth } = useUserData();
+    
     return (
         <div className="header-main-container">
-            <div className="upper-header px-10">
-                <p className="header-title">
-                    НАТУРАЛЬНА ПРОДУКЦІЯ ДЛЯ ЗДОРОВ'Я ТА КРАСИ
-                </p>
-                <div className="upper-header-button-container">
-                    <Button
-                        text="ЗАРЕЄСТРУВАТИСЯ ТА ОТРИМАТИ ЗНИЖКУ 10%"
-                        onClick={() => console.log('Get discount 10%')}
-                    />
-                    <Button
-                        text="УВІЙТИ"
-                        onClick={() => console.log('Redirect to login page')}
-                        style={{ marginLeft: 20 }}
-                        filled={false}
-                    />
-                </div>
-            </div>
-            <div className="header-stripe px-10">
+            <UpperHeaderBar isAuth={isAuth}/>
+            <div className="header-stripe main-global-padding">
                 <div className="header-logo-navigation-container">
-                    <img src={Images.PrimafloraLogoSvg} alt="Primaflora" />
-                    <nav>
-                        <a href="#">НАШ САЙТ</a>
-                        <a href="#">КОНТАКТИ</a>
-                        <a href="#">ДОСТАВКА</a>
-                        <a href="#">КОШИК</a>
-                    </nav>
+                    <Link to={'/'}>
+                        <img src={Images.PrimafloraLogoSvg} alt="Primaflora" />
+                    </Link>
+                    <NavLinks isAuth={isAuth} />
                 </div>
                 <div className="header-input-container">
                     <input className="header-input" placeholder="Пошук" />

@@ -1,9 +1,5 @@
 @tailwind utilities;
 
-.main-margin {
-    margin: 0 50px;
-}
-
 .upper-header {
     display: flex;
     justify-content: space-between;
@@ -38,13 +34,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-nav > a {
-    color: rgba(69, 69, 69, 1);
-    font-size: 14px;
-    font-weight: 600;
-    padding-left: 40px;
 }
 
 /* Input */

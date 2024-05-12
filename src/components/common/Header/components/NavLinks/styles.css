@@ -1,0 +1,10 @@
+nav > a {
+    color: rgba(69, 69, 69, 1);
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 40px;
+}
+
+nav > a:focus {
+    color: rgba(81, 199, 47, 1);
+}

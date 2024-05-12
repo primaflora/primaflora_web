@@ -8,8 +8,9 @@ import { TInitialState } from './types';
 const initialState: TInitialState = {
     user: null,
     categories: [],
-    products: []
-}
+    products: [],
+    isAuth: false,
+};
 
 export const slice = createSlice({
     name: EStoreReducer.user,
@@ -18,24 +19,28 @@ export const slice = createSlice({
         setUser: (state, action: PayloadAction<TUser>) => {
             state.user = action.payload;
         },
-        clearUser: (state) => {
+        clearUser: state => {
             state.user = null;
         },
 
         setCategories: (state, action: PayloadAction<TCategory[]>) => {
             state.categories = action.payload;
         },
-        clearCategories: (state) => {
+        clearCategories: state => {
             state.categories = [];
         },
 
         setProducts: (state, action: PayloadAction<TProduct[]>) => {
             state.products = action.payload;
         },
-        clearProducts: (state) => {
+        clearProducts: state => {
             state.products = [];
-        }
-    }
+        },
+
+        setIsAuth(state, action: PayloadAction<boolean>) {
+            state.isAuth = action.payload;
+        },
+    },
 });
 
 export const userSliceActions = slice.actions;

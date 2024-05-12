@@ -1,0 +1,35 @@
+@tailwind utilities;
+
+/* @layer utilities {
+    .section-border {
+        @apply ;
+    }
+} */
+
+.section {
+    border-width: 1px;
+    border-left-width: 5px;
+    border-style: solid;
+    border-color: rgba(81, 199, 47, 1);
+
+    padding: 10px 20px;
+    padding-right: 0;
+}
+
+.title {
+    font-family: Raleway;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 18.78px;
+    text-align: left;
+    color: rgba(69, 69, 69, 1);
+}
+
+.content-text {
+    font-family: Raleway;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 28.18px;
+    text-align: left;
+    color: rgba(69, 69, 69, 1);
+}

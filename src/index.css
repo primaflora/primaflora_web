@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .main-global-padding {
+        padding: 0 50px;
+    }
+}

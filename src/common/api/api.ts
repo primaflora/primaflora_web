@@ -4,7 +4,7 @@ import { StorageService } from '../storage/storage.service';
 
 // 10.0.2.2 - for Android   localhost - default
 const privateInstance = axios.create({
-    baseURL: 'http://10.0.2.2:5000', // 'http://localhost:5000'
+    baseURL: 'http://localhost:5000',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ const privateInstance = axios.create({
 });
 
 const publicInstance = axios.create({
-    baseURL: 'http://10.0.2.2:5000',
+    baseURL: 'http://localhost:5000',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ privateInstance.interceptors.request.use(
             config.headers['Cookie'] = `refreshToken=${refreshToken}`;
         } else {
             console.log('No refresh token');
-            Promise.reject('No refresh token in storage');
+            // Promise.reject('No refresh token in storage');
         }
 
         return config;
@@ -55,7 +55,10 @@ privateInstance.interceptors.response.use(
                 try {
                     // set new token
                     const res = await Service.AuthService.refreshToken();
-                    StorageService.setToken('accessToken', res.data.accessToken);
+                    StorageService.setToken(
+                        'accessToken',
+                        res.data.accessToken,
+                    );
 
                     // resend old request and return it
                     const config = {
@@ -67,13 +70,13 @@ privateInstance.interceptors.response.use(
                     return await privateInstance(config);
                 } catch (e) {
                     console.error('Token refresh failed:', e);
-                    Promise.reject(
+                    return Promise.reject(
                         'Token refresh failed. Log out from your account and sign in.',
                     );
                 }
             }
         }
-        Promise.reject(error);
+        return Promise.reject(error);
     },
 );
 

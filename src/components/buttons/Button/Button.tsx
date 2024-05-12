@@ -13,6 +13,7 @@ export const Button = ({
         <button
             onClick={onClick}
             style={{
+                padding: '11px 60px',
                 ...style,
                 backgroundColor: filled ? backgroundColor : 'transparent',
                 border: filled ? 'none' : `1px solid ${backgroundColor}`,
