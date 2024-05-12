@@ -13,6 +13,13 @@ export const useAuth = () => {
         [dispatch],
     );
 
+    const updateUserData = useCallback(
+        (user: Partial<TUser>) => {
+            dispatch(userSliceActions.updateUser(user));
+        },
+        [dispatch],
+    );
+
     const clearAll = useCallback(() => {
         dispatch(userSliceActions.clearUser());
         dispatch(userSliceActions.clearCategories());

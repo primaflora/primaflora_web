@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useAuth } from './common/hooks/useAuth/useAuth';
 import { StorageService } from './common/storage/storage.service';
 import { Service } from './common/services';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const { setIsAuth, setUserData } = useAuth();

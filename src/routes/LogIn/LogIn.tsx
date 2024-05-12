@@ -1,12 +1,14 @@
 import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../common/hooks/useAuth/useAuth';
 import { Service } from '../../common/services';
 import { StorageService } from '../../common/storage/storage.service';
 import './style.css';
+import { Toast, useToast } from '../../common/toast';
 
 export const LogIn = () => {
     const navigate = useNavigate();
+    const { notifySuccess } = useToast();
     const { setUserData, setIsAuth } = useAuth();
     const [error, setError] = useState<string>('');
 
@@ -22,6 +24,7 @@ export const LogIn = () => {
             password,
         })
             .then(res => {
+                notifySuccess('Success LogIn!');
                 setUserData(res.data.user);
                 StorageService.setToken('accessToken', res.data.accessToken);
                 StorageService.setToken('refreshToken', res.data.refreshToken);
@@ -68,8 +71,10 @@ export const LogIn = () => {
                             Press Here to Log in
                         </button>
                     </form>
+                    <Link className='text-blue-500 bg-' to={'/auth/sign-up'}>Click here to SignUp!</Link>
                 </div>
             </div>
+            <Toast/>
         </div>
     );
 };

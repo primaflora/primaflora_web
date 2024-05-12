@@ -4,9 +4,16 @@ import { Section } from './components/Section/Section';
 import { Button } from '../../components/buttons';
 import { Row } from '../../components/common/Row';
 import { useUserData } from '../../store/tools';
+import { Service } from '../../common/services';
+import { useAuth } from '../../common/hooks/useAuth/useAuth';
 
 export const UserInfo = () => {
     const { user } = useUserData();
+    const { setUserData } = useAuth();
+
+    const handleUpdateUser = (updateObj: object) => {
+        Service.UserService.patchUpdate(updateObj);
+    }
 
     return (
         <div className="main-global-padding pt-6">
@@ -23,9 +30,9 @@ export const UserInfo = () => {
                     content={user?.name || 'Test User Lorem Ipsum'}
                     button={{
                         text: 'Редагувати',
-                        onClick: () => {
-                            console.log('Edit Section #1');
-                        },
+                        onUpdate(newValue) {
+                            handleUpdateUser({ name: newValue });
+                        }
                     }}
                 />
                 <Section
@@ -33,7 +40,7 @@ export const UserInfo = () => {
                     content={'(ПІБ другої особи)'}
                     button={{
                         text: 'Редагувати',
-                        onClick: () => {
+                        onUpdate: () => {
                             console.log('Edit Section #1');
                         },
                     }}
@@ -43,7 +50,9 @@ export const UserInfo = () => {
                     content={user?.login || '#0001'}
                     button={{
                         text: 'Редагувати',
-                        onClick: () => {},
+                        onUpdate(newValue) {
+                            handleUpdateUser({ login: newValue });
+                        }
                     }}
                 />
                 <Section
@@ -51,7 +60,7 @@ export const UserInfo = () => {
                     content="http://primaflora/link/TESTLINK"
                     button={{
                         text: 'Редагувати',
-                        onClick: () => {},
+                        onUpdate: () => {},
                     }}
                 />
                 <Section
@@ -59,7 +68,9 @@ export const UserInfo = () => {
                     content={user?.phone || '+380000000000'}
                     button={{
                         text: 'Редагувати',
-                        onClick: () => {},
+                        onUpdate(newValue) {
+                            handleUpdateUser({ phone: newValue });
+                        }
                     }}
                 />
                 <Section
@@ -67,7 +78,9 @@ export const UserInfo = () => {
                     content={user?.email || 'test@primaflora.com'}
                     button={{
                         text: 'Редагувати',
-                        onClick: () => {},
+                        onUpdate(newValue) {
+                            handleUpdateUser({ email: newValue });
+                        }
                     }}
                 />
                 <Section
@@ -75,7 +88,7 @@ export const UserInfo = () => {
                     content={user?.password || '********'}
                     button={{
                         text: 'Редагувати',
-                        onClick: () => {},
+                        onUpdate: () => {},
                     }}
                 />
             </div>

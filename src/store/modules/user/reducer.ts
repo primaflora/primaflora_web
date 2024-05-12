@@ -19,6 +19,9 @@ export const slice = createSlice({
         setUser: (state, action: PayloadAction<TUser>) => {
             state.user = action.payload;
         },
+        updateUser: (state, action: PayloadAction<Partial<TUser>>) => {
+            state.user = {...state.user, ...action.payload} as TUser;
+        },
         clearUser: state => {
             state.user = null;
         },

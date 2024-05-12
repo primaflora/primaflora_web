@@ -6,5 +6,5 @@ export type TSectionProps = {
 
 export type TButtonProps = {
     text: string;
-    onClick: () => void;
+    onUpdate: (newValue: string) => void;
 };
