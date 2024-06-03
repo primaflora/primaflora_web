@@ -1,0 +1,14 @@
+.quantity-value {
+    padding: 10px 120px;
+    border-radius: 7px;
+    border: 1px solid #72bf44;
+}
+
+.quantity-value-text {
+    font-family: Montserrat;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 29.26px;
+    text-align: center;
+    color: #72bf44;
+}

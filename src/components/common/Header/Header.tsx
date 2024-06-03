@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { Images } from '../../../assets';
 import { useUserData } from '../../../store/tools';
 import { NavLinks } from './components/NavLinks';
-import './styles.css';
 import { UpperHeaderBar } from './components/UpperHeaderBar';
+import './styles.css';
 
 export const Header = () => {
     const { isAuth } = useUserData();

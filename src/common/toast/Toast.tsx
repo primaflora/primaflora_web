@@ -1,4 +1,4 @@
-import { Bounce, ToastContainer, useToast } from "react-toastify"
+import { Bounce, ToastContainer } from "react-toastify"
 
 export const Toast = () => {
     return (

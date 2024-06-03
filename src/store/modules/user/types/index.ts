@@ -1,6 +1,6 @@
 import { TUser } from '../../../../common/services';
-import { TCategory } from '../../../../common/services/category/types';
-import { TProduct } from '../../../../common/services/product';
+import { TCategory, TProduct, TSubcategory } from '../../../../common/services/category/types/common';
+import { TLike } from '../../../../common/services/likes';
 
 export type CartElem = {
     quantity: number;
@@ -9,7 +9,10 @@ export type CartElem = {
 
 export type TInitialState = {
     user: TUser | null;
+    likes: TLike[];
     categories: TCategory[];
     products: TProduct[];
     isAuth: boolean;
+    pickedSubcategory?: TSubcategory | null;
+    pickedProduct?: TProduct | null;
 };

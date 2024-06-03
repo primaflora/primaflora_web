@@ -1,19 +1,31 @@
-import React from 'react';
-import './styles.css';
-import { Section } from './components/Section/Section';
+import axios from 'axios';
+import { useAuth } from '../../common/hooks/useAuth/useAuth';
+import { Service } from '../../common/services';
+import { Toast, useToast } from '../../common/toast';
 import { Button } from '../../components/buttons';
 import { Row } from '../../components/common/Row';
 import { useUserData } from '../../store/tools';
-import { Service } from '../../common/services';
-import { useAuth } from '../../common/hooks/useAuth/useAuth';
+import { Section } from './components/Section/Section';
+import './styles.css';
 
 export const UserInfo = () => {
     const { user } = useUserData();
-    const { setUserData } = useAuth();
+    const { notifyError } = useToast();
+    const { updateUserData } = useAuth();
 
-    const handleUpdateUser = (updateObj: object) => {
-        Service.UserService.patchUpdate(updateObj);
-    }
+    const handleUpdateUser = async (updateObj: object) => {
+        Service.UserService.patchUpdate(updateObj)
+            .then(() => {
+                updateUserData(updateObj);
+            })
+            .catch(error => {
+                if (axios.isAxiosError(error)) {
+                    notifyError(error.response?.data.message[0]);
+                } else {
+                    notifyError('Canot change user data');
+                }
+            });
+    };
 
     return (
         <div className="main-global-padding pt-6">
@@ -32,7 +44,7 @@ export const UserInfo = () => {
                         text: 'Редагувати',
                         onUpdate(newValue) {
                             handleUpdateUser({ name: newValue });
-                        }
+                        },
                     }}
                 />
                 <Section
@@ -52,7 +64,7 @@ export const UserInfo = () => {
                         text: 'Редагувати',
                         onUpdate(newValue) {
                             handleUpdateUser({ login: newValue });
-                        }
+                        },
                     }}
                 />
                 <Section
@@ -70,7 +82,7 @@ export const UserInfo = () => {
                         text: 'Редагувати',
                         onUpdate(newValue) {
                             handleUpdateUser({ phone: newValue });
-                        }
+                        },
                     }}
                 />
                 <Section
@@ -80,7 +92,7 @@ export const UserInfo = () => {
                         text: 'Редагувати',
                         onUpdate(newValue) {
                             handleUpdateUser({ email: newValue });
-                        }
+                        },
                     }}
                 />
                 <Section
@@ -92,6 +104,7 @@ export const UserInfo = () => {
                     }}
                 />
             </div>
+            <Toast />
         </div>
     );
 };

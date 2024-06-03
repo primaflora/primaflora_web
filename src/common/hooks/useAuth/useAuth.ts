@@ -33,5 +33,5 @@ export const useAuth = () => {
         [dispatch],
     );
 
-    return { setUserData, clearAll, setIsAuth };
+    return { setUserData, updateUserData, clearAll, setIsAuth };
 };

@@ -1,0 +1,13 @@
+.dot {
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(81, 199, 47, 1);
+    background: rgba(235, 239, 241, 0.5);
+}
+
+.dot.selected {
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(81, 199, 47, 1);
+    background: rgba(81, 199, 47, 0.5);
+}

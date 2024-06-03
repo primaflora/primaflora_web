@@ -1,0 +1,12 @@
+.minus-icon {
+    width: 32px;
+    height: 4px;
+    fill: #C7C7C7;
+    cursor: pointer;
+    transition: fill 0.3s ease;
+  }
+  
+  .minus-icon:hover {
+    fill: #72BF44;
+  }
+  

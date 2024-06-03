@@ -1,0 +1,29 @@
+@tailwind utilities;
+
+.main-container {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.text-container {
+    position: absolute;
+    background: #fafafad9;
+    top: 0;
+    bottom: 0;
+    right: 17%;
+    align-content: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.text {
+    color: black;
+    font-family: Raleway;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.44px;
+    letter-spacing: 0.03em;
+    text-align: center;
+}

@@ -1,7 +1,6 @@
-import { TBasicDataBaseData, TUser } from '../../types.ts';
-import { TProduct } from '../../product';
+import { TProduct } from '../../category/types/common.ts';
+import { TBasicDataBaseData } from '../../types.ts';
 
 export type TLike = {
-    user: TUser,
-    product: TProduct,
+    product: TProduct;
 } & TBasicDataBaseData;

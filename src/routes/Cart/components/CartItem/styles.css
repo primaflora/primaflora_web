@@ -1,0 +1,30 @@
+.item-cart-title {
+    font-family: Raleway;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16.44px;
+    text-align: left;
+    color: #454545;
+}
+
+.item-cart-desc {
+    font-family: Raleway;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.44px;
+    text-align: left;
+    color: #454545;
+}
+
+.item-cart-image {
+    height: 200px;
+    width: 200px;
+    object-fit: contain;
+}
+
+.item-cart-border {
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+    border-style: solid;
+    border-color: #ebeff1;
+}

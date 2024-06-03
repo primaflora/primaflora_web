@@ -1,8 +1,4 @@
-import { TBasicDataBaseData, TRequest } from '../../types.ts';
-import { TProduct } from '../../product';
+import { TRequest } from '../../types.ts';
+import { TLike } from './common.ts';
 
-export type TGetLikes = TRequest<null, TResponse[]>
-
-type TResponse = {
-    product: TProduct
-} & TBasicDataBaseData
+export type TGetLikes = TRequest<null, TLike[]>

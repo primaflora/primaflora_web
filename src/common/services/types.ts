@@ -8,6 +8,11 @@ export type TRequest<TPayload, TRes> = {
     response: AxiosResponse<TRes>
 }
 
+export type TRequestWithoutPromise<TPayload, TRes> = {
+    payload: TPayload
+    response: TResponseWithoutPromise<TRes>
+}
+
 export type TResponseData<Data> = {
     data: Data
 }

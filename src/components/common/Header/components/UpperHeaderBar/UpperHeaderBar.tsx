@@ -1,13 +1,10 @@
-import React from 'react';
-import './styles.css';
-import { TUpperHeaderBarProps } from './types';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../../../../buttons';
+import { useAuth } from '../../../../../common/hooks/useAuth/useAuth';
 import { Service } from '../../../../../common/services';
 import { StorageService } from '../../../../../common/storage/storage.service';
-import { useDispatch } from 'react-redux';
-import { userSliceActions } from '../../../../../store/modules/user/reducer';
-import { useAuth } from '../../../../../common/hooks/useAuth/useAuth';
+import { Button } from '../../../../buttons';
+import './styles.css';
+import { TUpperHeaderBarProps } from './types';
 
 export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
     const navigate = useNavigate();
@@ -29,6 +26,8 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
         clearAll();
         setIsAuth(false);
         navigate('/');
+        
+        window.location.reload();
     };
 
     return (
