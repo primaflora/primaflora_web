@@ -23,6 +23,7 @@ export const Category = () => {
                 break;
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categories]);
 
     return (

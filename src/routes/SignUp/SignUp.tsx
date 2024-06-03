@@ -4,8 +4,6 @@ import { Service } from '../../common/services';
 import { Link } from 'react-router-dom';
 import { TPostUserSignUpRequest } from '../../common/services/auth/types/postSignUp';
 import { Toast, useToast } from '../../common/toast';
-import { Bounce, ToastContainer } from 'react-toastify';
-import { Button } from '../../components/buttons';
 
 export const SignUp = () => {
     const { notifySuccess, notifyError } = useToast();
@@ -26,6 +24,7 @@ export const SignUp = () => {
                 console.log('Error! => ', e);
                 if (Array.isArray(e.response?.data.message)) {
                     (e.response?.data.message as Array<string>).forEach(err => notifyError(err));
+                    setError(e.response?.data.message[0]);
                 } else {
                     notifyError(e.response?.data.message);
                 }
