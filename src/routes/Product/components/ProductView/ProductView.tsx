@@ -7,13 +7,20 @@ import { Line, Row } from '../../../../components/common';
 import { CommentSection } from './components/CommentSection/CommentSection';
 import './styles.css';
 import { TProductViewProps } from './types';
+import { useUserData } from '../../../../store/tools';
 
 export const ProductView = ({ product }: TProductViewProps) => {
+    const { isAuth, user } = useUserData();
     const { notifySuccess, notifyError } = useToast();
     const { addLike, removeLike } = useLikes();
     const [isLike, setIsLike] = useState<boolean>(!!product.like);
 
     const handleLike = async () => {
+        if (!isAuth) {
+            notifyError('Error while tring to like product. (Not authorized!)');
+            return;
+        }
+
         const like = await Service.ProductService.setLike({
             productUuid: product.uuid,
         });
@@ -24,6 +31,13 @@ export const ProductView = ({ product }: TProductViewProps) => {
     };
 
     const handleDislike = () => {
+        if (!isAuth) {
+            notifyError(
+                'Error while tring to dislike product. (Not authorized!)',
+            );
+            return;
+        }
+
         if (!product.like) {
             notifyError('Error while tring to dislike product');
             return;
@@ -33,6 +47,34 @@ export const ProductView = ({ product }: TProductViewProps) => {
         removeLike(product.id);
         setIsLike(false);
         notifySuccess(`Ви видалили ${product.title} зі списку побажань`);
+    };
+
+    const handleMoveToCart = () => {
+        if (!isAuth) {
+            notifyError(
+                'Error while tring to add product to the cart. (Not authorized!)',
+            );
+            return;
+        }
+
+        if (!user) {
+            notifyError(
+                'Error while tring to add product to cart. (Cannot find user uuid!)',
+            );
+            return;
+        }
+
+        Service.CartService.postCreate({
+            quantity: 1,
+            userUId: user?.uuid,
+            productUId: product.uuid,
+        })
+            .then(() => {
+                notifySuccess(`Ви додали ${product.title} до корзини`);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     };
 
     return (
@@ -97,7 +139,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
                             </p>
                         </div>
                         <Button
-                            onClick={() => console.log('В КОШИК')}
+                            onClick={handleMoveToCart}
                             filled={false}
                             text="В КОШИК"
                         />
@@ -139,13 +181,6 @@ export const renderDescription = (desc: Object) => {
     return (
         <div>
             {Object.entries(desc).map(([key, value]) => {
-                // if (typeof value === 'object') {
-                //     // console.log('is Object! => ', value);
-
-                //     // return renderDescription(value);
-                //     return;
-                // }
-
                 // if array
                 if (typeof value === 'object' && Array.isArray(value)) {
                     console.log('Is Array');
@@ -165,6 +200,7 @@ export const renderDescription = (desc: Object) => {
                     );
                 }
 
+                // if object
                 if (typeof value === 'object') {
                     return renderDescription(value);
                 }

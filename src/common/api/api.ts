@@ -14,7 +14,7 @@ const privateInstance = axios.create({
 });
 
 const publicInstance = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: process.env.HOST,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',

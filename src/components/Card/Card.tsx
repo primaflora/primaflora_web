@@ -10,13 +10,19 @@ import { TCardProps } from './types';
 import { useUserData } from '../../store/tools';
 
 export const Card = ({ card }: TCardProps) => {
-    const { user } = useUserData();
+    const { user, isAuth } = useUserData();
     const { notifySuccess, notifyError } = useToast();
     const [like, setLike] = useState<{ id: number; uuid: string } | null>(
         card.like,
     );
 
     const handleLike = async () => {
+        console.log('IsAuthed => ', isAuth);
+        if (!isAuth) {
+            notifyError('Error while tring to like product. (Not authorized!)');
+            return;
+        }
+
         const like = await Service.ProductService.setLike({
             productUuid: card.uuid,
         });
@@ -36,6 +42,13 @@ export const Card = ({ card }: TCardProps) => {
     };
 
     const handleAddToCart = () => {
+        if (!isAuth) {
+            notifyError(
+                'Error while tring to add product to the cart. (Not authorized!)',
+            );
+            return;
+        }
+
         if (!user) {
             notifyError(
                 'Error while tring to add product to cart. (Cannot find user uuid!)',

@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
+import { Service } from '../../common/services';
+import { TCartItem } from '../../common/services/cart';
 import { Line, SideBar } from '../../components/common';
 import { Slider } from '../Home/components/Slider';
-import './styles.css';
-import { TCartItem } from '../../common/services/cart';
-import { Service } from '../../common/services';
 import { CartItem } from './components/CartItem';
 import { TotalPrice } from './components/TotalPrice';
+import './styles.css';
+import { useUserData } from '../../store/tools';
 
 export const Cart = () => {
+    const { isAuth } = useUserData();
     const [cart, setCart] = useState<TCartItem[]>([]);
 
     useEffect(() => {
-        Service.CartService.getAll().then(res => setCart(res.data));
+        if (isAuth) {
+            Service.CartService.getAll().then(res => setCart(res.data));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onCartItemQuantityChange = (productUid: string, quantity: number) => {
@@ -49,24 +54,30 @@ export const Cart = () => {
                 <Slider />
                 <Line />
                 <h1 className="cart-title">Кошик</h1>
-                {cart.length === 0 ? (
+                {!isAuth ? (
+                    <h1 className="justify-self-center text-black text-3xl">
+                        You need to be authorized to view cart!
+                    </h1>
+                ) : cart.length === 0 ? (
                     <h1 className="justify-self-center text-black text-3xl">
                         Nothing to show!
                     </h1>
                 ) : (
-                    cart.map(item => (
-                        <CartItem
-                            key={item.uuid}
-                            item={item}
-                            onQuantityChange={onCartItemQuantityChange}
-                            onRemove={handleCartItemRemove}
-                        />
-                    ))
-                )}
+                    <div>
+                        {cart.map(item => (
+                            <CartItem
+                                key={item.uuid}
+                                item={item}
+                                onQuantityChange={onCartItemQuantityChange}
+                                onRemove={handleCartItemRemove}
+                            />
+                        ))}
 
-                <div className="w-full pt-10 flex justify-end">
-                    <TotalPrice price={calculateTotalPrice()} />
-                </div>
+                        <div className="w-full pt-10 flex justify-end">
+                            <TotalPrice price={calculateTotalPrice()} />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

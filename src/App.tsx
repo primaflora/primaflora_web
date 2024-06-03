@@ -25,9 +25,9 @@ function App() {
         ) {
             setIsAuth(true);
             loadUserData();
-            loadCategories();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        loadCategories();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadUserData = () => {
