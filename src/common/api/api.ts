@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Service } from '../services';
 import { StorageService } from '../storage/storage.service';
 
 // 10.0.2.2 - for Android   localhost - default
