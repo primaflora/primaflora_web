@@ -52,28 +52,28 @@ privateInstance.interceptors.response.use(
                 console.log('Access token expired. Getting a new one...');
                 console.log('Error: ', error);
                 // access token is old. We need to get a new one and set it
-                try {
-                    // set new token
-                    const res = await Service.AuthService.refreshToken();
-                    StorageService.setToken(
-                        'accessToken',
-                        res.data.accessToken,
-                    );
+                // try {
+                //     // set new token
+                //     const res = await Service.AuthService.refreshToken();
+                //     StorageService.setToken(
+                //         'accessToken',
+                //         res.data.accessToken,
+                //     );
 
-                    // resend old request and return it
-                    const config = {
-                        ...error.config,
-                        headers: {
-                            Authorization: `Bearer ${res.data.accessToken}`,
-                        },
-                    };
-                    return await privateInstance(config);
-                } catch (e) {
-                    console.error('Token refresh failed:', e);
-                    return Promise.reject(
-                        'Token refresh failed. Log out from your account and sign in.',
-                    );
-                }
+                //     // resend old request and return it
+                //     const config = {
+                //         ...error.config,
+                //         headers: {
+                //             Authorization: `Bearer ${res.data.accessToken}`,
+                //         },
+                //     };
+                //     return await privateInstance(config);
+                // } catch (e) {
+                //     console.error('Token refresh failed:', e);
+                //     return Promise.reject(
+                //         'Token refresh failed. Log out from your account and sign in.',
+                //     );
+                // }
             }
         }
         return Promise.reject(error);
