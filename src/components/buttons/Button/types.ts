@@ -1,5 +1,6 @@
 export type TButtonProps = {
-    text: string;
+    text?: string;
+    imageUrl?: string;
     onClick: () => void;
     backgroundColor?: string;
     style?: React.CSSProperties;

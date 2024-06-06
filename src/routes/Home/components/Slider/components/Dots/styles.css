@@ -1,1 +1,20 @@
 @tailwind utilities;
+
+.dots-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0;
+    left: 0;
+    justify-content: center;
+    z-index: 10;
+}
+
+@media (width <= 1000px) {
+    .dots-container {
+        justify-content: start;
+        left: 5%;
+    }
+}

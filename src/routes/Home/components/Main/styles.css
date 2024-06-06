@@ -1,0 +1,18 @@
+.main-home-container {
+    margin-left: 40px;
+    width: 100%;
+}
+
+.catalog-stripe-mob-container {
+    display: none;
+}
+
+@media (width <= 1000px) {
+    .main-home-container {
+        margin-left: 0px;
+        width: 100%;
+    }
+    .catalog-stripe-mob-container {
+        display: flex !important;
+    }
+}

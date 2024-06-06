@@ -13,7 +13,7 @@ export const Slide = ({ slide, number }: TSlideProps) => {
                 alt="nature"
                 className="h-full w-full object-cover items-center"
             />
-            <p className="absolute top-0 bottom-0 left-20 flex items-center text-black">
+            <p className="slider-text">
                 {slide.text}
             </p>
         </div>

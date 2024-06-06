@@ -1,10 +1,25 @@
-nav > a {
+.header-nav-links-container > a {
     color: rgba(69, 69, 69, 1);
     font-size: 14px;
     font-weight: 600;
     padding-left: 40px;
 }
 
-nav > a:focus {
+.header-nav-links-container > a:focus {
     color: rgba(81, 199, 47, 1);
+}
+
+.header-nav-links-container-mob {
+    display: flex;
+    gap: 10px;
+}
+.header-nav-links-container-mob > a {
+    border: 1px solid #72bf44;
+    background: #72bf44b2;
+    padding: 10px;
+    border-radius: 7px;
+}
+.like-disabled {
+    background: #c7c7c7 !important;
+    border: none !important;
 }

@@ -1,5 +1,11 @@
 @tailwind utilities;
 
+@media (width <= 1000px) {
+    .sidebar {
+        display: none !important;
+    }
+}
+
 .sidebar {
     display: flex;
     flex-direction: column;

@@ -4,6 +4,7 @@ import { TButtonProps } from './types';
 
 export const Button = ({
     text,
+    imageUrl,
     onClick,
     style,
     backgroundColor = 'rgba(81, 199, 47, 1)',
@@ -18,7 +19,13 @@ export const Button = ({
                 backgroundColor: filled ? backgroundColor : 'transparent',
                 border: filled ? 'none' : `1px solid ${backgroundColor}`,
             }}>
-            <p style={{ color: filled ? 'white' : backgroundColor }}>{text}</p>
+            {imageUrl ? (
+                <img src={imageUrl} alt="Доставка" />
+            ) : (
+                <p style={{ color: filled ? 'white' : backgroundColor }}>
+                    {text}
+                </p>
+            )}
         </button>
     );
 };

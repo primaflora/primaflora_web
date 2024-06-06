@@ -4,7 +4,7 @@ import './styles.css';
 
 export const Home = () => {
     return (
-        <div className="home-container main-global-padding py-10">
+        <div className="home-container main-global-padding py-10 max-lg:py-0">
             <div className="flex">
                 <SideBar />
                 <Main />

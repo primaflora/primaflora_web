@@ -1,3 +1,4 @@
 export type TNavLinksProps = {
-    isAuth: boolean
-}
+    isAuth: boolean;
+    isMob?: boolean;
+};

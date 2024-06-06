@@ -4,3 +4,19 @@
     flex: 1 0 100%;
     position: relative;
 }
+
+.slider-text {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20%;
+    display: flex;
+    align-items: center;
+    color: black;
+}
+
+@media (width <= 1000px) {
+    .slider-text {
+        left: 5%;
+    }
+}

@@ -18,7 +18,7 @@ export const Dots = () => {
 
     return (
         <div className="contents">
-            <div className="flex flex-row gap-2 absolute bottom-3 right-0 left-0 justify-center z-10">
+            <div className="dots-container">
                 {renderDots(slidesCount)}
             </div>
         </div>
