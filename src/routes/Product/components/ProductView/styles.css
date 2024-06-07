@@ -73,3 +73,18 @@
     text-align: left;
     color: #454545;
 }
+
+.product-current-currency {
+    font-family: Montserrat;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 39.01px;
+    text-align: left;
+    color: rgba(114, 191, 68, 1);
+}
+
+@media (width <= 1000px) {
+    .product-avatar {
+        justify-self: center;
+    }
+}

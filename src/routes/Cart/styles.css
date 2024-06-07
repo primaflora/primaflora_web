@@ -6,3 +6,21 @@
     text-align: left;
     color: #454545;
 }
+
+.cart-main-container {
+    width: 100%;
+    margin-left: 2.5rem;
+}
+
+.cart-total-price-container {
+    display: flex;
+    width: 100%;
+    padding-top: 2.5rem;
+    justify-content: end;
+}
+
+@media (width <= 1000px) {
+    .cart-main-container {
+        margin-left: 0;
+    }
+}

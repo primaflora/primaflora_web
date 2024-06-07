@@ -20,6 +20,7 @@ export const TotalPrice = ({ price }: TTotalPriceProps) => {
                 </div>
                 <Button
                     text="ОФОРМИТИ ЗАМОВЛЕННЯ"
+                    small
                     filled
                     onClick={() => {}}
                     style={{

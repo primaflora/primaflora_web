@@ -6,6 +6,7 @@ import { SideBar } from '../../components/common/SideBar';
 import { useUserData } from '../../store/tools';
 import { CategoryView } from './components/CategoryView';
 import './styles.css';
+import { CatalogStripeMob } from '../../components/common/CatalogStripeMob';
 
 export const Category = () => {
     const { uuid } = useParams();
@@ -29,10 +30,13 @@ export const Category = () => {
     }, [categories]);
 
     return (
-        <div className="home-container main-global-padding py-10">
+        <div className="home-container main-global-padding">
             <div className="flex">
                 <SideBar />
                 <div className="category-main-container">
+                    <div className="catalog-stripe-mob-container pb-5">
+                        <CatalogStripeMob />
+                    </div>
                     <CategoryUpperView />
                     <CategoryView />
                 </div>

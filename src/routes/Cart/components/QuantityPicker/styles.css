@@ -2,6 +2,8 @@
     padding: 10px 120px;
     border-radius: 7px;
     border: 1px solid #72bf44;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
 }
 
 .quantity-value-text {
@@ -11,4 +13,12 @@
     line-height: 29.26px;
     text-align: center;
     color: #72bf44;
+}
+
+@media (width <= 1000px) {
+    .quantity-value {
+        padding: 5px 50px !important;
+        margin-left: 1rem !important;
+        margin-right: 1rem !important;
+    }
 }

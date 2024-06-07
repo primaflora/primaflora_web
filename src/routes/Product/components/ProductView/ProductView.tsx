@@ -134,8 +134,11 @@ export const ProductView = ({ product }: TProductViewProps) => {
                                 {product.percent_discount
                                     ? product.price_currency *
                                       ((100 - product.percent_discount) / 100)
-                                    : product.price_currency}{' '}
-                                грн.
+                                    : product.price_currency}
+                                {''}
+                                <span className="product-current-currency">
+                                    грн.
+                                </span>
                             </p>
                         </div>
                         <Button
@@ -189,11 +192,12 @@ export const renderDescription = (desc: Object) => {
                             <strong>{formatKey(key)}</strong>:{' '}
                             <ul className="pl-4">
                                 {value.map((item, index) => (
-                                    <li
-                                        className='before:content-["•"]'
-                                        key={index}>
-                                        {item}
-                                    </li>
+                                    <h1 className="flex">{item}, </h1>
+                                    // <li
+                                    //     className='before:content-["•"]'
+                                    //     key={index}>
+                                    //     {item}
+                                    // </li>
                                 ))}
                             </ul>
                         </h4>

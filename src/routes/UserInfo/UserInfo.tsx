@@ -7,11 +7,15 @@ import { Row } from '../../components/common/Row';
 import { useUserData } from '../../store/tools';
 import { Section } from './components/Section/Section';
 import './styles.css';
+import { StorageService } from '../../common/storage/storage.service';
+import { useNavigate } from 'react-router-dom';
 
 export const UserInfo = () => {
     const { user } = useUserData();
     const { notifyError } = useToast();
     const { updateUserData } = useAuth();
+    const navigate = useNavigate();
+    const { clearAll, setIsAuth } = useAuth();
 
     const handleUpdateUser = async (updateObj: object) => {
         Service.UserService.patchUpdate(updateObj)
@@ -25,6 +29,18 @@ export const UserInfo = () => {
                     notifyError('Canot change user data');
                 }
             });
+    };
+
+    const handleLogOutPress = () => {
+        Service.AuthService.postLogOut();
+        StorageService.removeToken('accessToken');
+        StorageService.removeToken('refreshToken');
+
+        clearAll();
+        setIsAuth(false);
+        navigate('/');
+
+        window.location.reload();
     };
 
     return (
@@ -102,6 +118,15 @@ export const UserInfo = () => {
                     //     text: 'Редагувати',
                     //     onUpdate: () => {},
                     // }}
+                />
+            </div>
+
+            <div className="user-info-logout-botton-mob pb-5">
+                <Button
+                    text="ВИЙТИ"
+                    onClick={handleLogOutPress}
+                    filled
+                    style={{ borderRadius: '7px', width: '100%' }}
                 />
             </div>
             <Toast />

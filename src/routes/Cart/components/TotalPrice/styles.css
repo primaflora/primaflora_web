@@ -32,3 +32,21 @@
     text-align: left;
     color: #454545;
 }
+
+@media (width <= 1000px) {
+    .total-price-container {
+        width: 100% !important;
+    }
+    .total-price-value {
+        font-size: 32px !important;
+        font-weight: 600 !important;
+        line-height: 39.01px !important;
+        text-align: left !important;
+    }
+    .total-price-value-currency {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        line-height: 19.5px !important;
+        text-align: left !important;
+    }
+}

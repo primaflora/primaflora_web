@@ -5,4 +5,5 @@ export type TButtonProps = {
     backgroundColor?: string;
     style?: React.CSSProperties;
     filled?: boolean;
+    small?: boolean;
 };

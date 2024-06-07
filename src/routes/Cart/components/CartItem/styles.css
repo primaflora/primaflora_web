@@ -28,3 +28,22 @@
     border-style: solid;
     border-color: #ebeff1;
 }
+
+.cart-item-price-quantity-container {
+    display: flex;
+    position: relative;
+}
+
+.cart-item-price-quantity-container-mob {
+    display: none;
+}
+
+@media (width <= 1000px) {
+    .cart-item-price-quantity-container {
+        display: none !important;
+    }
+    .cart-item-price-quantity-container-mob {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+}

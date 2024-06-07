@@ -11,7 +11,7 @@ export const QuantityPicker = ({
     return (
         <Row>
             <Minus onClick={() => onQuantityChange(quantity - 1)} />
-            <div className="quantity-value mx-6">
+            <div className="quantity-value">
                 <h1 className="quantity-value-text">{quantity}</h1>
             </div>
             <Plus onClick={() => onQuantityChange(quantity + 1)} />

@@ -7,14 +7,15 @@ import './styles.css';
 import { TUpperHeaderBarProps } from './types';
 import { LogInModal } from '../../../Modals/LogInModal';
 import { useState } from 'react';
+import { SignInModal } from '../../../Modals/SignInModal';
 
 export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
     const navigate = useNavigate();
     const { clearAll, setIsAuth } = useAuth();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
     const handleLoginPress = () => {
-        // navigate('/auth/log-in');
         setIsLoginModalOpen(true);
     };
     const handleLogInModalClose = () => {
@@ -22,7 +23,19 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
     };
 
     const handleSignUpPress = () => {
-        navigate('/auth/sign-up');
+        setIsSignUpModalOpen(true);
+    };
+    const handleSignUpModalClose = () => {
+        setIsSignUpModalOpen(true);
+    };
+
+    const handleMoveToLogIn = () => {
+        setIsSignUpModalOpen(false);
+        setIsLoginModalOpen(true);
+    };
+    const handleMoveToSignUp = () => {
+        setIsLoginModalOpen(false);
+        setIsSignUpModalOpen(true);
     };
 
     const handleLogOutPress = () => {
@@ -46,6 +59,12 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
                 <LogInModal
                     isOpen={isLoginModalOpen}
                     onClose={handleLogInModalClose}
+                    onMoveToSignUp={handleMoveToSignUp}
+                />
+                <SignInModal
+                    isOpen={isSignUpModalOpen}
+                    onClose={handleSignUpModalClose}
+                    onMoveToLogIn={handleMoveToLogIn}
                 />
                 <Button
                     text={

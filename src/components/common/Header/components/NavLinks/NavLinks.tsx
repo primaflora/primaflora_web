@@ -4,16 +4,39 @@ import { TNavLinksProps } from './types';
 import { Images } from '../../../../../assets';
 import { LogInModal } from '../../../Modals/LogInModal';
 import { useState } from 'react';
+import { SignInModal } from '../../../Modals/SignInModal';
 
 export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
     const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+
+    const handleLogInModalPress = () => {
+        setIsLoginModalOpen(true);
+    };
+    const handleLogInModalClose = () => {
+        setIsLoginModalOpen(false);
+    };
+
+    const handleSignUpPress = () => {
+        setIsSignUpModalOpen(true);
+    };
+    const handleSignUpModalClose = () => {
+        setIsSignUpModalOpen(true);
+    };
+
+    const handleMoveToLogIn = () => {
+        setIsSignUpModalOpen(false);
+        setIsLoginModalOpen(true);
+    };
+    const handleMoveToSignUp = () => {
+        setIsLoginModalOpen(false);
+        setIsSignUpModalOpen(true);
+    };
 
     const handleLogInPress = () => {
-        if (isAuth) 
-            navigate('/user-info');
-        else 
-            setIsModalOpen(true);
+        if (isAuth) navigate('/user-info');
+        else handleLogInModalPress();
     };
 
     return (
@@ -28,7 +51,7 @@ export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
                         className={isAuth ? 'like-enabled' : 'like-disabled'}>
                         <img src={Images.LinedLikeIconMob} alt="likes" />
                     </Link>
-                    <Link to="#">
+                    <Link to="/cart">
                         <img src={Images.CartIconMob} alt="cart" />
                     </Link>
                 </div>
@@ -43,8 +66,14 @@ export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
                 </div>
             )}
             <LogInModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isLoginModalOpen}
+                onClose={handleLogInModalClose}
+                onMoveToSignUp={handleMoveToSignUp}
+            />
+            <SignInModal
+                isOpen={isSignUpModalOpen}
+                onClose={handleSignUpModalClose}
+                onMoveToLogIn={handleMoveToLogIn}
             />
         </nav>
     );

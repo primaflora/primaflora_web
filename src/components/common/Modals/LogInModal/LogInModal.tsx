@@ -5,13 +5,16 @@ import { InputModal } from '../Input/InputModal';
 import { TLogInModalProps } from './types';
 import './styles.css';
 import { Images } from '../../../../assets';
-import { Row } from '../../Row';
 import { Service } from '../../../../common/services';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../common/hooks/useAuth/useAuth';
 import { StorageService } from '../../../../common/storage/storage.service';
 
-export const LogInModal = ({ isOpen, onClose }: TLogInModalProps) => {
+export const LogInModal = ({
+    isOpen,
+    onClose,
+    onMoveToSignUp,
+}: TLogInModalProps) => {
     const navigate = useNavigate();
     const { setIsAuth, setUserData } = useAuth();
     const [login, setLogin] = useState('');
@@ -83,9 +86,11 @@ export const LogInModal = ({ isOpen, onClose }: TLogInModalProps) => {
                     <a className="modal-use-email" href="#">
                         Увійти через пошту
                     </a>
-                    <a className="modal-registrate-link" href="#">
+                    <button
+                        className="modal-registrate-link"
+                        onClick={onMoveToSignUp}>
                         Зареєструватися
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

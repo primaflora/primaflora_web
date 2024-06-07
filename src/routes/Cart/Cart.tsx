@@ -7,6 +7,7 @@ import { CartItem } from './components/CartItem';
 import { TotalPrice } from './components/TotalPrice';
 import './styles.css';
 import { useUserData } from '../../store/tools';
+import { CatalogStripeMob } from '../../components/common/CatalogStripeMob';
 
 export const Cart = () => {
     const { isAuth } = useUserData();
@@ -48,9 +49,12 @@ export const Cart = () => {
     };
 
     return (
-        <div className="main-global-padding py-10 flex">
+        <div className="main-global-padding flex">
             <SideBar />
-            <div className="w-full ml-10">
+            <div className="cart-main-container">
+                <div className="catalog-stripe-mob-container pb-5">
+                    <CatalogStripeMob />
+                </div>
                 <Slider />
                 <Line />
                 <h1 className="cart-title">Кошик</h1>
@@ -73,7 +77,7 @@ export const Cart = () => {
                             />
                         ))}
 
-                        <div className="w-full pt-10 flex justify-end">
+                        <div className="cart-total-price-container">
                             <TotalPrice price={calculateTotalPrice()} />
                         </div>
                     </div>

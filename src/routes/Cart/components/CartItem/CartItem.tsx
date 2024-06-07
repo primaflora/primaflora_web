@@ -46,7 +46,8 @@ export const CartItem = ({
                     <h2 className="item-cart-desc">Some text desc</h2>
                 </div>
 
-                <div className="relative flex">
+                {/* For desktop */}
+                <div className="cart-item-price-quantity-container">
                     <QuantityPicker
                         quantity={quantity}
                         onQuantityChange={handleQuantityChange}
@@ -64,6 +65,33 @@ export const CartItem = ({
                                 : item.product.price_currency}{' '}
                             грн.
                         </p>
+                    </div>
+                </div>
+
+                {/* For mobile */}
+                <div className="cart-item-price-quantity-container-mob">
+                    <QuantityPicker
+                        quantity={quantity}
+                        onQuantityChange={handleQuantityChange}
+                    />
+                    <div>
+                        <Row style={{ justifyContent: 'end' }}>
+                            {item.product.percent_discount && (
+                                <p className="card-price-old">
+                                    {item.product.price_currency} грн.
+                                </p>
+                            )}
+                        </Row>
+                        <Row style={{ justifyContent: 'end' }}>
+                            <p className="card-price-main">
+                                {item.product.percent_discount
+                                    ? item.product.price_currency *
+                                      ((100 - item.product.percent_discount) /
+                                          100)
+                                    : item.product.price_currency}
+                                {''}грн.
+                            </p>
+                        </Row>
                     </div>
                 </div>
             </div>

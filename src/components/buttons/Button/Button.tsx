@@ -9,12 +9,13 @@ export const Button = ({
     style,
     backgroundColor = 'rgba(81, 199, 47, 1)',
     filled = true,
+    small = false,
 }: TButtonProps) => {
     return (
         <button
             onClick={onClick}
             style={{
-                padding: '11px 60px',
+                padding: small ? '5px 30px' : '11px 60px',
                 ...style,
                 backgroundColor: filled ? backgroundColor : 'transparent',
                 border: filled ? 'none' : `1px solid ${backgroundColor}`,

@@ -8,10 +8,17 @@
     flex-direction: column;
 }
 
+.user-info-logout-botton-mob {
+    display: none;
+}
+
 @media screen and (max-width: 1000px) {
     .product-section-container {
         display: flex !important;
         flex-direction: column;
         row-gap: 1rem !important;
+    }
+    .user-info-logout-botton-mob {
+        display: flex;
     }
 }

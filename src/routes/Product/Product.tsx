@@ -35,7 +35,7 @@ export const Product = () => {
         <div className="home-container main-global-padding py-10">
             <div className="flex">
                 <SideBar />
-                <div className="w-full ml-10">
+                <div className="product-main-container">
                     <CategoryUpperView />
                     {product ? (
                         <ProductView product={product} />
