@@ -1,4 +1,3 @@
-
 import { Images } from '../../../assets';
 import './styles.css';
 
@@ -11,14 +10,14 @@ export const CategoryUpperView = () => {
                     Aspernatur, ratione dolorem accusamus tenetur labore odio
                     quibusdam nemo temporibus, sunt officia cupiditate aliquid
                     culpa nisi dolores suscipit vero sequi maxime inventore.
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Aspernatur, ratione dolorem accusamus tenetur labore odio
-                    quibusdam nemo temporibus, sunt officia cupiditate aliquid
-                    culpa nisi dolores suscipit vero sequi maxime inventore.
                 </p>
             </div>
 
-            <img src={Images.CategoryImage} width={'25%'} alt="category" />
+            <img
+                src={Images.CategoryImage}
+                className="category-image"
+                alt="category"
+            />
         </div>
     );
 };

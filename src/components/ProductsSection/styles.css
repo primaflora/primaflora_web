@@ -12,21 +12,26 @@
 .cards {
     display: grid;
 }
-
-@media (min-width: 600px) {
+@media (min-width: 900px) {
     .cards {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
-@media (min-width: 900px) {
+@media (width <= 900px) {
     .cards {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (min-width: 1200px) {
+@media (width <= 700px) {
     .cards {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(2, 2fr);
+    }
+}
+
+@media (width <= 400px) {
+    .cards {
+        grid-template-columns: repeat(1, 2fr);
     }
 }

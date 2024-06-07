@@ -114,7 +114,7 @@ export const Card = ({ card }: TCardProps) => {
                 />
             </Row>
             <Button
-                text="В КОШИК"
+                text="В&nbsp;КОШИК"
                 filled={false}
                 style={{ width: '100%', alignSelf: 'end' }}
                 onClick={handleAddToCart}

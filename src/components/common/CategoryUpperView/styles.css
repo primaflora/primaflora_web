@@ -27,3 +27,24 @@
     letter-spacing: 0.03em;
     text-align: center;
 }
+
+.category-image {
+    width: 30%;
+    height: 30%;
+    min-height: 200px;
+    min-width: 250px;
+}
+
+@media screen and (max-width: 1000px) {
+    .text {
+        font-family: Raleway !important;
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        line-height: 16.44px !important;
+        letter-spacing: 0.03em !important;
+        text-align: left !important;
+    }
+    .text-container {
+        padding: 5px !important;
+    }
+}

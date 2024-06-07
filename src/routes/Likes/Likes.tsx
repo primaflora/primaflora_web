@@ -20,7 +20,7 @@ export const Likes = () => {
         <div className="main-like-container main-global-padding py-10">
             <div className="flex">
                 <SideBar />
-                <div className="w-full ml-10">
+                <div className="like-container">
                     <Slider />
                     <div className="pt-10">
                         {likes.length === 0 ? (

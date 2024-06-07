@@ -19,18 +19,20 @@ export const Category = () => {
 
         if (!pickedSubcategory) {
             for (const category of categories) {
-                setPickedSubcategory(category.childrens.find(c => c.uuid === uuid)!);
+                setPickedSubcategory(
+                    category.childrens.find(c => c.uuid === uuid)!,
+                );
                 break;
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categories]);
 
     return (
         <div className="home-container main-global-padding py-10">
             <div className="flex">
                 <SideBar />
-                <div className="w-full ml-10">
+                <div className="category-main-container">
                     <CategoryUpperView />
                     <CategoryView />
                 </div>
