@@ -11,19 +11,23 @@ export const Section = ({ title, content, button }: TSectionProps) => {
     const handleUpdate = () => {
         setIsUpdate(true);
         setNewValue(content);
-    }
+    };
 
     const handleSaveChanges = () => {
         console.log(`New ${title}: `, newValue);
         setIsUpdate(false);
         //TODO: Save new data locally and on server
         button?.onUpdate(newValue);
-    } 
+    };
 
     const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setNewValue(e.target.value);
-    }
+    };
+
+    const truncate = (str: string) => {
+        return str.length > 32 ? str.substring(0, 32) + '...' : str;
+    };
 
     return (
         <div className="section">
@@ -31,18 +35,17 @@ export const Section = ({ title, content, button }: TSectionProps) => {
                 <h1 className="title">{title}</h1>
                 {button && (
                     <Button
-                        text={isUpdate ? "Зберегти" : button.text}
+                        text={isUpdate ? 'Зберегти' : button.text}
                         style={{ width: '13rem' }}
                         onClick={isUpdate ? handleSaveChanges : handleUpdate}
                     />
                 )}
             </Row>
-            {
-                isUpdate ?
-                <input value={newValue} onChange={handleTextChange}/>
-                :
-                <p className="content-text">{content}</p>
-            }
+            {isUpdate ? (
+                <input value={newValue} onChange={handleTextChange} />
+            ) : (
+                <p className="content-text">{truncate(content)}</p>
+            )}
         </div>
     );
 };

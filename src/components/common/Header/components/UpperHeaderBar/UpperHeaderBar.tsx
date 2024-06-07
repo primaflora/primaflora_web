@@ -5,13 +5,20 @@ import { StorageService } from '../../../../../common/storage/storage.service';
 import { Button } from '../../../../buttons';
 import './styles.css';
 import { TUpperHeaderBarProps } from './types';
+import { LogInModal } from '../../../Modals/LogInModal';
+import { useState } from 'react';
 
 export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
     const navigate = useNavigate();
     const { clearAll, setIsAuth } = useAuth();
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
     const handleLoginPress = () => {
-        navigate('/auth/log-in');
+        // navigate('/auth/log-in');
+        setIsLoginModalOpen(true);
+    };
+    const handleLogInModalClose = () => {
+        setIsLoginModalOpen(false);
     };
 
     const handleSignUpPress = () => {
@@ -26,7 +33,7 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
         clearAll();
         setIsAuth(false);
         navigate('/');
-        
+
         window.location.reload();
     };
 
@@ -36,6 +43,10 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
                 НАТУРАЛЬНА ПРОДУКЦІЯ ДЛЯ ЗДОРОВ'Я ТА КРАСИ
             </p>
             <div className="upper-header-button-container">
+                <LogInModal
+                    isOpen={isLoginModalOpen}
+                    onClose={handleLogInModalClose}
+                />
                 <Button
                     text={
                         isAuth

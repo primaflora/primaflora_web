@@ -1,0 +1,20 @@
+.catalog-stripe-sidebar-mob-container {
+    display: none;
+}
+
+.sidebar-mob-hidden {
+    display: none;
+}
+
+@media screen and (width <= 1000px) {
+    .catalog-stripe-sidebar-mob-container {
+        display: flex !important;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.2);
+        left: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+        z-index: 20;
+    }
+}

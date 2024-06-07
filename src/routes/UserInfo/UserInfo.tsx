@@ -36,72 +36,72 @@ export const UserInfo = () => {
                     onClick={() => {}}
                 />
             </Row>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-12 py-6">
+            <div className="section-container">
                 <Section
                     title="(Особистий номер в компанії)"
                     content={user?.name || 'Test User Lorem Ipsum'}
-                    button={{
-                        text: 'Редагувати',
-                        onUpdate(newValue) {
-                            handleUpdateUser({ name: newValue });
-                        },
-                    }}
+                    // button={{
+                    //     text: 'Редагувати',
+                    //     onUpdate(newValue) {
+                    //         handleUpdateUser({ name: newValue });
+                    //     },
+                    // }}
                 />
                 <Section
                     title="(ПІБ другої особи)"
                     content={'(ПІБ другої особи)'}
-                    button={{
-                        text: 'Редагувати',
-                        onUpdate: () => {
-                            console.log('Edit Section #1');
-                        },
-                    }}
+                    // button={{
+                    //     text: 'Редагувати',
+                    //     onUpdate: () => {
+                    //         console.log('Edit Section #1');
+                    //     },
+                    // }}
                 />
                 <Section
                     title="(Особистий номер в компанії)"
                     content={user?.login || '#0001'}
-                    button={{
-                        text: 'Редагувати',
-                        onUpdate(newValue) {
-                            handleUpdateUser({ login: newValue });
-                        },
-                    }}
+                    // button={{
+                    //     text: 'Редагувати',
+                    //     onUpdate(newValue) {
+                    //         handleUpdateUser({ login: newValue });
+                    //     },
+                    // }}
                 />
                 <Section
                     title="(Реферальне посилання)"
                     content="http://primaflora/link/TESTLINK"
-                    button={{
-                        text: 'Редагувати',
-                        onUpdate: () => {},
-                    }}
+                    // button={{
+                    //     text: 'Редагувати',
+                    //     onUpdate: () => {},
+                    // }}
                 />
                 <Section
                     title="Телефон"
                     content={user?.phone || '+380000000000'}
-                    button={{
-                        text: 'Редагувати',
-                        onUpdate(newValue) {
-                            handleUpdateUser({ phone: newValue });
-                        },
-                    }}
+                    // button={{
+                    //     text: 'Редагувати',
+                    //     onUpdate(newValue) {
+                    //         handleUpdateUser({ phone: newValue });
+                    //     },
+                    // }}
                 />
                 <Section
                     title="Пошта"
                     content={user?.email || 'test@primaflora.com'}
-                    button={{
-                        text: 'Редагувати',
-                        onUpdate(newValue) {
-                            handleUpdateUser({ email: newValue });
-                        },
-                    }}
+                    // button={{
+                    //     text: 'Редагувати',
+                    //     onUpdate(newValue) {
+                    //         handleUpdateUser({ email: newValue });
+                    //     },
+                    // }}
                 />
                 <Section
                     title="Пароль (хеш)"
                     content={user?.password || '********'}
-                    button={{
-                        text: 'Редагувати',
-                        onUpdate: () => {},
-                    }}
+                    // button={{
+                    //     text: 'Редагувати',
+                    //     onUpdate: () => {},
+                    // }}
                 />
             </div>
             <Toast />

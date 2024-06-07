@@ -1,1 +1,18 @@
 @tailwind utilities;
+
+.section-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Equivalent to grid-cols-2 */
+    column-gap: 2rem; /* Tailwind's default spacing scale for 8 is 2rem */
+    row-gap: 3rem; /* Tailwind's default spacing scale for 12 is 3rem */
+    padding-top: 1.5rem; /* Tailwind's default spacing scale for 6 is 1.5rem */
+    padding-bottom: 1.5rem; /* Tailwind's default spacing scale for 6 is 1.5rem */
+}
+
+@media screen and (max-width: 1000px) {
+    .section-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+    }
+}

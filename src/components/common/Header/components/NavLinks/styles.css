@@ -13,7 +13,7 @@
     display: flex;
     gap: 10px;
 }
-.header-nav-links-container-mob > a {
+.header-nav-links-container-mob > * {
     border: 1px solid #72bf44;
     background: #72bf44b2;
     padding: 10px;

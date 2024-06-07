@@ -11,7 +11,7 @@ export const Main = () => {
                 <CatalogStripeMob />
             </div>
             <Line />
-            <b className="block mb-2">Main. Please, pick category</b>
+            <b className="block mb-2 h-[60vh]">Main. Please, pick category</b>
         </div>
     );
 };

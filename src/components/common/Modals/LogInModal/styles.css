@@ -1,0 +1,86 @@
+.modal-container {
+    background-color: rgba(0, 0, 0, 0.2);
+    position: fixed; /* Change to fixed to cover the whole screen */
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex; /* Default display to flex */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-container.modal-show {
+    display: flex;
+}
+
+.modal-container.modal-close {
+    display: none;
+}
+
+.modal-content-container {
+    width: 50%;
+    background-color: white;
+    padding: 20px 40px;
+    position: relative;
+    border-radius: 7px;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: white;
+    border: none;
+}
+
+.modal-title {
+    font-family: Raleway;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 28.18px;
+    text-align: left;
+    color: rgba(69, 69, 69, 1);
+}
+
+.modal-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modal-registrate-link {
+    font-family: Raleway;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 23.48px;
+    text-align: left;
+    color: rgba(69, 69, 69, 1);
+}
+
+.modal-use-email {
+    font-family: Raleway;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 23.48px;
+    text-align: left;
+    color: rgba(69, 69, 69, 1);
+}
+
+.modal-bottom-buttons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 1000px) {
+    .modal-content-container {
+        width: 95%;
+    }
+    .modal-bottom-buttons-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+}

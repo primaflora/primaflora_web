@@ -1,9 +1,18 @@
 @tailwind utilities;
 
 @media (width <= 1000px) {
-    .sidebar {
+    /* .sidebar-mob-close {
         display: none !important;
+    } */
+    .sidebar {
+        width: 100% !important;
+        display: none !important;
+        background-color: white;
     }
+}
+
+.sidebar-mob-open {
+    display: flex !important;
 }
 
 .sidebar {
@@ -57,4 +66,13 @@
     cursor: pointer;
     background: rgba(81, 199, 47, 1);
     color: rgba(255, 255, 255, 1);
+}
+
+.sidebar-header-mob-title {
+    font-family: Raleway;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16.44px;
+    text-align: left;
+    color: rgba(114, 191, 68, 1);
 }
