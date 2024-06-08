@@ -1,35 +1,34 @@
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../common/hooks/useAuth/useAuth';
 import { Service } from '../../common/services';
-import { Toast, useToast } from '../../common/toast';
+import { StorageService } from '../../common/storage/storage.service';
+import { Toast } from '../../common/toast';
 import { Button } from '../../components/buttons';
 import { Row } from '../../components/common/Row';
 import { useUserData } from '../../store/tools';
 import { Section } from './components/Section/Section';
 import './styles.css';
-import { StorageService } from '../../common/storage/storage.service';
-import { useNavigate } from 'react-router-dom';
 
 export const UserInfo = () => {
     const { user } = useUserData();
-    const { notifyError } = useToast();
-    const { updateUserData } = useAuth();
+    // const { notifyError } = useToast();
+    // const { updateUserData } = useAuth();
     const navigate = useNavigate();
     const { clearAll, setIsAuth } = useAuth();
 
-    const handleUpdateUser = async (updateObj: object) => {
-        Service.UserService.patchUpdate(updateObj)
-            .then(() => {
-                updateUserData(updateObj);
-            })
-            .catch(error => {
-                if (axios.isAxiosError(error)) {
-                    notifyError(error.response?.data.message[0]);
-                } else {
-                    notifyError('Canot change user data');
-                }
-            });
-    };
+    // const handleUpdateUser = async (updateObj: object) => {
+    //     Service.UserService.patchUpdate(updateObj)
+    //         .then(() => {
+    //             updateUserData(updateObj);
+    //         })
+    //         .catch(error => {
+    //             if (axios.isAxiosError(error)) {
+    //                 notifyError(error.response?.data.message[0]);
+    //             } else {
+    //                 notifyError('Canot change user data');
+    //             }
+    //         });
+    // };
 
     const handleLogOutPress = () => {
         Service.AuthService.postLogOut();

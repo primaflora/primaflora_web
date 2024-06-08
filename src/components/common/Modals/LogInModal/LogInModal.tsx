@@ -1,21 +1,19 @@
 import { useState } from 'react';
+import { Images } from '../../../../assets';
+import { useAuth } from '../../../../common/hooks/useAuth/useAuth';
+import { Service } from '../../../../common/services';
+import { StorageService } from '../../../../common/storage/storage.service';
 import { Button } from '../../../buttons';
 import { Line } from '../../Line';
 import { InputModal } from '../Input/InputModal';
-import { TLogInModalProps } from './types';
 import './styles.css';
-import { Images } from '../../../../assets';
-import { Service } from '../../../../common/services';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../../common/hooks/useAuth/useAuth';
-import { StorageService } from '../../../../common/storage/storage.service';
+import { TLogInModalProps } from './types';
 
 export const LogInModal = ({
     isOpen,
     onClose,
     onMoveToSignUp,
 }: TLogInModalProps) => {
-    const navigate = useNavigate();
     const { setIsAuth, setUserData } = useAuth();
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -83,9 +81,8 @@ export const LogInModal = ({
 
                 <Line />
                 <div className="modal-bottom-buttons-container">
-                    <a className="modal-use-email" href="#">
-                        Увійти через пошту
-                    </a>
+                    {/* TODO: make an ability to loig in via email */}
+                    <h1 className="modal-use-email">Увійти через пошту</h1>
                     <button
                         className="modal-registrate-link"
                         onClick={onMoveToSignUp}>
