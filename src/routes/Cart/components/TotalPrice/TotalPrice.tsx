@@ -26,6 +26,7 @@ export const TotalPrice = ({ price }: TTotalPriceProps) => {
                     style={{
                         borderTopLeftRadius: 7,
                         borderBottomLeftRadius: 7,
+                        alignSelf: 'flex-start',
                     }}
                 />
             </Row>

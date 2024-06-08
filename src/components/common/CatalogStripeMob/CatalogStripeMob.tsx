@@ -18,7 +18,12 @@ export const CatalogStripeMob = () => {
 
     return (
         <div>
-            <Row style={{ gap: 10, paddingTop: 10 }}>
+            <Row
+                style={{
+                    gap: 10,
+                    width: '100%',
+                    paddingTop: 10,
+                }}>
                 {/* TODO: redirect to delivery page */}
                 <Button
                     imageUrl={Images.DeliveryIconMob}

@@ -7,7 +7,7 @@ export const Main = () => {
     return (
         <div className="main-home-container">
             <Slider />
-            <div className="catalog-stripe-mob-container">
+            <div className="catalog-stripe-main-mob-container">
                 <CatalogStripeMob />
             </div>
             <Line />

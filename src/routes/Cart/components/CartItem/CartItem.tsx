@@ -70,10 +70,12 @@ export const CartItem = ({
 
                 {/* For mobile */}
                 <div className="cart-item-price-quantity-container-mob">
-                    <QuantityPicker
-                        quantity={quantity}
-                        onQuantityChange={handleQuantityChange}
-                    />
+                    <div>
+                        <QuantityPicker
+                            quantity={quantity}
+                            onQuantityChange={handleQuantityChange}
+                        />
+                    </div>
                     <div>
                         <Row style={{ justifyContent: 'end' }}>
                             {item.product.percent_discount && (

@@ -59,11 +59,11 @@ export const Cart = () => {
                 <Line />
                 <h1 className="cart-title">Кошик</h1>
                 {!isAuth ? (
-                    <h1 className="justify-self-center text-black text-3xl">
+                    <h1 className="justify-self-center text-black text-3xl pb-12">
                         You need to be authorized to view cart!
                     </h1>
                 ) : cart.length === 0 ? (
-                    <h1 className="justify-self-center text-black text-3xl">
+                    <h1 className="justify-self-center text-black text-3xl pb-12">
                         Nothing to show!
                     </h1>
                 ) : (
@@ -77,7 +77,7 @@ export const Cart = () => {
                             />
                         ))}
 
-                        <div className="cart-total-price-container">
+                        <div className="cart-total-price-container pb-4">
                             <TotalPrice price={calculateTotalPrice()} />
                         </div>
                     </div>

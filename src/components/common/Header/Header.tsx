@@ -4,9 +4,34 @@ import { useUserData } from '../../../store/tools';
 import { NavLinks } from './components/NavLinks';
 import { UpperHeaderBar } from './components/UpperHeaderBar';
 import './styles.css';
+import { SignInModal } from '../Modals/SignInModal';
+import { useState } from 'react';
+import { LogInModal } from '../Modals/LogInModal';
 
 export const Header = () => {
     const { isAuth, user } = useUserData();
+    const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+    const handleLogInModalClose = () => {
+        setIsLoginModalOpen(false);
+    };
+
+    const handleSignUpPress = () => {
+        setIsSignUpModalOpen(true);
+    };
+    const handleSignUpModalClose = () => {
+        setIsSignUpModalOpen(false);
+    };
+
+    const handleMoveToLogIn = () => {
+        setIsSignUpModalOpen(false);
+        setIsLoginModalOpen(true);
+    };
+    const handleMoveToSignUp = () => {
+        setIsLoginModalOpen(false);
+        setIsSignUpModalOpen(true);
+    };
 
     return (
         <div className="header-main-container">
@@ -33,10 +58,22 @@ export const Header = () => {
                 </div>
             </div>
 
+            <SignInModal
+                isOpen={isSignUpModalOpen}
+                onClose={handleSignUpModalClose}
+                onMoveToLogIn={handleMoveToLogIn}
+            />
+            <LogInModal
+                isOpen={isLoginModalOpen}
+                onClose={handleLogInModalClose}
+                onMoveToSignUp={handleMoveToSignUp}
+            />
+
             <div
                 className={`header-bottom-stipe-mob ${
                     isAuth ? 'bottom-stripe-guest' : 'bottom-stripe-authed'
-                }`}>
+                }`}
+                onClick={isAuth ? () => {} : handleSignUpPress}>
                 {isAuth ? (
                     <h1>ВАШ № {user?.login} / Ваша знижка 10%</h1>
                 ) : (

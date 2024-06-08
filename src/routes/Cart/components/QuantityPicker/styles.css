@@ -20,5 +20,12 @@
         padding: 5px 50px !important;
         margin-left: 1rem !important;
         margin-right: 1rem !important;
+        width: 200px;
+    }
+}
+
+@media (width <= 500px) {
+    .quantity-value {
+        width: 120px !important;
     }
 }

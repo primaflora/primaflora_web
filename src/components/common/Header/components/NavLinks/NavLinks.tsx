@@ -18,9 +18,6 @@ export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
         setIsLoginModalOpen(false);
     };
 
-    const handleSignUpPress = () => {
-        setIsSignUpModalOpen(true);
-    };
     const handleSignUpModalClose = () => {
         setIsSignUpModalOpen(true);
     };

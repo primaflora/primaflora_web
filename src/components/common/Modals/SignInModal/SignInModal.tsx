@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Images } from '../../../../assets';
 import { Service } from '../../../../common/services';
 import { TPostUserSignUpRequest } from '../../../../common/services/auth/types/postSignUp';
@@ -16,7 +15,6 @@ export const SignInModal = ({
     onClose,
     onMoveToLogIn,
 }: TLogInModalProps) => {
-    const navigate = useNavigate();
     const { notifyError, notifySuccess } = useToast();
     const [error, setError] = useState('');
 
@@ -71,7 +69,7 @@ export const SignInModal = ({
                 isOpen ? 'modal-show' : 'modal-close'
             }`}>
             <div className="modal-content-container">
-                <h1 className="modal-title">Вхід</h1>
+                <h1 className="modal-title">Реєстрація</h1>
                 <button className="modal-close-button" onClick={onClose}>
                     <img src={Images.CrossIcon} alt="close" />
                 </button>
@@ -81,7 +79,7 @@ export const SignInModal = ({
                     <div className="modal-input-container">
                         <InputModal
                             title="Ім'я"
-                            placeholder="Іванов Дмитрий Евгеньевич"
+                            placeholder="ПІБ"
                             formDataFieldName="name"
                         />
                         <InputModal
@@ -125,10 +123,8 @@ export const SignInModal = ({
                 </form>
 
                 <Line />
+
                 <Row style={{ justifyContent: 'space-between' }}>
-                    <a className="modal-use-email" href="#">
-                        Увійти через пошту
-                    </a>
                     <button
                         className="modal-registrate-link"
                         onClick={onMoveToLogIn}>
