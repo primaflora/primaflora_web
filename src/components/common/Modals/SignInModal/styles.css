@@ -67,3 +67,12 @@
     text-align: left;
     color: rgba(69, 69, 69, 1);
 }
+
+@media (width <= 1000px) {
+    .modal-input-container {
+        gap: 10px !important;
+    }
+    .modal-content-container {
+        padding: 10px 30px !important;
+    }
+}

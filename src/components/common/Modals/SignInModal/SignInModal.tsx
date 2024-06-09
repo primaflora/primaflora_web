@@ -5,7 +5,6 @@ import { TPostUserSignUpRequest } from '../../../../common/services/auth/types/p
 import { useToast } from '../../../../common/toast';
 import { Button } from '../../../buttons';
 import { Line } from '../../Line';
-import { Row } from '../../Row';
 import { InputModal } from '../Input/InputModal';
 import './styles.css';
 import { TLogInModalProps } from './types';
@@ -13,8 +12,8 @@ import { TLogInModalProps } from './types';
 export const SignInModal = ({
     isOpen,
     onClose,
-    onMoveToLogIn,
-}: TLogInModalProps) => {
+}: // onMoveToLogIn,
+TLogInModalProps) => {
     const { notifyError, notifySuccess } = useToast();
     const [error, setError] = useState('');
 
@@ -122,15 +121,15 @@ export const SignInModal = ({
                     {error && <h1>{error}</h1>}
                 </form>
 
-                <Line />
-
+                {/* <Line /> */}
+                {/* 
                 <Row style={{ justifyContent: 'space-between' }}>
                     <button
                         className="modal-registrate-link"
                         onClick={onMoveToLogIn}>
                         Увійти
                     </button>
-                </Row>
+                </Row> */}
             </div>
         </div>
     );
