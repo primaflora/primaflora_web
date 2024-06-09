@@ -7,13 +7,13 @@ import { Button } from '../../../buttons';
 import { Line } from '../../Line';
 import { InputModal } from '../Input/InputModal';
 import './styles.css';
-import { TLogInModalProps } from './types';
+import { TSignInModalProps } from './types';
 
 export const SignInModal = ({
     isOpen,
     onClose,
-}: // onMoveToLogIn,
-TLogInModalProps) => {
+    onMoveToLogIn,
+}: TSignInModalProps) => {
     const { notifyError, notifySuccess } = useToast();
     const [error, setError] = useState('');
 
@@ -120,16 +120,6 @@ TLogInModalProps) => {
                     </div>
                     {error && <h1>{error}</h1>}
                 </form>
-
-                {/* <Line /> */}
-                {/* 
-                <Row style={{ justifyContent: 'space-between' }}>
-                    <button
-                        className="modal-registrate-link"
-                        onClick={onMoveToLogIn}>
-                        Увійти
-                    </button>
-                </Row> */}
             </div>
         </div>
     );

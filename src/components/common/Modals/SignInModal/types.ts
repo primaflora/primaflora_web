@@ -1,4 +1,4 @@
-export type TLogInModalProps = {
+export type TSignInModalProps = {
     isOpen: boolean;
     onClose: () => void;
     onMoveToLogIn: () => void;

@@ -4,9 +4,10 @@ import { useUserData } from '../../../store/tools';
 import { NavLinks } from './components/NavLinks';
 import { UpperHeaderBar } from './components/UpperHeaderBar';
 import './styles.css';
-import { SignInModal } from '../Modals/SignInModal';
+
 import { useState } from 'react';
 import { LogInModal } from '../Modals/LogInModal';
+import { SignInModal } from '../Modals/SignInModal';
 
 export const Header = () => {
     const { isAuth, user } = useUserData();
@@ -16,12 +17,12 @@ export const Header = () => {
     const handleLogInModalClose = () => {
         setIsLoginModalOpen(false);
     };
+    const handleSignInModalClose = () => {
+        setIsSignUpModalOpen(false);
+    };
 
     const handleSignUpPress = () => {
         setIsSignUpModalOpen(true);
-    };
-    const handleSignUpModalClose = () => {
-        setIsSignUpModalOpen(false);
     };
 
     const handleMoveToLogIn = () => {
@@ -60,7 +61,7 @@ export const Header = () => {
 
             <SignInModal
                 isOpen={isSignUpModalOpen}
-                onClose={handleSignUpModalClose}
+                onClose={handleSignInModalClose}
                 onMoveToLogIn={handleMoveToLogIn}
             />
             <LogInModal

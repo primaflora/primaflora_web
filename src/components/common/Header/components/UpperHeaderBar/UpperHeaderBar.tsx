@@ -26,7 +26,7 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
         setIsSignUpModalOpen(true);
     };
     const handleSignUpModalClose = () => {
-        setIsSignUpModalOpen(true);
+        setIsSignUpModalOpen(false);
     };
 
     const handleMoveToLogIn = () => {

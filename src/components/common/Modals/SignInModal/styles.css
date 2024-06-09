@@ -68,11 +68,19 @@
     color: rgba(69, 69, 69, 1);
 }
 
-@media (width <= 1000px) {
-    .modal-input-container {
-        gap: 10px !important;
-    }
+.modal-bottom-buttons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 1000px) {
     .modal-content-container {
-        padding: 10px 30px !important;
+        width: 95% !important;
+    }
+    .modal-bottom-buttons-container {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 20px !important;
     }
 }
