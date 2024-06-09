@@ -17,6 +17,7 @@ export const SignInModal = ({
     const { notifyError, notifySuccess } = useToast();
     const [error, setError] = useState('');
 
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -34,6 +35,17 @@ export const SignInModal = ({
             })
             .catch(e => {
                 console.log('Error! => ', e);
+                if (e.response?.status === 500) {
+                    notifyError('Provided account data is already taken! Try another name / login / email');
+                    setError(
+                        'Success SignUp, verification code have been send to your email. Now you can log in.',
+                    );
+                    setTimeout(() => {
+                        setError('');
+                    }, 10000);
+                    return;
+                }
+
                 if (Array.isArray(e.response?.data.message)) {
                     (e.response?.data.message as Array<string>).forEach(err =>
                         notifyError(err),
