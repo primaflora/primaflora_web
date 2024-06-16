@@ -44,16 +44,22 @@ export const UserInfo = () => {
 
     return (
         <div className="main-global-padding pt-6">
-            <Row style={{ justifyContent: 'flex-end' }}>
-                <Button
-                    text="ВАША ЗНИЖКА 10%"
-                    style={{ width: '13rem', padding: '7px 10px' }}
-                    onClick={() => {}}
-                />
-            </Row>
+            <div className="user-info-info-section">
+                <Row style={{ justifyContent: 'flex-end' }}>
+                    <Button
+                        text="ВАША ЗНИЖКА 10%"
+                        style={{ width: '13rem', padding: '7px 10px' }}
+                        onClick={() => {}}
+                    />
+                </Row>
+            </div>
+            <div className="justify-end flex">
+                <h1 className="text-black">Затисніть, щоб копіювати</h1>
+            </div>
+
             <div className="section-container">
                 <Section
-                    title="(Особистий номер в компанії)"
+                    title="(ПІБ першої особи)"
                     content={user?.name || 'Test User Lorem Ipsum'}
                     // button={{
                     //     text: 'Редагувати',
@@ -64,7 +70,7 @@ export const UserInfo = () => {
                 />
                 <Section
                     title="(ПІБ другої особи)"
-                    content={'(ПІБ другої особи)'}
+                    content={user?.invitedUser?.name || 'No invited user'}
                     // button={{
                     //     text: 'Редагувати',
                     //     onUpdate: () => {
@@ -84,7 +90,11 @@ export const UserInfo = () => {
                 />
                 <Section
                     title="(Реферальне посилання)"
-                    content="http://primaflora/link/TESTLINK"
+                    content={
+                        user?.invitationCode
+                            ? `http://localhost:3000/auth/sign-up/invite/${user?.invitationCode}`
+                            : 'https://primaflora.com/auth/sign-up/invite/TEST_CODE'
+                    }
                     // button={{
                     //     text: 'Редагувати',
                     //     onUpdate: () => {},

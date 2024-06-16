@@ -1,6 +1,6 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Images } from '../../../../assets';
-import { Service } from '../../../../common/services';
+import { Service, TUser } from '../../../../common/services';
 import { TPostUserSignUpRequest } from '../../../../common/services/auth/types/postSignUp';
 import { useToast } from '../../../../common/toast';
 import { Button } from '../../../buttons';
@@ -12,11 +12,22 @@ import { TSignInModalProps } from './types';
 export const SignInModal = ({
     isOpen,
     onClose,
+    inviteCode,
     onMoveToLogIn,
 }: TSignInModalProps) => {
     const { notifyError, notifySuccess } = useToast();
     const [error, setError] = useState('');
+    const [inviter, setInviter] = useState<TUser | null>(null);
+    const [inviterError, setInviterError] = useState<string>('');
 
+    useEffect(() => {
+        console.log('Invite code: ', inviteCode);
+        if (inviteCode) {
+            Service.AuthService.getVerifyInviteCode({ code: inviteCode })
+                .then(res => setInviter(res.data))
+                .catch(e => setInviterError('Такого запрошення не існує!'));
+        }
+    }, []);
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -26,7 +37,7 @@ export const SignInModal = ({
 
         console.log('payload => ', payload);
 
-        Service.AuthService.postSignUp(payload)
+        Service.AuthService.postSignUp(payload, { inviteCode: inviteCode })
             .then(res => {
                 notifySuccess(
                     `Success SignUp, verification code have been send to your email. Now you can log in. `,
@@ -36,9 +47,11 @@ export const SignInModal = ({
             .catch(e => {
                 console.log('Error! => ', e);
                 if (e.response?.status === 500) {
-                    notifyError('Provided account data is already taken! Try another name / login / email');
+                    notifyError(
+                        'Provided account data is already taken! Try another name / login / email',
+                    );
                     setError(
-                        'Success SignUp, verification code have been send to your email. Now you can log in.',
+                        'Provided account data is already taken! Try another name / login / email',
                     );
                     setTimeout(() => {
                         setError('');
@@ -81,6 +94,10 @@ export const SignInModal = ({
             }`}>
             <div className="modal-content-container">
                 <h1 className="modal-title">Реєстрація</h1>
+
+                {inviter && <h1>Inviter: {inviter.name}</h1>}
+                {inviterError && <p>{inviterError}</p>}
+
                 <button className="modal-close-button" onClick={onClose}>
                     <img src={Images.CrossIcon} alt="close" />
                 </button>
@@ -123,11 +140,14 @@ export const SignInModal = ({
 
                         <div className="flex flex-col gap-4">
                             <Button
-                                text="ЗАРЕЄСТРУВАТИСЯ"
+                                text={
+                                    inviter
+                                        ? `ЗАРЕЄСТРУВАТИСЯ ВІД ІМЕНІ ${inviter.name.toUpperCase()}`
+                                        : 'ЗАРЕЄСТРУВАТИСЯ'
+                                }
                                 onClick={() => {}}
                                 style={{ borderRadius: '7px' }}
                             />
-                            <h1 className="text-red text-2xl">{error}</h1>
                         </div>
                     </div>
                     {error && <h1>{error}</h1>}

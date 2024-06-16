@@ -1,0 +1,38 @@
+{
+    "auth": {
+        "sign-up-button": "ЗАРЕЄСТРУВАТИСЯ",
+        "log-in-button": "УВІЙТИ",
+        "log-out-button": "Вийти",
+        "modal": {
+            "move-to-sign-up": "Зареєструватися",
+            "move-to-log-in": "Увійти",
+            "log-in-modal-title": "Вхід",
+            "sign-up-modal-title": "Реєстрація",
+            "log-in-via-email": "Увійти через електронну пошту",
+            "name": "Ім'я",
+            "phone": "Телефон",
+            "email": "Електронна пошта",
+            "password": "Пароль",
+            "confirm-password": "Підтвердіть пароль",
+            "login": "Логін"
+        }
+    },
+    "navigation": {
+        "our-site": "НАШ САЙТ",
+        "contacts": "КОНТАКТИ",
+        "delivery": "ДОСТАВКА",
+        "cart": "КОШИК",
+        "like-title": "БАЖАНЕ",
+        "user-info-title": "ОСОБИСТА ІНФОРМАЦІЯ"
+    },
+    "header": {
+        "sign-up-and-get-discount": "ЗАРЕЄСТРУВАТИСЯ ТА ОТРИМАТИ ЗНИЖКУ 10%",
+        "upper-header-title": "НАТУРАЛЬНА ПРОДУКЦІЯ ДЛЯ ЗДОРОВ'Я ТА КРАСИ",
+        "user-discount": "Ваша знижка: {{discount}}%"
+    },
+    "product": {
+        "comments-title": "Відгуки",
+        "move-to-cart": "В КОШИК",
+        "already-in-cart": "У КОШИКУ"
+    }
+}

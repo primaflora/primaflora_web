@@ -1,4 +1,4 @@
-import { TRequest, TUser } from '../../types.ts';
+import { TRequest } from '../../types.ts';
 
 export type TPatchUpdateRequest = TRequest<Partial<TPayload>, null>
 

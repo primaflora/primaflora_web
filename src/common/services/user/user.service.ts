@@ -4,8 +4,10 @@ import { TPatchUpdateRequest } from './types/patchUpdate.ts';
 import { TPostActivateRequest } from './types/postActivate.ts';
 
 export class UserService {
-    static async getUserByToken(): Promise<TGetUserByToken['response']> {
-        return apiPrivate.get('/user');
+    static async getUserByToken(
+        params?: TGetUserByToken['payload'],
+    ): Promise<TGetUserByToken['response']> {
+        return apiPrivate.get('/user', { params });
     }
 
     static async postActivate(
@@ -14,7 +16,9 @@ export class UserService {
         return apiPrivate.post(`/user/activate/${data.code}`);
     }
 
-    static async patchUpdate(data: TPatchUpdateRequest['payload']): Promise<TPatchUpdateRequest['response']> {
+    static async patchUpdate(
+        data: TPatchUpdateRequest['payload'],
+    ): Promise<TPatchUpdateRequest['response']> {
         return apiPrivate.patch('/user', data);
     }
 }

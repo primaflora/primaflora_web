@@ -6,9 +6,16 @@
     padding: 2.5rem 0;
 }
 
+.catalog-stripe-mob-container {
+    display: none;
+}
+
 @media screen and (max-width: 1000px) {
     .category-main-container {
         margin-left: 0;
         padding: 0;
+    }
+    .catalog-stripe-mob-container {
+        display: block !important;
     }
 }

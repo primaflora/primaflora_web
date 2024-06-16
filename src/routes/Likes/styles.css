@@ -5,8 +5,15 @@
     margin-left: 2.5rem;
 }
 
+.catalog-stripe-mob-container {
+    display: none;
+}
+
 @media screen and (max-width: 1000px) {
     .like-container {
         margin: 0;
+    }
+    .catalog-stripe-mob-container {
+        display: block !important;
     }
 }

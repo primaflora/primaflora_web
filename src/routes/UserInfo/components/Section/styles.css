@@ -36,10 +36,23 @@
     color: rgba(69, 69, 69, 1);
 }
 
+.content-text-mob {
+    display: none;
+}
+
+.section-button-pc {
+    display: block;
+}
+
+.section-button-mob {
+    display: none;
+}
+
 @media screen and (max-width: 1000px) {
     .section {
         padding: 20px;
         gap: 10px;
+        padding-right: 0;
     }
     .title {
         font-family: Raleway;
@@ -50,10 +63,21 @@
         color: rgba(69, 69, 69, 1);
     }
     .content-text {
+        display: none;
+    }
+    .content-text-mob {
+        display: block;
+        color: rgba(69, 69, 69, 1);
         font-family: Raleway;
         font-size: 16px;
         font-weight: 700;
         line-height: 18.78px;
         text-align: left;
+    }
+    .section-button-pc {
+        display: none;
+    }
+    .section-button-mob {
+        display: block;
     }
 }

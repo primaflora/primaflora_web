@@ -1,11 +1,12 @@
 import { FormEvent, useState } from 'react';
-import './style.css';
-import { Service } from '../../common/services';
 import { Link } from 'react-router-dom';
+import { Service } from '../../common/services';
 import { TPostUserSignUpRequest } from '../../common/services/auth/types/postSignUp';
 import { Toast, useToast } from '../../common/toast';
+import './style.css';
+import { TSignUpProps } from './types';
 
-export const SignUp = () => {
+export const SignUp = ({ inviteCode }: TSignUpProps) => {
     const { notifySuccess, notifyError } = useToast();
     const [error, setError] = useState<string>('');
 
@@ -17,13 +18,17 @@ export const SignUp = () => {
 
         Service.AuthService.postSignUp(payload)
             .then(res => {
-                notifySuccess(`Success SignUp, verification code have been send to your email. Now you can log in. `)
+                notifySuccess(
+                    `Success SignUp, verification code have been send to your email. Now you can log in. `,
+                );
                 console.log(res.data);
             })
             .catch(e => {
                 console.log('Error! => ', e);
                 if (Array.isArray(e.response?.data.message)) {
-                    (e.response?.data.message as Array<string>).forEach(err => notifyError(err));
+                    (e.response?.data.message as Array<string>).forEach(err =>
+                        notifyError(err),
+                    );
                     setError(e.response?.data.message[0]);
                 } else {
                     notifyError(e.response?.data.message);
@@ -31,17 +36,19 @@ export const SignUp = () => {
             });
     };
 
-    const formDataToSignUpObj = (formData: FormData): TPostUserSignUpRequest['payload'] => {
+    const formDataToSignUpObj = (
+        formData: FormData,
+    ): TPostUserSignUpRequest['payload'] => {
         const payloadObj: Record<string, FormDataEntryValue> = {};
 
-        formData.forEach((value, key) => payloadObj[key] = value);
+        formData.forEach((value, key) => (payloadObj[key] = value));
 
         return {
             ...payloadObj,
             phone_allowed: false,
             consultation_allowed: false,
         } as TPostUserSignUpRequest['payload'];
-    }
+    };
 
     return (
         <div className="justify-center items-center flex">
@@ -100,10 +107,12 @@ export const SignUp = () => {
                             Press Here to SignUp
                         </button>
                     </form>
-                    <Link className='text-blue-500' to={'/auth/log-in'}>Click here to LogIn!</Link>
+                    <Link className="text-blue-500" to={'/auth/log-in'}>
+                        Click here to LogIn!
+                    </Link>
                 </div>
             </div>
-            <Toast/>
+            <Toast />
         </div>
     );
 };

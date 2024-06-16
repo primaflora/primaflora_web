@@ -12,6 +12,14 @@
     display: none;
 }
 
+.user-info-info-section {
+    display: block;
+}
+
+.user-info-info-section-mob {
+    display: none;
+}
+
 @media screen and (max-width: 1000px) {
     .product-section-container {
         display: flex !important;
@@ -19,6 +27,16 @@
         row-gap: 1rem !important;
     }
     .user-info-logout-botton-mob {
+        display: flex;
+    }
+    .user-info-info-section {
+        display: none;
+    }
+    .user-info-info-section-mob {
+        display: block;
+    }
+    .user-info-info-section-mob > h1 {
+        justify-content: end;
         display: flex;
     }
 }

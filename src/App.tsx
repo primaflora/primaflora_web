@@ -5,14 +5,14 @@ import { useAuth } from './common/hooks/useAuth/useAuth';
 import { useCategories } from './common/hooks/useCategories';
 import { Service } from './common/services';
 import { StorageService } from './common/storage/storage.service';
+import { Toast } from './common/toast';
 import { Footer, Header } from './components/common';
 import './index.css';
-import { Home, LogIn, SignUp, UserInfo } from './routes';
-import { Category } from './routes/Category';
-import { Product } from './routes/Product';
-import { Likes } from './routes/Likes';
-import { Toast } from './common/toast';
+import { Home, LogIn, UserInfo } from './routes';
 import { Cart } from './routes/Cart/Cart';
+import { Category } from './routes/Category';
+import { Likes } from './routes/Likes';
+import { Product } from './routes/Product';
 
 function App() {
     const { setIsAuth, setUserData } = useAuth();
@@ -31,7 +31,7 @@ function App() {
     }, []);
 
     const loadUserData = () => {
-        Service.UserService.getUserByToken()
+        Service.UserService.getUserByToken({ loadInvitedUser: true })
             .then(res => setUserData(res.data))
             .catch(err => console.log(err));
     };
@@ -54,7 +54,10 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/user-info" element={<UserInfo />} />
                 <Route path="/auth/log-in" element={<LogIn />} />
-                <Route path="/auth/sign-up" element={<SignUp />} />
+                <Route
+                    path="/auth/sign-up/invite/:inviteCode"
+                    element={<Home />}
+                />
             </Routes>
 
             <Footer />
