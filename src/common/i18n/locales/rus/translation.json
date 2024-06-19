@@ -1,0 +1,70 @@
+{
+    "global": {
+        "empty": "Пусто!",
+        "unauthorized": "Вы должны быть авторизованы"
+    },
+    "auth": {
+        "sign-up-button": "ЗАРЕГИСТРИРОВАТЬСЯ",
+        "log-in-button": "ВОЙТИ",
+        "log-out-button": "ВЫЙТИ",
+        "modal": {
+            "move-to-sign-up": "Зарегистрироваться",
+            "move-to-log-in": "Войти",
+            "log-in-modal-title": "Вход",
+            "sign-up-modal-title": "Регистрация",
+            "log-in-via-email": "Войти через электронную почту",
+            "name": "Имя",
+            "name-placeholder": "ФИО",
+            "phone": "Телефон",
+            "email": "Электронная почта",
+            "password": "Пароль",
+            "confirm-password": "Подтвердите пароль",
+            "login": "Логин",
+            "inviter": "Приглашающий {{name}}",
+            "sign-up-button-and-inviter": "ЗАРЕГИСТРИРОВАТЬСЯ ОТ ИМЕНИ {{name}}"
+        }
+    },
+    "navigation": {
+        "our-site": "НАШ САЙТ",
+        "contacts": "КОНТАКТЫ",
+        "delivery": "ДОСТАВКА",
+        "cart": "КОРЗИНА",
+        "like-title": "ЖЕЛАЕМОЕ",
+        "user-info-title": "ЛИЧНАЯ ИНФОРМАЦИЯ"
+    },
+    "header": {
+        "sign-up-and-get-discount": "ЗАРЕГИСТРИРОВАТЬСЯ И ПОЛУЧИТЬ СКИДКУ 10%",
+        "upper-header-title": "НАТУРАЛЬНАЯ ПРОДУКЦИЯ ДЛЯ ЗДОРОВЬЯ И КРАСОТЫ",
+        "user-discount": "ВАША СКИДКА: {{discount}}%"
+    },
+    "product": {
+        "comments-title": "Отзывы",
+        "move-to-cart": "В КОРЗИНУ",
+        "already-in-cart": "В КОРЗИНЕ"
+    },
+    "user-info": {
+        "first-person-name": "(ФИО первого лица)",
+        "second-person-name": "(ФИО второго лица)",
+        "company-number": "(Личный номер в компании)",
+        "invite-link": "(Реферальная ссылка)",
+        "phone": "Телефон",
+        "email": "Почта",
+        "press-to-copy": "Зажмите, чтобы скопировать",
+        "copied-to-clipboard": "{{data}} скопированно(a) в буфер обмена"
+    },
+    "cart": {
+        "make-order": "ОФОРМИТЬ ЗАКАЗ",
+        "total": "Вместе"
+    },
+    "footer": {
+        "bottom-title": "ЛЮБВИ! ЗДОРОВЬЯ! СЧАСТЬЯ И ДОБРА!"
+    },
+    "errors": {
+        "invite-not-found": "Такого приглашения не существует!",
+        "cred-already-exist": "Предоставленные учетные данные уже заняты! Попробуйте другое имя / логин / электронную почту",
+        "change-user-data": "Невозможно изменить данные пользователя"
+    },
+    "messages": {
+        "success-sign-up": "Успешная регистрация, код подтверждения отправлен на вашу электронную почту. Теперь вы можете войти."
+    }
+}

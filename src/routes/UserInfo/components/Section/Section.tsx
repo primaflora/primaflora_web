@@ -4,8 +4,10 @@ import { TSectionProps } from './types';
 import { Row } from '../../../../components/common/Row';
 import { Button } from '../../../../components/buttons';
 import { useToast } from '../../../../common/toast';
+import { useTranslation } from 'react-i18next';
 
 export const Section = ({ title, content, button }: TSectionProps) => {
+    const { t } = useTranslation();
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
     const [newValue, setNewValue] = useState<string>('');
     const [isPressing, setIsPressing] = useState(false);
@@ -61,7 +63,9 @@ export const Section = ({ title, content, button }: TSectionProps) => {
     const onLongPress = () => {
         navigator.clipboard.writeText(content);
         notifySuccess(
-            `${title.replace(/[()]/g, '')} скопійовано в буфер обміну`,
+            t('user-info.copied-to-clipboard', {
+                data: `${title.replace(/[()]/g, '')}`,
+            }),
         );
     };
 

@@ -6,14 +6,16 @@ import { StorageService } from '../../../../common/storage/storage.service';
 import { Button } from '../../../buttons';
 import { Line } from '../../Line';
 import { InputModal } from '../Input/InputModal';
-import './styles.css';
 import { TLogInModalProps } from './types';
+import { useTranslation } from 'react-i18next';
+import './styles.css';
 
 export const LogInModal = ({
     isOpen,
     onClose,
     onMoveToSignUp,
 }: TLogInModalProps) => {
+    const { t } = useTranslation();
     const { setIsAuth, setUserData } = useAuth();
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -51,7 +53,9 @@ export const LogInModal = ({
                 isOpen ? 'modal-show' : 'modal-close'
             }`}>
             <div className="modal-content-container">
-                <h1 className="modal-title">Вхід</h1>
+                <h1 className="modal-title">
+                    {t('auth.modal.log-in-modal-title')}
+                </h1>
                 <button className="modal-close-button" onClick={onClose}>
                     <img src={Images.CrossIcon} alt="close" />
                 </button>
@@ -59,19 +63,19 @@ export const LogInModal = ({
 
                 <div className="modal-input-container">
                     <InputModal
-                        title="Логін"
+                        title={t('auth.modal.login')}
                         placeholder="#1000"
                         onChange={value => setLogin(value)}
                     />
                     <InputModal
                         type="password"
-                        title="Пароль"
+                        title={t('auth.modal.password')}
                         placeholder="********"
                         onChange={value => setPassword(value)}
                     />
                     <div className="flex flex-col gap-4">
                         <Button
-                            text="Увійти"
+                            text={t('auth.modal.move-to-log-in')}
                             onClick={handleLogIn}
                             style={{ borderRadius: '7px' }}
                         />
@@ -82,11 +86,13 @@ export const LogInModal = ({
                 <Line />
                 <div className="modal-bottom-buttons-container">
                     {/* TODO: make an ability to loig in via email */}
-                    <h1 className="modal-use-email">Увійти через пошту</h1>
+                    <h1 className="modal-use-email">
+                        {t('auth.modal.log-in-via-email')}
+                    </h1>
                     <button
                         className="modal-registrate-link"
                         onClick={onMoveToSignUp}>
-                        Зареєструватися
+                        {t('auth.modal.move-to-sign-up')}
                     </button>
                 </div>
             </div>

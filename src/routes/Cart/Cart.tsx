@@ -8,8 +8,10 @@ import { TotalPrice } from './components/TotalPrice';
 import './styles.css';
 import { useUserData } from '../../store/tools';
 import { CatalogStripeMob } from '../../components/common/CatalogStripeMob';
+import { useTranslation } from 'react-i18next';
 
 export const Cart = () => {
+    const { t } = useTranslation();
     const { isAuth } = useUserData();
     const [cart, setCart] = useState<TCartItem[]>([]);
 
@@ -57,14 +59,14 @@ export const Cart = () => {
                 </div>
                 <Slider />
                 <Line />
-                <h1 className="cart-title">Кошик</h1>
+                <h1 className="cart-title">{t('navigation.cart')}</h1>
                 {!isAuth ? (
                     <h1 className="justify-self-center text-black text-3xl pb-12">
-                        You need to be authorized to view cart!
+                        {t('global.unauthorized')}
                     </h1>
                 ) : cart.length === 0 ? (
                     <h1 className="justify-self-center text-black text-3xl pb-12">
-                        Nothing to show!
+                        {t('global.empty')}
                     </h1>
                 ) : (
                     <div>

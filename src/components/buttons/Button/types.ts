@@ -6,4 +6,5 @@ export type TButtonProps = {
     style?: React.CSSProperties;
     filled?: boolean;
     small?: boolean;
+    isClickable?: boolean;
 };

@@ -5,8 +5,10 @@ import { Images } from '../../../../../assets';
 import { LogInModal } from '../../../Modals/LogInModal';
 import { useState } from 'react';
 import { SignInModal } from '../../../Modals/SignInModal';
+import { useTranslation } from 'react-i18next';
 
 export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
@@ -54,12 +56,18 @@ export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
                 </div>
             ) : (
                 <div className="header-nav-links-container">
-                    <Link to="/">НАШ САЙТ</Link>
-                    <Link to="#">КОНТАКТА</Link>
-                    <Link to="#">ДОСТАВКА</Link>
-                    <Link to="/cart">КОШИК</Link>
-                    {isAuth && <Link to="/likes">БАЖАНЕ</Link>}
-                    {isAuth && <Link to="/user-info">ОСОБИСТА ІНФОРМАЦІЯ</Link>}
+                    <Link to="/">{t('navigation.our-site')}</Link>
+                    <Link to="#">{t('navigation.contacts')}</Link>
+                    <Link to="#">{t('navigation.delivery')}</Link>
+                    <Link to="/cart">{t('navigation.cart')}</Link>
+                    {isAuth && (
+                        <Link to="/likes">{t('navigation.like-title')}</Link>
+                    )}
+                    {isAuth && (
+                        <Link to="/user-info">
+                            {t('navigation.user-info-title')}
+                        </Link>
+                    )}
                 </div>
             )}
             <LogInModal

@@ -14,7 +14,12 @@ import { default as CartIconMob } from './images/cart-icon-mob.svg';
 import { default as LinedLikeIconMob } from './images/like-lined-icon-mob.svg';
 import { default as UserIconMob } from './images/user-icon-mob.svg';
 import { default as DeliveryIconMob } from './images/delivery-icon-mob.svg';
-
+import { default as ArrowListDownIcon } from './images/arrow-list-down.svg';
+import CheckMarkDark from './images/check-mark-dark.png';
+import CheckMarkGreen from './images/check-mark-green.png';
+import RusFlag from './images/russia.png';
+import UkrFlag from './images/ukraine.png';
+ 
 export const Images = {
     PrimafloraLogoSvg,
     SearchIcon,
@@ -32,4 +37,9 @@ export const Images = {
     LinedLikeIconMob,
     UserIconMob,
     DeliveryIconMob,
+    ArrowListDownIcon,
+    CheckMarkDark,
+    CheckMarkGreen,
+    RusFlag,
+    UkrFlag
 };

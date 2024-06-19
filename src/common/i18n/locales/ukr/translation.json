@@ -1,0 +1,70 @@
+{
+    "global": {
+        "empty": "Пусто!",
+        "unauthorized": "Ви повинні бути авторизовані"
+    },
+    "auth": {
+        "sign-up-button": "ЗАРЕЄСТРУВАТИСЯ",
+        "log-in-button": "УВІЙТИ",
+        "log-out-button": "ВИЙТИ",
+        "modal": {
+            "move-to-sign-up": "Зареєструватися",
+            "move-to-log-in": "Увійти",
+            "log-in-modal-title": "Вхід",
+            "sign-up-modal-title": "Реєстрація",
+            "log-in-via-email": "Увійти через електронну пошту",
+            "name": "Ім'я",
+            "name-placeholder": "ПІБ",
+            "phone": "Телефон",
+            "email": "Електронна пошта",
+            "password": "Пароль",
+            "confirm-password": "Підтвердіть пароль",
+            "login": "Логін",
+            "inviter": "Запрошуючий {{name}}",
+            "sign-up-button-and-inviter": "ЗАРЕЄСТРУВАТИСЯ ВІД ІМЕНІ {{name}}"
+        }
+    },
+    "navigation": {
+        "our-site": "НАШ САЙТ",
+        "contacts": "КОНТАКТИ",
+        "delivery": "ДОСТАВКА",
+        "cart": "КОШИК",
+        "like-title": "БАЖАНЕ",
+        "user-info-title": "ОСОБИСТА ІНФОРМАЦІЯ"
+    },
+    "header": {
+        "sign-up-and-get-discount": "ЗАРЕЄСТРУВАТИСЯ ТА ОТРИМАТИ ЗНИЖКУ 10%",
+        "upper-header-title": "НАТУРАЛЬНА ПРОДУКЦІЯ ДЛЯ ЗДОРОВ'Я ТА КРАСИ",
+        "user-discount": "ВАША ЗНИЖКА: {{discount}}%"
+    },
+    "product": {
+        "comments-title": "Відгуки",
+        "move-to-cart": "В КОШИК",
+        "already-in-cart": "У КОШИКУ"
+    },
+    "user-info": {
+        "first-person-name": "(ПІБ першої особи)",
+        "second-person-name": "(ПІБ другої особи)",
+        "company-number": "(Особистий номер в компанії)",
+        "invite-link": "(Реферальне посилання)",
+        "phone": "Телефон",
+        "email": "Пошта",
+        "press-to-copy": "Затисніть, щоб копіювати",
+        "copied-to-clipboard": "{{data}} скопійовано(a) в буфер обміну"
+    },
+    "footer": {
+        "bottom-title": "ЛЮБОВІ! ЗДОРОВ’Я! ЩАСТЯ ТА ДОБРА!"
+    },
+    "cart": {
+        "make-order": "ОФОРМИТИ ЗАМОВЛЕННЯ",
+        "total": "Разом"
+    },
+    "errors": {
+        "invite-not-found": "Такого запрошення не існує!",
+        "cred-already-exist": "Надані облікові дані вже зайняті! Спробуйте інше ім'я / логін / електронну адресу",
+        "change-user-data": "Неможливо змінити дані користувача"
+    },
+    "messages": {
+        "success-sign-up": "Успішна реєстрація, код підтвердження надіслано на вашу електронну пошту. Тепер ви можете увійти."
+    }
+}

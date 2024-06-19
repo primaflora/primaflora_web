@@ -6,8 +6,10 @@ import { SideBar } from '../../components/common';
 import { Slider } from '../Home/components/Slider';
 import './styles.css';
 import { CatalogStripeMob } from '../../components/common/CatalogStripeMob';
+import { useTranslation } from 'react-i18next';
 
 export const Likes = () => {
+    const { t } = useTranslation();
     const [likes, setLikes] = useState<TLike[]>([]);
 
     useEffect(() => {
@@ -29,11 +31,11 @@ export const Likes = () => {
                     <div className="pt-10">
                         {likes.length === 0 ? (
                             <h1 className="justify-self-center text-black text-3xl">
-                                Nothing to show!
+                                {t('global.empty')}
                             </h1>
                         ) : (
                             <ProductsSection
-                                title="Бажане"
+                                title={t('navigation.like-title')}
                                 products={likes.map(l => ({
                                     ...l.product,
                                     like: { id: l.id, uuid: l.uuid },

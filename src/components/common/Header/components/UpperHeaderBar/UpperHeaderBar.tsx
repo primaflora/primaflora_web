@@ -8,8 +8,10 @@ import { TUpperHeaderBarProps } from './types';
 import { LogInModal } from '../../../Modals/LogInModal';
 import { useState } from 'react';
 import { SignInModal } from '../../../Modals/SignInModal';
+import { useTranslation } from 'react-i18next';
 
 export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { clearAll, setIsAuth } = useAuth();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -53,7 +55,7 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
     return (
         <div className="upper-header main-global-padding">
             <p className="header-title">
-                НАТУРАЛЬНА ПРОДУКЦІЯ ДЛЯ ЗДОРОВ'Я ТА КРАСИ
+                {t('header.upper-header-title')}
             </p>
             <div className="upper-header-button-container">
                 <LogInModal
@@ -69,13 +71,13 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
                 <Button
                     text={
                         isAuth
-                            ? 'ВАША ЗНИЖКА 10%'
-                            : 'ЗАРЕЄСТРУВАТИСЯ ТА ОТРИМАТИ ЗНИЖКУ 10%'
+                            ? t('header.user-discount', { discount: 10 })
+                            : t('header.sign-up-and-get-discount')
                     }
                     onClick={isAuth ? () => {} : handleSignUpPress}
                 />
                 <Button
-                    text={isAuth ? 'ВИЙТИ' : 'УВІЙТИ'}
+                    text={isAuth ? t('auth.log-out-button') : t('auth.log-in-button')}
                     onClick={isAuth ? handleLogOutPress : handleLoginPress}
                     style={{ marginLeft: 20 }}
                     filled={false}

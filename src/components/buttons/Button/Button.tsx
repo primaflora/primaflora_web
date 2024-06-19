@@ -10,9 +10,11 @@ export const Button = ({
     backgroundColor = 'rgba(81, 199, 47, 1)',
     filled = true,
     small = false,
+    isClickable = true,
 }: TButtonProps) => {
     return (
         <button
+            disabled={!isClickable}
             onClick={onClick}
             style={{
                 padding: small ? '5px 30px' : '11px 60px',

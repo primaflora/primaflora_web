@@ -16,6 +16,8 @@
     padding: 10px 20px;
     padding-right: 0;
     width: 100%;
+
+    cursor: pointer;
 }
 
 .title {

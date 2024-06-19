@@ -8,6 +8,7 @@ import { Line } from '../../Line';
 import { InputModal } from '../Input/InputModal';
 import './styles.css';
 import { TSignInModalProps } from './types';
+import { useTranslation } from 'react-i18next';
 
 export const SignInModal = ({
     isOpen,
@@ -15,6 +16,7 @@ export const SignInModal = ({
     inviteCode,
     onMoveToLogIn,
 }: TSignInModalProps) => {
+    const { t } = useTranslation();
     const { notifyError, notifySuccess } = useToast();
     const [error, setError] = useState('');
     const [inviter, setInviter] = useState<TUser | null>(null);
@@ -25,7 +27,7 @@ export const SignInModal = ({
         if (inviteCode) {
             Service.AuthService.getVerifyInviteCode({ code: inviteCode })
                 .then(res => setInviter(res.data))
-                .catch(e => setInviterError('Такого запрошення не існує!'));
+                .catch(e => setInviterError(t('errors.invite-not-found')));
         }
     }, []);
 
@@ -39,20 +41,14 @@ export const SignInModal = ({
 
         Service.AuthService.postSignUp(payload, { inviteCode: inviteCode })
             .then(res => {
-                notifySuccess(
-                    `Success SignUp, verification code have been send to your email. Now you can log in. `,
-                );
+                notifySuccess(t('messages.success-sign-up'));
                 console.log(res.data);
             })
             .catch(e => {
                 console.log('Error! => ', e);
                 if (e.response?.status === 500) {
-                    notifyError(
-                        'Provided account data is already taken! Try another name / login / email',
-                    );
-                    setError(
-                        'Provided account data is already taken! Try another name / login / email',
-                    );
+                    notifyError(t('errors.cred-already-exist'));
+                    setError(t('errors.cred-already-exist'));
                     setTimeout(() => {
                         setError('');
                     }, 10000);
@@ -93,9 +89,13 @@ export const SignInModal = ({
                 isOpen ? 'modal-show' : 'modal-close'
             }`}>
             <div className="modal-content-container">
-                <h1 className="modal-title">Реєстрація</h1>
+                <h1 className="modal-title">
+                    {t('auth.modal.sign-up-modal-title')}
+                </h1>
 
-                {inviter && <h1>Inviter: {inviter.name}</h1>}
+                {inviter && (
+                    <h1>{t('auth.modal.inviter', { name: inviter.name })}</h1>
+                )}
                 {inviterError && <p>{inviterError}</p>}
 
                 <button className="modal-close-button" onClick={onClose}>
@@ -106,34 +106,34 @@ export const SignInModal = ({
                 <form onSubmit={handleSubmit}>
                     <div className="modal-input-container">
                         <InputModal
-                            title="Ім'я"
-                            placeholder="ПІБ"
+                            title={t('auth.modal.name')}
+                            placeholder={t('auth.modal.name-placeholder')}
                             formDataFieldName="name"
                         />
                         <InputModal
-                            title="Телефон"
+                            title={t('auth.modal.phone')}
                             placeholder="+380971111111"
                             formDataFieldName="phone"
                         />
                         <InputModal
-                            title="Електронна пошта"
+                            title={t('auth.modal.email')}
                             placeholder="example@gmail.com"
                             formDataFieldName="email"
                         />
                         <InputModal
                             type="password"
-                            title="Пароль"
+                            title={t('auth.modal.password')}
                             placeholder="Password"
                             formDataFieldName="password1"
                         />
                         <InputModal
                             type="password"
-                            title="Підтвердити пароль"
+                            title={t('auth.modal.confirm-password')}
                             placeholder="Confirm password"
                             formDataFieldName="password2"
                         />
                         <InputModal
-                            title="Логін"
+                            title={t('auth.modal.login')}
                             placeholder="Login"
                             formDataFieldName="login"
                         />
@@ -142,8 +142,13 @@ export const SignInModal = ({
                             <Button
                                 text={
                                     inviter
-                                        ? `ЗАРЕЄСТРУВАТИСЯ ВІД ІМЕНІ ${inviter.name.toUpperCase()}`
-                                        : 'ЗАРЕЄСТРУВАТИСЯ'
+                                        ? t(
+                                              'auth.modal.sign-up-button-and-inviter',
+                                              {
+                                                  name: inviter.name.toUpperCase(),
+                                              },
+                                          )
+                                        : t('auth.sign-up-button')
                                 }
                                 onClick={() => {}}
                                 style={{ borderRadius: '7px' }}

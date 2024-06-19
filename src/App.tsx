@@ -7,12 +7,13 @@ import { Service } from './common/services';
 import { StorageService } from './common/storage/storage.service';
 import { Toast } from './common/toast';
 import { Footer, Header } from './components/common';
-import './index.css';
 import { Home, LogIn, UserInfo } from './routes';
 import { Cart } from './routes/Cart/Cart';
 import { Category } from './routes/Category';
 import { Likes } from './routes/Likes';
 import { Product } from './routes/Product';
+import './index.css';
+import './common/i18n';
 
 function App() {
     const { setIsAuth, setUserData } = useAuth();

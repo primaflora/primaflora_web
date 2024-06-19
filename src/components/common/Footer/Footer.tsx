@@ -1,8 +1,11 @@
-import React from 'react';
 import './styles.css';
 import { SocialLinks } from './components/SocialLinks';
+import { LanguageSelector } from './components/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 
 export const Footer = () => {
+    const { t } = useTranslation();
+
     return (
         <div className="footer-main-container">
             <hr />
@@ -15,9 +18,15 @@ export const Footer = () => {
             </div>
             <hr />
 
-            <p className="footer-bottom-text">
-                ЛЮБОВІ! ЗДОРОВ’Я! ЩАСТЯ ТА ДОБРА! ®
-            </p>
+            <div className="footer-bottom-container">
+                <p className="footer-bottom-text">
+                    {t('footer.bottom-title')} ®
+                </p>
+
+                <div className="language-selector-container">
+                    <LanguageSelector />
+                </div>
+            </div>
         </div>
     );
 };

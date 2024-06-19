@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../common/hooks/useAuth/useAuth';
 import { Service } from '../../common/services';
@@ -10,6 +11,7 @@ import { Section } from './components/Section/Section';
 import './styles.css';
 
 export const UserInfo = () => {
+    const { t } = useTranslation();
     const { user } = useUserData();
     // const { notifyError } = useToast();
     // const { updateUserData } = useAuth();
@@ -25,7 +27,7 @@ export const UserInfo = () => {
     //             if (axios.isAxiosError(error)) {
     //                 notifyError(error.response?.data.message[0]);
     //             } else {
-    //                 notifyError('Canot change user data');
+    //                 notifyError(t('erros.change-user-data'));
     //             }
     //         });
     // };
@@ -47,19 +49,20 @@ export const UserInfo = () => {
             <div className="user-info-info-section">
                 <Row style={{ justifyContent: 'flex-end' }}>
                     <Button
-                        text="ВАША ЗНИЖКА 10%"
+                        isClickable={false}
+                        text={t('header.user-discount', { discount: 10 })}
                         style={{ width: '13rem', padding: '7px 10px' }}
                         onClick={() => {}}
                     />
                 </Row>
             </div>
             <div className="justify-end flex">
-                <h1 className="text-black">Затисніть, щоб копіювати</h1>
+                <h1 className="text-black">{t('user-info.press-to-copy')}</h1>
             </div>
 
             <div className="section-container">
                 <Section
-                    title="(ПІБ першої особи)"
+                    title={t('user-info.first-person-name')}
                     content={user?.name || 'Test User Lorem Ipsum'}
                     // button={{
                     //     text: 'Редагувати',
@@ -69,7 +72,7 @@ export const UserInfo = () => {
                     // }}
                 />
                 <Section
-                    title="(ПІБ другої особи)"
+                    title={t('user-info.second-person-name')}
                     content={user?.invitedUser?.name || 'No invited user'}
                     // button={{
                     //     text: 'Редагувати',
@@ -79,7 +82,7 @@ export const UserInfo = () => {
                     // }}
                 />
                 <Section
-                    title="(Особистий номер в компанії)"
+                    title={t('user-info.company-number')}
                     content={user?.login || '#0001'}
                     // button={{
                     //     text: 'Редагувати',
@@ -89,7 +92,7 @@ export const UserInfo = () => {
                     // }}
                 />
                 <Section
-                    title="(Реферальне посилання)"
+                    title={t('user-info.invite-link')}
                     content={
                         user?.invitationCode
                             ? `http://localhost:3000/auth/sign-up/invite/${user?.invitationCode}`
@@ -101,7 +104,7 @@ export const UserInfo = () => {
                     // }}
                 />
                 <Section
-                    title="Телефон"
+                    title={t('user-info.phone')}
                     content={user?.phone || '+380000000000'}
                     // button={{
                     //     text: 'Редагувати',
@@ -111,7 +114,7 @@ export const UserInfo = () => {
                     // }}
                 />
                 <Section
-                    title="Пошта"
+                    title={t('user-info.email')}
                     content={user?.email || 'test@primaflora.com'}
                     // button={{
                     //     text: 'Редагувати',
@@ -132,7 +135,7 @@ export const UserInfo = () => {
 
             <div className="user-info-logout-botton-mob pb-5">
                 <Button
-                    text="ВИЙТИ"
+                    text={t('auth.log-out-button')}
                     onClick={handleLogOutPress}
                     filled
                     style={{ borderRadius: '7px', width: '100%' }}
