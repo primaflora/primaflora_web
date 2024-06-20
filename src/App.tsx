@@ -1,23 +1,25 @@
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from './common/hooks/useAuth/useAuth';
-import { useCategories } from './common/hooks/useCategories';
+import './common/i18n';
 import { Service } from './common/services';
 import { StorageService } from './common/storage/storage.service';
 import { Toast } from './common/toast';
 import { Footer, Header } from './components/common';
+import './index.css';
 import { Home, LogIn, UserInfo } from './routes';
 import { Cart } from './routes/Cart/Cart';
 import { Category } from './routes/Category';
 import { Likes } from './routes/Likes';
 import { Product } from './routes/Product';
-import './index.css';
-import './common/i18n';
+import { useAuth } from './common/hooks/useAuth/useAuth';
+import { useLoadCategories } from './components/loader/categories.loader';
+import { useLoadUserData } from './components/loader/user-data.loader';
 
 function App() {
-    const { setIsAuth, setUserData } = useAuth();
-    const { setCategories } = useCategories();
+    const { setIsAuth } = useAuth();
+    const { load: loadUserData } = useLoadUserData();
+    const { load: loadCategories } = useLoadCategories();
 
     useEffect(() => {
         if (
@@ -30,18 +32,6 @@ function App() {
         loadCategories();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const loadUserData = () => {
-        Service.UserService.getUserByToken({ loadInvitedUser: true })
-            .then(res => setUserData(res.data))
-            .catch(err => console.log(err));
-    };
-
-    const loadCategories = () => {
-        Service.CategoryService.getAll()
-            .then(res => setCategories(res.data))
-            .catch(err => console.log(err));
-    };
 
     return (
         <div className="app-main-container">

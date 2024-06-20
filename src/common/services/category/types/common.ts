@@ -4,6 +4,7 @@ export type TSubcategory = {
     image: string;
     name: string;
     desc: string;
+    language: string;
 } & TBasicDataBaseData;
 
 export type TCategory = {

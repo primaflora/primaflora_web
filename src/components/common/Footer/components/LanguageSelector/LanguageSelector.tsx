@@ -1,21 +1,18 @@
-import { useEffect, useState } from 'react';
-import './styles.css';
-import { TLanguageElement } from './types';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Images } from '../../../../../assets';
 import { ELanguages } from '../../../../../common/i18n';
-import { useTranslation } from 'react-i18next';
+import { useLoadCategories } from '../../../../loader/categories.loader';
+import { TLanguageElement } from './types';
+import './styles.css';
 
 export const LanguageSelector = () => {
     const { i18n } = useTranslation();
+    const { load: loadCategories } = useLoadCategories();
     const [selectedLanguage, setSelectedLanguage] = useState<ELanguages>(
-        ELanguages.RUS,
+        ELanguages.UKR,
     );
     const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
-
-    useEffect(() => {
-        i18n.changeLanguage(selectedLanguage.toString());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedLanguage]);
 
     const selectFlag = () => {
         switch (selectedLanguage) {
@@ -35,6 +32,9 @@ export const LanguageSelector = () => {
 
     const handleLanguageChange = (languageKey: string) => {
         setSelectedLanguage(ELanguages[languageKey as TLanguageElement]);
+        i18n.changeLanguage(languageKey.toLowerCase(), () => {
+            loadCategories();
+        });
     };
 
     return (

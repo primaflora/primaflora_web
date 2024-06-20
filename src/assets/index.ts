@@ -19,7 +19,8 @@ import CheckMarkDark from './images/check-mark-dark.png';
 import CheckMarkGreen from './images/check-mark-green.png';
 import RusFlag from './images/russia.png';
 import UkrFlag from './images/ukraine.png';
- 
+import SliderImage from './images/slider-image.png';
+
 export const Images = {
     PrimafloraLogoSvg,
     SearchIcon,
@@ -41,5 +42,6 @@ export const Images = {
     CheckMarkDark,
     CheckMarkGreen,
     RusFlag,
-    UkrFlag
+    UkrFlag,
+    SliderImage,
 };

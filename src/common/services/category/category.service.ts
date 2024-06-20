@@ -1,24 +1,9 @@
 import { apiPrivate } from '../../api';
+import i18n from '../../i18n/i18n.ts';
 import { TGetAllRequest } from './types/getAll.ts';
 import { TGetCategoryWithProductsRequest } from './types/getCategiryWithProducts.ts';
 
 export class CategoryService {
-    // static async postCreate(data: TPostCreateCategoryRequest['payload']): Promise<TPostCreateCategoryRequest['response']> {
-    //     return apiPrivate.post('/categories/create', data)
-    // }
-
-    // static async getChildren(category: string): Promise<TGetChildrenCategoriesByNameRequest['response']> {
-    //     return apiPrivate.get(`/categories/getChildrenOnly/${category}`);
-    // }
-
-    // static async getChildrenById(id: number): Promise<TGetChildrenCategoriesByNameRequest['response']> {
-    //     return apiPrivate.get(`/categories/getChildrenOnlyById/${id}`);
-    // }
-
-    // static async getSiblingsById(id: number): Promise<TGetSiblingsByIdRequest['response']> {
-    //     return apiPrivate.get(`/categories/getSiblingsById/${id}`);
-    // }
-
     static async getCategoryWithProducts(
         data: TGetCategoryWithProductsRequest['payload'],
     ): Promise<TGetCategoryWithProductsRequest['response']> {
@@ -28,6 +13,10 @@ export class CategoryService {
     }
 
     static async getAll(): Promise<TGetAllRequest['response']> {
-        return await apiPrivate.get('/categories/findAllWithSub');
+        return await apiPrivate.get('/categories/findAllWithSub', {
+            headers: {
+                'Accept-Language': i18n.language,
+            },
+        });
     }
 }
