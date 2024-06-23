@@ -1,9 +1,12 @@
 import axios from 'axios';
 import { StorageService } from '../storage/storage.service';
 
+console.log("process.env.REACT_APP_HOST_URL => ", process.env.REACT_APP_HOST_URL);
+console.log("process.env.HOST_URL => ", process.env.HOST_URL);
+
 // 10.0.2.2 - for Android   localhost - default
 const privateInstance = axios.create({
-    baseURL: 'http://localhost:5001', //'https://primaflorabackend-production.up.railway.app',
+    baseURL: process.env.REACT_APP_HOST_URL, //'http://localhost:5001', //'https://primaflorabackend-production.up.railway.app',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -13,7 +16,7 @@ const privateInstance = axios.create({
 });
 
 const publicInstance = axios.create({
-    baseURL: 'http://localhost:5001', //'https://primaflorabackend-production.up.railway.app',
+    baseURL: process.env.REACT_APP_HOST_URL, //'http://localhost:5001', //'https://primaflorabackend-production.up.railway.app',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
