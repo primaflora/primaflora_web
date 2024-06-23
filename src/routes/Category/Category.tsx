@@ -37,7 +37,7 @@ export const Category = () => {
                     <div className="catalog-stripe-mob-container pb-5">
                         <CatalogStripeMob />
                     </div>
-                    <CategoryUpperView />
+                    <CategoryUpperView/>
                     <CategoryView />
                 </div>
             </div>

@@ -1,16 +1,15 @@
 import { Images } from '../../../assets';
+import { useUserData } from '../../../store/tools';
 import './styles.css';
+import { TCategoryUpperViewProps } from './types';
 
 export const CategoryUpperView = () => {
+    const { pickedSubcategory } = useUserData();
+
     return (
         <div className="main-container">
             <div className="text-container">
-                <p className="text">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Aspernatur, ratione dolorem accusamus tenetur labore odio
-                    quibusdam nemo temporibus, sunt officia cupiditate aliquid
-                    culpa nisi dolores suscipit vero sequi maxime inventore.
-                </p>
+                <p className="text">{pickedSubcategory?.desc}</p>
             </div>
 
             <img

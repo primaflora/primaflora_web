@@ -95,8 +95,8 @@ export const UserInfo = () => {
                     title={t('user-info.invite-link')}
                     content={
                         user?.invitationCode
-                            ? `http://localhost:3000/auth/sign-up/invite/${user?.invitationCode}`
-                            : 'https://primaflora.com/auth/sign-up/invite/TEST_CODE'
+                            ? `https://primaflora.store/auth/sign-up/invite/${user?.invitationCode}`
+                            : 'https://primaflora.store/auth/sign-up/invite/TEST_CODE'
                     }
                     // button={{
                     //     text: 'Редагувати',

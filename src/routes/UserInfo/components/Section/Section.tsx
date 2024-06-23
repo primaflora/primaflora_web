@@ -1,10 +1,10 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useToast } from '../../../../common/toast';
+import { Button } from '../../../../components/buttons';
+import { Row } from '../../../../components/common/Row';
 import './styles.css';
 import { TSectionProps } from './types';
-import { Row } from '../../../../components/common/Row';
-import { Button } from '../../../../components/buttons';
-import { useToast } from '../../../../common/toast';
-import { useTranslation } from 'react-i18next';
 
 export const Section = ({ title, content, button }: TSectionProps) => {
     const { t } = useTranslation();
@@ -60,8 +60,9 @@ export const Section = ({ title, content, button }: TSectionProps) => {
         pressTimer.current = null;
     };
 
-    const onLongPress = () => {
-        navigator.clipboard.writeText(content);
+    const onLongPress = async () => {        
+        await navigator.clipboard.writeText(content);
+
         notifySuccess(
             t('user-info.copied-to-clipboard', {
                 data: `${title.replace(/[()]/g, '')}`,

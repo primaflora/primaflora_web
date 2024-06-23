@@ -3,7 +3,7 @@ import { StorageService } from '../storage/storage.service';
 
 // 10.0.2.2 - for Android   localhost - default
 const privateInstance = axios.create({
-    baseURL: 'http://localhost:5000', //'https://primaflorabackend-production.up.railway.app',
+    baseURL: 'http://localhost:5001', //'https://primaflorabackend-production.up.railway.app',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ const privateInstance = axios.create({
 });
 
 const publicInstance = axios.create({
-    baseURL: 'http://localhost:5000', //'https://primaflorabackend-production.up.railway.app',
+    baseURL: 'http://localhost:5001', //'https://primaflorabackend-production.up.railway.app',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
