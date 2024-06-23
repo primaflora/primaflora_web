@@ -14,7 +14,6 @@ export const SignInModal = ({
     isOpen,
     onClose,
     inviteCode,
-    onMoveToLogIn,
 }: TSignInModalProps) => {
     const { t } = useTranslation();
     const { notifyError, notifySuccess } = useToast();
@@ -29,6 +28,7 @@ export const SignInModal = ({
                 .then(res => setInviter(res.data))
                 .catch(e => setInviterError(t('errors.invite-not-found')));
         }
+        //@ts-ignore
     }, []);
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

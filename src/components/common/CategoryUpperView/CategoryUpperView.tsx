@@ -1,7 +1,6 @@
 import { Images } from '../../../assets';
 import { useUserData } from '../../../store/tools';
 import './styles.css';
-import { TCategoryUpperViewProps } from './types';
 
 export const CategoryUpperView = () => {
     const { pickedSubcategory } = useUserData();

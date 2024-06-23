@@ -1,12 +1,9 @@
+import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import 'react-toastify/dist/ReactToastify.css';
-import './common/i18n';
-import { Service } from './common/services';
 import { StorageService } from './common/storage/storage.service';
 import { Toast } from './common/toast';
 import { Footer, Header } from './components/common';
-import './index.css';
 import { Home, LogIn, UserInfo } from './routes';
 import { Cart } from './routes/Cart/Cart';
 import { Category } from './routes/Category';
@@ -15,6 +12,8 @@ import { Product } from './routes/Product';
 import { useAuth } from './common/hooks/useAuth/useAuth';
 import { useLoadCategories } from './components/loader/categories.loader';
 import { useLoadUserData } from './components/loader/user-data.loader';
+import './common/i18n';
+import './index.css';
 
 function App() {
     const { setIsAuth } = useAuth();
