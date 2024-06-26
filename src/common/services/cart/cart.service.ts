@@ -1,4 +1,5 @@
 import { apiPrivate } from '../../api';
+import i18n from '../../i18n/i18n';
 import {
     TDeleteCartItem,
     TGetAllCartItemsByUserId,
@@ -15,7 +16,11 @@ export class CartService {
     }
 
     static async getAll(): Promise<TGetAllCartItemsByUserId['response']> {
-        return apiPrivate.get('/cart/getAll');
+        return apiPrivate.get('/cart/getAll', {
+            headers: {
+                'Accept-Language': i18n.language,
+            },
+        });
     }
 
     static async patchUpdate(

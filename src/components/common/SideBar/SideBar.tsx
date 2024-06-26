@@ -9,6 +9,7 @@ import { useUserData } from '../../../store/tools';
 import { Row } from '../Row';
 import './styles.css';
 import { TSidebarProps } from './types';
+import { useTranslation } from 'react-i18next';
 
 export const SideBar = ({
     isMob = false,
@@ -23,6 +24,7 @@ export const SideBar = ({
 
     const handleClickSubcategory = (pickedSubcategory: TSubcategory) => {
         setPickedSubcategory(pickedSubcategory);
+        onClose();
         navigate(`/category/${pickedSubcategory.uuid}`);
     };
 
@@ -53,9 +55,11 @@ export const SideBar = ({
 };
 
 const SideBarHeaderMob = ({ onClose }: { onClose: () => void }) => {
+    const { t } = useTranslation();
+
     return (
         <Row style={{ justifyContent: 'space-between', padding: '20px' }}>
-            <h1 className="sidebar-header-mob-title">КАТАЛОГ ПРОДУКЦІІ</h1>
+            <h1 className="sidebar-header-mob-title">{t('navigation.catalog-title')}</h1>
             <button
                 className="sidebar-header-mob-close-button"
                 onClick={onClose}>

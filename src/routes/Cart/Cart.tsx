@@ -17,10 +17,10 @@ export const Cart = () => {
 
     useEffect(() => {
         if (isAuth) {
-            Service.CartService.getAll().then(res => setCart(res.data));
+            Service.CartService.getAll().then(res => {setCart(res.data); console.log('cart => ', res.data)});
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isAuth]);
 
     const onCartItemQuantityChange = (productUid: string, quantity: number) => {
         console.log('uuid: ', productUid, ' quantity: ', quantity);

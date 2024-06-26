@@ -9,6 +9,11 @@ export class CategoryService {
     ): Promise<TGetCategoryWithProductsRequest['response']> {
         return await apiPrivate.get(
             `/categories/findSubcategoryWithProducts/${data.subcategoryId}`,
+            {
+                headers: {
+                    'Accept-Language': i18n.language,
+                },
+            }    
         );
     }
 

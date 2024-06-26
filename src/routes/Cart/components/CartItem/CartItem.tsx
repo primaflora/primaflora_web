@@ -43,7 +43,7 @@ export const CartItem = ({
                             <img src={Images.CrossIcon} alt="cross" />
                         </button>
                     </Row>
-                    <h2 className="item-cart-desc">Some text desc</h2>
+                    <h2 className="item-cart-desc">{item.product.shortDesc}</h2>
                 </div>
 
                 {/* For desktop */}

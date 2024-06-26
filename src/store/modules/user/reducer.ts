@@ -36,6 +36,23 @@ export const slice = createSlice({
             console.log('Set categories');
             console.log(action.payload);
             state.categories = action.payload;
+
+            // if changed language in categories -> change language in pickedSubcategory
+            if (
+                state.pickedSubcategory &&
+                state.pickedSubcategory.language !==
+                    action.payload[0].childrens[0].language
+            ) {
+                for (const category of state.categories) {
+                    for (const subcategory of category.childrens) {
+                        if (
+                            subcategory.uuid === state.pickedSubcategory?.uuid
+                        ) {
+                            state.pickedSubcategory = subcategory;
+                        }
+                    }
+                }
+            }
         },
         clearCategories: state => {
             state.categories = [];

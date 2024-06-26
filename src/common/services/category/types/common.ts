@@ -14,7 +14,8 @@ export type TCategory = {
 
 export type TProduct = {
     photo_url: string;
-    desc: string;
+    desc?: string;
+    shortDesc?: string;
     price_currency: number;
     price_points: number;
     percent_discount: number;

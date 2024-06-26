@@ -8,8 +8,10 @@ import { Row } from '../common';
 import './styles.css';
 import { TCardProps } from './types';
 import { useUserData } from '../../store/tools';
+import { useTranslation } from 'react-i18next';
 
 export const Card = ({ card }: TCardProps) => {
+    const { t } = useTranslation();
     const { user, isAuth } = useUserData();
     const { notifySuccess, notifyError } = useToast();
     const [like, setLike] = useState<{ id: number; uuid: string } | null>(
@@ -27,18 +29,20 @@ export const Card = ({ card }: TCardProps) => {
             productUuid: card.uuid,
         });
         setLike(like.data);
-        notifySuccess(`Ви додали ${card.title} до списку побажань`);
+        notifySuccess(t('messages.add-like', { title: card.title }));
     };
 
     const handleDislike = () => {
-        if (!card.like || !like) {
+        console.log('cardLike: ', card.like);
+        console.log('like: ', like);
+        if (!like) {
             notifyError('Error while tring to dislike product');
             return;
         }
 
         Service.LikesService.deleteLike({ likeUuid: like.uuid });
         setLike(null);
-        notifySuccess(`Ви видалили ${card.title} зі списку побажань`);
+        notifySuccess(t('messages.remove-like', { title: card.title }));
     };
 
     const handleAddToCart = () => {
@@ -75,7 +79,7 @@ export const Card = ({ card }: TCardProps) => {
                 <img src={card.photo_url} alt={card.title} />
             </Link>
             <h1 className="card-title">{card.title}</h1>
-            {/* <p className="card-description">{card.desc}</p> */}
+            <p className="card-description">{card?.shortDesc}</p>
 
             <Row style={{ justifyContent: 'space-between' }}>
                 <p className="small-text">Rating: {card.rating} / 5</p>

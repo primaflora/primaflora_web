@@ -4,13 +4,15 @@ import { Images } from '../../../../../assets';
 import { ELanguages } from '../../../../../common/i18n';
 import { useLoadCategories } from '../../../../loader/categories.loader';
 import { TLanguageElement } from './types';
+import { StorageService } from '../../../../../common/storage/storage.service';
 import './styles.css';
 
 export const LanguageSelector = () => {
     const { i18n } = useTranslation();
     const { load: loadCategories } = useLoadCategories();
+    // get init language from storage or use default language 'UKR'
     const [selectedLanguage, setSelectedLanguage] = useState<ELanguages>(
-        ELanguages.UKR,
+        ELanguages[(StorageService.getLanguage()?.toUpperCase() || 'UKR') as TLanguageElement]
     );
     const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
 
@@ -32,6 +34,7 @@ export const LanguageSelector = () => {
 
     const handleLanguageChange = (languageKey: string) => {
         setSelectedLanguage(ELanguages[languageKey as TLanguageElement]);
+        StorageService.setLanguage(languageKey.toLowerCase());
         i18n.changeLanguage(languageKey.toLowerCase(), () => {
             loadCategories();
         });

@@ -2,6 +2,7 @@ import { apiPrivate } from '../../api';
 import { TSetLike } from './types/setLike.ts';
 import { TGetLikes } from './types/getLikes.ts';
 import { TDeleteLike } from './types/deleteLike.ts';
+import i18n from '../../i18n/i18n.ts';
 
 export class LikesService {
     // Old method. Use setLike in Product service instead.
@@ -10,7 +11,11 @@ export class LikesService {
     }
 
     static async getLikes(): Promise<TGetLikes['response']> {
-        return apiPrivate.get('/like/likes');
+        return apiPrivate.get('/like/likes', {
+            headers: {
+                'Accept-Language': i18n.language,
+            },
+        });
     }
 
     static async deleteLike(params: TDeleteLike['payload']): Promise<TDeleteLike['response']> {
