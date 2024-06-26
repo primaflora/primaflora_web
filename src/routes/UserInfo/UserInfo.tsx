@@ -95,7 +95,7 @@ export const UserInfo = () => {
                     title={t('user-info.invite-link')}
                     content={
                         user?.invitationCode
-                            ? `https://${process.env.REACT_APP_HOME_URL}/auth/sign-up/invite/${user?.invitationCode}`
+                            ? `${process.env.REACT_APP_HOME_URL}/auth/sign-up/invite/${user?.invitationCode}`
                             : 'https://primaflora.store/auth/sign-up/invite/TEST_CODE'
                     }
                     // button={{
