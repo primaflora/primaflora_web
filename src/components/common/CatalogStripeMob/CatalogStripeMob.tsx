@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Images } from '../../../assets';
 import { Button } from '../../buttons';
 import { Row } from '../Row';
 import { SideBar } from '../SideBar';
 import './styles.css';
+import { useTranslation } from 'react-i18next';
 
 export const CatalogStripeMob = () => {
+    const { t } = useTranslation();
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
     const handleSidebarClose = () => {
@@ -33,7 +35,7 @@ export const CatalogStripeMob = () => {
                 />
                 {/* TODO: redirect to catalog page */}
                 <Button
-                    text="КАТАЛОГ ПРОДУКЦІЇ"
+                    text={t('navigation.catalog-title')}
                     onClick={handleSidebarOpen}
                     filled
                     style={{ borderRadius: '7px', width: '100%' }}

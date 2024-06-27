@@ -26,7 +26,7 @@
 
 @media (width <= 700px) {
     .cards {
-        grid-template-columns: repeat(2, 2fr);
+        grid-template-columns: repeat(1, 2fr);
     }
 }
 

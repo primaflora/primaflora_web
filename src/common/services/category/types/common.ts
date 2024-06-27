@@ -32,7 +32,7 @@ export type TComment = {
 } & TBasicDataBaseData;
 
 export type TProductFull = {
-    desc: Object; // a json object of some product properties
+    desc: string; // a json object of some product properties
     comments: TComment[];
     category: TCategory;
 } & TProduct;

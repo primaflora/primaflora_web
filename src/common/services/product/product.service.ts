@@ -1,4 +1,5 @@
 import { apiPrivate } from '../../api';
+import i18n from '../../i18n/i18n.ts';
 import { TResponseWithoutPromise } from '../types.ts';
 import { TGetProductsByQuery, TProduct } from './types';
 import { TGetProductById } from './types/getProductById.ts';
@@ -14,7 +15,11 @@ export class ProductService {
     static async getOneByUid(
         params: TGetProductById['payload'],
     ): Promise<TGetProductById['response']> {
-        return apiPrivate.get(`/products/getWithComments/${params.uuid}`);
+        return apiPrivate.get(`/products/getWithComments/${params.uuid}`, {
+            headers: {
+                'Accept-Language': i18n.language,
+            },
+        });
     }
 
     static async getAll(): Promise<TResponseWithoutPromise<TProduct[]>> {

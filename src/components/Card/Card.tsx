@@ -66,7 +66,7 @@ export const Card = ({ card }: TCardProps) => {
             productUId: card.uuid,
         })
             .then(() => {
-                notifySuccess(`Ви додали ${card.title} до корзини`);
+                notifySuccess(t('messages.add-cart', { title: card.title }));
             })
             .catch(err => {
                 console.log(err);

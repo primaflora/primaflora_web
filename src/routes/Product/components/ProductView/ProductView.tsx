@@ -89,22 +89,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
                 <div>
                     <h1 className="product-title">{product.title}</h1>
                     <ul className="product-description">
-                        <li>
-                            має поживну та протизапальну дію при порушеннях
-                            опорно-рухового апарату;
-                        </li>
-                        <li>
-                            має поживну та протизапальну дію при порушеннях
-                            опорно-рухового апарату;
-                        </li>
-                        <li>
-                            має поживну та протизапальну дію при порушеннях
-                            опорно-рухового апарату;
-                        </li>
-                        <li>
-                            має поживну та протизапальну дію при порушеннях
-                            опорно-рухового апарату;
-                        </li>
+                        {product.shortDesc}
                     </ul>
 
                     <Row
@@ -151,7 +136,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
             </div>
 
             <Line />
-            {renderDescription(product.desc)}
+            {renderDescription(JSON.parse(product.desc))}
             <Line />
 
             <CommentSection comments={product.comments} />
