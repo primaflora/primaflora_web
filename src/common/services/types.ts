@@ -45,4 +45,16 @@ export type TUser = {
     invitedUser?: TUser;
     phone_allowed: boolean;
     consultation_allowed: boolean;
+    role?: TRole | null
+
 };
+
+export type TRole = {
+    id: number,
+    name: EUserRole
+}
+
+export enum EUserRole {
+    USER = 'user',
+    ADMIN = 'admin',
+}

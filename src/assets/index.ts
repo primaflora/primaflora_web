@@ -15,6 +15,8 @@ import { default as LinedLikeIconMob } from './images/like-lined-icon-mob.svg';
 import { default as UserIconMob } from './images/user-icon-mob.svg';
 import { default as DeliveryIconMob } from './images/delivery-icon-mob.svg';
 import { default as ArrowListDownIcon } from './images/arrow-list-down.svg';
+import { default as ArrowListDownIconWhite } from './images/arrow-list-down-white.svg';
+import { default as TrashIcon } from './images/trash.svg';
 import CheckMarkDark from './images/check-mark-dark.png';
 import CheckMarkGreen from './images/check-mark-green.png';
 import RusFlag from './images/russia.png';
@@ -44,4 +46,6 @@ export const Images = {
     RusFlag,
     UkrFlag,
     SliderImage,
+    ArrowListDownIconWhite,
+    TrashIcon,
 };

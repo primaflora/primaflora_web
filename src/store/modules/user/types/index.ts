@@ -15,4 +15,5 @@ export type TInitialState = {
     isAuth: boolean;
     pickedSubcategory?: TSubcategory | null;
     pickedProduct?: TProduct | null;
+    isAdmin: boolean;
 };

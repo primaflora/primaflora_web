@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { SignInModal } from '../../../Modals/SignInModal';
 import { useTranslation } from 'react-i18next';
 
-export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
+export const NavLinks = ({ isAuth, isAdmin = false, isMob = false }: TNavLinksProps) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -66,6 +66,11 @@ export const NavLinks = ({ isAuth, isMob = false }: TNavLinksProps) => {
                     {isAuth && (
                         <Link to="/user-info">
                             {t('navigation.user-info-title')}
+                        </Link>
+                    )}
+                    {isAdmin && (
+                        <Link to="/admin-page">
+                            {t('navigation.admin-page-title')}
                         </Link>
                     )}
                 </div>

@@ -16,6 +16,7 @@ const initialState: TInitialState = {
     products: [],
     isAuth: false,
     pickedSubcategory: null,
+    isAdmin: false
 };
 
 export const slice = createSlice({
@@ -94,8 +95,13 @@ export const slice = createSlice({
         },
         removeLike(state, action: PayloadAction<number>) {
             state.likes = state.likes.filter(item => item.id !== action.payload);
-        }
-    },
+        },
+
+        setIsAdmin(state, action: PayloadAction<boolean>) {
+            console.log("Is Admin => ", action.payload);
+            state.isAdmin = action.payload;
+        },
+    } 
 });
 
 export const userSliceActions = slice.actions;

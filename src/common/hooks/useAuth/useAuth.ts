@@ -33,5 +33,13 @@ export const useAuth = () => {
         [dispatch],
     );
 
-    return { setUserData, updateUserData, clearAll, setIsAuth };
+    const setIsAdmin = useCallback(
+        (isAdmin: boolean) => {
+            console.log('is Admin => ', isAdmin);
+            dispatch(userSliceActions.setIsAdmin(isAdmin));
+        },
+        [dispatch]
+    )
+
+    return { setUserData, updateUserData, clearAll, setIsAuth, setIsAdmin };
 };

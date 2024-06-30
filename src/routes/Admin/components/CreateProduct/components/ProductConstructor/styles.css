@@ -1,0 +1,33 @@
+.product-constructor-main-container {
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.product-constructor-inner-container {
+    width: 50%;
+    gap: 10px;
+    justify-content: center;
+}
+
+.product-preview-main-container {
+    width: 100%;
+}
+
+.product-constructor-form {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    width: 45%;
+}

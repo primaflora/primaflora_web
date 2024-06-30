@@ -2,7 +2,10 @@ import { apiPrivate } from '../../api';
 import i18n from '../../i18n/i18n.ts';
 import { TResponseWithoutPromise } from '../types.ts';
 import { TGetProductsByQuery, TProduct } from './types';
+import { TDeleteProductById } from './types/deleteProduct.ts';
 import { TGetProductById } from './types/getProductById.ts';
+import { TPostCreateComment } from './types/postCreateComment.ts';
+import { TPostCreateProductRequest } from './types/postCreateProduct.ts';
 import { TPostSetLikeRequest } from './types/postSetLike.ts';
 
 export class ProductService {
@@ -30,5 +33,17 @@ export class ProductService {
         params: TPostSetLikeRequest['payload'],
     ): Promise<TPostSetLikeRequest['response']> {
         return apiPrivate.post(`/products/like/${params.productUuid}`);
+    }
+
+    static async create(data: TPostCreateProductRequest['payload']): Promise<TPostCreateProductRequest['response']> {
+        return apiPrivate.post('/products/create', data);
+    }
+
+    static async delete(data: TDeleteProductById['payload']): Promise<TDeleteProductById['response']> {
+        return apiPrivate.delete(`/products/${data.uuid}`);
+    }
+
+    static async createComment(data: TPostCreateComment['payload']): Promise<TPostCreateComment['response']> {
+        return apiPrivate.post(`/products/createComment/${data.productId}`, { text: data.text, rating: Number(data.rating) });
     }
 }

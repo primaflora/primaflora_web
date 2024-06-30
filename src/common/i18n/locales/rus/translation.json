@@ -31,7 +31,8 @@
         "cart": "КОРЗИНА",
         "like-title": "ЖЕЛАЕМОЕ",
         "user-info-title": "ЛИЧНАЯ ИНФОРМАЦИЯ",
-        "catalog-title": "КАТАЛОГ ПРОДУКЦИИ"
+        "catalog-title": "КАТАЛОГ ПРОДУКЦИИ",
+        "admin-page-title": "АДМИН ПАНЕЛЬ"
     },
     "header": {
         "sign-up-and-get-discount": "ЗАРЕГИСТРИРОВАТЬСЯ И ПОЛУЧИТЬ СКИДКУ 10%",
@@ -71,5 +72,8 @@
         "remove-like": "Вы удалили {{title}} из списка желаемого",
         "add-cart": "Вы добавили {{title}} в корзину",
         "remove-cart": "Вы добавили {{title}} в корзину"
+    },
+    "admin": {
+        "create-product-title": "Создать Товар"
     }
 }

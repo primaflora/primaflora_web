@@ -14,6 +14,7 @@ import { useLoadCategories } from './components/loader/categories.loader';
 import { useLoadUserData } from './components/loader/user-data.loader';
 import './common/i18n';
 import './index.css';
+import { Admin } from './routes/Admin';
 
 function App() {
     const { setIsAuth } = useAuth();
@@ -48,6 +49,7 @@ function App() {
                     path="/auth/sign-up/invite/:inviteCode"
                     element={<Home />}
                 />
+                <Route path="/admin-page" element={<Admin/>} />
             </Routes>
 
             <Footer />

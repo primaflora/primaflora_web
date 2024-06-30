@@ -11,11 +11,13 @@ export const Button = ({
     filled = true,
     small = false,
     isClickable = true,
+    type = 'button',
 }: TButtonProps) => {
     return (
         <button
             disabled={!isClickable}
             onClick={onClick}
+            type={type}
             style={{
                 padding: small ? '5px 30px' : '11px 60px',
                 ...style,

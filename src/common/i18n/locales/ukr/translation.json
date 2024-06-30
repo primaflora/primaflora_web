@@ -31,7 +31,8 @@
         "cart": "КОШИК",
         "like-title": "БАЖАНЕ",
         "user-info-title": "ОСОБИСТА ІНФОРМАЦІЯ",
-        "catalog-title": "КАТАЛОГ ПРОДУКЦІЇ"
+        "catalog-title": "КАТАЛОГ ПРОДУКЦІЇ",
+        "admin-page-title": "АДМІН ПАНЕЛЬ"
     },
     "header": {
         "sign-up-and-get-discount": "ЗАРЕЄСТРУВАТИСЯ ТА ОТРИМАТИ ЗНИЖКУ 10%",
@@ -71,5 +72,8 @@
         "remove-like": "Ви видалили {{title}} зі списку побажань.",
         "add-cart": "Ви додали {{title}} до корзини",
         "remove-cart": "Ви додали {{title}} до корзини"
+    },
+    "admin": {
+        "create-product-title": "Створити Товар"
     }
 }

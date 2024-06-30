@@ -1,0 +1,20 @@
+.select-product-main-container {
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.select-product-preview {
+    display: flex;
+    flex-direction: column;
+}
+
+.select-product-inner-conatiner {
+    display: flex;
+    flex-direction: column;
+}

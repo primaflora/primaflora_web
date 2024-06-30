@@ -3,5 +3,6 @@ export type TInputModalProps = {
     placeholder: string;
     type?: string;
     formDataFieldName?: string;
-    onChange?: (value: string) => void;
+    onChange?: (value: string, fieldName: string) => void;
+    width?: string;
 };

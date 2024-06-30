@@ -7,4 +7,5 @@ export type TButtonProps = {
     filled?: boolean;
     small?: boolean;
     isClickable?: boolean;
+    type?: "submit" | "reset" | "button";
 };

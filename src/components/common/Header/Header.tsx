@@ -10,7 +10,7 @@ import { LogInModal } from '../Modals/LogInModal';
 import { SignInModal } from '../Modals/SignInModal';
 
 export const Header = () => {
-    const { isAuth, user } = useUserData();
+    const { isAuth, isAdmin, user } = useUserData();
     const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
@@ -44,7 +44,7 @@ export const Header = () => {
                     </Link>
 
                     <div className="header-nav-links">
-                        <NavLinks isAuth={isAuth} />
+                        <NavLinks isAdmin={isAdmin} isAuth={isAuth} />
                     </div>
                     <div className="header-nav-links-mob">
                         <NavLinks isMob isAuth={isAuth} />

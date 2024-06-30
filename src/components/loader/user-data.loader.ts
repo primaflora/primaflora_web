@@ -1,12 +1,15 @@
 import { useAuth } from '../../common/hooks/useAuth/useAuth';
-import { Service } from '../../common/services';
+import { EUserRole, Service } from '../../common/services';
 
 export const useLoadUserData = () => {
-    const { setUserData } = useAuth();
+    const { setUserData, setIsAdmin } = useAuth();
 
     const load = () => {
         Service.UserService.getUserByToken({ loadInvitedUser: true })
-            .then(res => setUserData(res.data))
+            .then(res => {
+                setUserData(res.data);
+                setIsAdmin(res.data.role?.name === EUserRole.ADMIN);
+            })
             .catch(err => console.log(err));
     }
 

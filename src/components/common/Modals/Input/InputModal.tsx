@@ -9,14 +9,14 @@ export const InputModal = ({
     formDataFieldName = 'input',
 }: TInputModalProps) => {
     return (
-        <div className="input-main-container">
+        <div className='input-main-container'>
             <h1 className="input-title">{title}</h1>
             <input
                 className='modal-input'
                 name={formDataFieldName}
                 type={type}
                 placeholder={placeholder}
-                onChange={e => onChange(e.target.value)}
+                onChange={e => onChange(e.target.value, formDataFieldName)}
             />
         </div>
     );
