@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/draft-js": "^0.11.18",
     "@types/jest": "^27.5.2",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^16.18.97",
@@ -15,6 +16,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/redux-persist": "^4.3.1",
     "axios": "^1.6.8",
+    "draft-js": "^0.11.7",
     "i18next": "^23.11.5",
     "js-cookie": "^3.0.5",
     "react": "^18.3.1",
@@ -24,6 +26,7 @@
     "react-router-dom": "^6.23.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.5",
+    "react-tooltip": "^5.27.1",
     "redux-persist": "^6.0.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
@@ -32,7 +35,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "rn-generator": "node rn-generator.js"
   },
   "eslintConfig": {
     "extends": [

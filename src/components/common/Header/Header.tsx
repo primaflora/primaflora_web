@@ -3,11 +3,10 @@ import { Images } from '../../../assets';
 import { useUserData } from '../../../store/tools';
 import { NavLinks } from './components/NavLinks';
 import { UpperHeaderBar } from './components/UpperHeaderBar';
-import './styles.css';
-
 import { useState } from 'react';
 import { LogInModal } from '../Modals/LogInModal';
 import { SignInModal } from '../Modals/SignInModal';
+import './styles.css';
 
 export const Header = () => {
     const { isAuth, isAdmin, user } = useUserData();
@@ -42,7 +41,6 @@ export const Header = () => {
                     <Link to={'/'}>
                         <img src={Images.PrimafloraLogoSvg} alt="Primaflora" />
                     </Link>
-
                     <div className="header-nav-links">
                         <NavLinks isAdmin={isAdmin} isAuth={isAuth} />
                     </div>

@@ -1,0 +1,54 @@
+.table-row-container {
+    font-size: 13px;
+    line-height: 1.5em;
+    color: #2c3338;
+    /* min-height: calc(fit-content + 30px); */
+}
+
+.table-checkbox-container {
+    padding-left: 10px;
+}
+
+.panel-table-action-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: transparent;
+}
+.panel-table-action-row > *:not(:last-child)::after {
+    content: '|';
+    color: transparent;
+    margin: 0 10px;
+}
+.table-comment-container:hover {
+    .panel-table-action-row {
+        color: #2271b1;
+        .panel-reject-button {
+            color: rgb(223, 40, 40);
+        }
+        *:not(:last-child)::after { 
+            color: rgba(0, 0, 0, 0.2);
+        }
+    }
+}
+
+.panel-sort-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: #2271b1;
+}
+.panel-sort-list > *:not(:last-child)::after {
+    content: '|';
+    color: rgba(0, 0, 0, 0.2);
+    margin: 0 10px;
+}
+.panel-sort-list > button {
+    font-size: 14px;
+    font-weight: 300;
+}
+.panel-sort-list > button > span {
+    color: #2c3338;
+    font-size: 14px;
+    font-weight: 300;
+}

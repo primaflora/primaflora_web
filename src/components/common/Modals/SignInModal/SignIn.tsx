@@ -140,6 +140,7 @@ export const SignInModal = ({
 
                         <div className="flex flex-col gap-4">
                             <Button
+                                type='submit'
                                 text={
                                     inviter
                                         ? t(

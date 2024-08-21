@@ -15,6 +15,10 @@ import { useLoadUserData } from './components/loader/user-data.loader';
 import './common/i18n';
 import './index.css';
 import { Admin } from './routes/Admin';
+import { AdminComments } from './routes/Admin/routes/Comments';
+import { AdminProduct, ProductsTable } from './routes/Admin/routes/Product';
+import { AdminProductEdit } from './routes/Admin/routes/Product/components/EditProduct';
+import { useUserData } from './store/tools';
 
 function App() {
     const { setIsAuth } = useAuth();
@@ -49,7 +53,14 @@ function App() {
                     path="/auth/sign-up/invite/:inviteCode"
                     element={<Home />}
                 />
-                <Route path="/admin-page" element={<Admin/>} />
+                <Route path="/admin-page" element={<Admin/>}>
+                    <Route path="products">
+                        <Route path='create' element={<AdminProduct/>}/>
+                        <Route path='edit/:uuid' element={<AdminProductEdit/>}/>
+                        <Route path='table' element={<ProductsTable/>}/>
+                    </Route>
+                    <Route path="comments" element={<AdminComments/>}/>
+                </Route>
             </Routes>
 
             <Footer />

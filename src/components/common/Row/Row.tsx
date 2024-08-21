@@ -4,7 +4,7 @@ import { TRowProps } from './types';
 
 export const Row = ({ children, style }: TRowProps) => {
     return (
-        <div className="row" style={style}>
+        <div className="row-component" style={style}>
             {children}
         </div>
     );

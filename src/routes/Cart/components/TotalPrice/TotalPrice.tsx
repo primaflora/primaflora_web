@@ -4,7 +4,7 @@ import { Row } from '../../../../components/common';
 import './styles.css';
 import { TTotalPriceProps } from './types';
 
-export const TotalPrice = ({ price }: TTotalPriceProps) => {
+export const TotalPrice = ({ price, onSubmit }: TTotalPriceProps) => {
     const { t } = useTranslation();
 
     return (
@@ -25,7 +25,7 @@ export const TotalPrice = ({ price }: TTotalPriceProps) => {
                     text={t('cart.make-order')}
                     small
                     filled
-                    onClick={() => {}}
+                    onClick={onSubmit}
                     style={{
                         borderTopLeftRadius: 7,
                         borderBottomLeftRadius: 7,

@@ -10,13 +10,20 @@ import { default as LikeIcon } from './images/like.svg';
 import { default as LikeRedIcon } from './images/like-red.svg';
 import { default as CommentIcon } from './images/comment-icon.svg';
 import { default as CrossIcon } from './images/cross_icon.svg';
+import { default as CrossWhiteIcon } from './images/cross_icon_white.svg';
 import { default as CartIconMob } from './images/cart-icon-mob.svg';
 import { default as LinedLikeIconMob } from './images/like-lined-icon-mob.svg';
 import { default as UserIconMob } from './images/user-icon-mob.svg';
 import { default as DeliveryIconMob } from './images/delivery-icon-mob.svg';
 import { default as ArrowListDownIcon } from './images/arrow-list-down.svg';
 import { default as ArrowListDownIconWhite } from './images/arrow-list-down-white.svg';
+import { default as AdminIcon } from './images/admin-icon.svg';
+import { default as AddCommentIcon } from './images/add-comment-icon.svg';
+import { default as FolderIcon } from './images/folder-icon.svg';
+import { default as AddNoteIcon } from './images/add-note-icon.svg';
+import { default as LightbublIcon } from './images/lightbubl.svg';
 import { default as TrashIcon } from './images/trash.svg';
+import { default as CheckmarkIcon } from './images/checkmark.svg';
 import CheckMarkDark from './images/check-mark-dark.png';
 import CheckMarkGreen from './images/check-mark-green.png';
 import RusFlag from './images/russia.png';
@@ -36,6 +43,7 @@ export const Images = {
     LikeRedIcon,
     CommentIcon,
     CrossIcon,
+    CrossWhiteIcon,
     CartIconMob,
     LinedLikeIconMob,
     UserIconMob,
@@ -48,4 +56,10 @@ export const Images = {
     SliderImage,
     ArrowListDownIconWhite,
     TrashIcon,
+    AdminIcon,
+    AddCommentIcon,
+    FolderIcon,
+    AddNoteIcon,
+    LightbublIcon,
+    CheckmarkIcon
 };

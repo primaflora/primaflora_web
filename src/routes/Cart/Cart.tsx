@@ -50,6 +50,32 @@ export const Cart = () => {
         );
     };
 
+    const handleSubmit = () => {
+        const invoicePayload = cart.map(item => (
+            {
+                name: item.product.title,
+                qty: item.quantity,
+                sum: item.product.percent_discount
+                    ? item.product.price_currency *
+                    ((100 - item.product.percent_discount) / 100) * 100
+                    : item.product.price_currency * 100, 
+                icon: item.product.photo_url,
+                unit: 'шт.',
+                code: item.product.uuid,
+            }
+        ));
+
+        Service.MonobankService.createInvoice({ 
+            baskets: invoicePayload,
+            amount: calculateTotalPrice() * 100
+        })
+        .then(res => {
+            const win = window.open(res.data.pageUrl, '_blank');
+            win?.focus();
+        })
+        .catch(err => console.log(err))
+    }
+
     return (
         <div className="main-global-padding flex">
             <SideBar />
@@ -80,7 +106,7 @@ export const Cart = () => {
                         ))}
 
                         <div className="cart-total-price-container pb-4">
-                            <TotalPrice price={calculateTotalPrice()} />
+                            <TotalPrice onSubmit={handleSubmit} price={calculateTotalPrice()} />
                         </div>
                     </div>
                 )}

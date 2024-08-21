@@ -1,0 +1,16 @@
+.tag-elem-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background-color: #1feaf4;
+    width: fit-content;
+    gap: 10px;
+}
+
+.tag-title {
+    color: white;
+    font-size: 16px;
+}

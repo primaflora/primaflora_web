@@ -1,0 +1,20 @@
+.admin-dashboard {
+    background-color: #22282c;
+    /* width: fit-content; */
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-title-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+.dashboard-title-text {
+    color: whitesmoke;
+    font-size: 22px;
+}

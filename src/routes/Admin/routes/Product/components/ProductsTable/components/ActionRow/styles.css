@@ -1,0 +1,11 @@
+.panel-table-action-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: transparent;
+}
+.panel-table-action-row > *:not(:last-child)::after {
+    content: '|';
+    color: transparent;
+    margin: 0 10px;
+}

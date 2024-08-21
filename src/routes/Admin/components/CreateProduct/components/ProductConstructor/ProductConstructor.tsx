@@ -6,18 +6,21 @@ import { Dropdown } from '../../../../../../components/DropdownList'
 import { useUserData } from '../../../../../../store/tools'
 import { TDropdownListElem } from '../../../../../../components/DropdownList/types'
 import { Button } from '../../../../../../components/buttons'
-import { DescriptionConstructor } from '../DescriptionConstructor'
-import { DescriptionElementType } from '../DescriptionConstructor/types'
+// import { DescriptionConstructor } from '../DescriptionEditor'
 import { Service } from '../../../../../../common/services'
 import { TPostCreateProductRequest } from '../../../../../../common/services/product/types/postCreateProduct'
 import { useToast } from '../../../../../../common/toast'
+import { DescriptionEditor } from '../DescriptionEditor'
+import { convertFromRaw, convertToRaw, Editor, EditorState, RawDraftContentState, SelectionState } from 'draft-js'
 import './styles.css'
+import { StyledDraftText } from '../../../../../../components/StyledDraftText'
+
 
 export const ProductConstructor = () => {  
     const { categories } = useUserData();
     const { notifyError, notifySuccess } = useToast();
     const [error, setError] = useState<string>('');
-    const [description, setDescription] = useState<DescriptionElementType[]>([]);
+    const [description, setDescription] = useState<RawDraftContentState>();
     const [subcategoryId, setSubcategoryId] = useState<string>('');
     const [formData, setFormData] = useState<TCardPreviewProps['card']>({
         photo_url: '',
@@ -58,16 +61,20 @@ export const ProductConstructor = () => {
     } 
 
     const descriptionToJsonString = () => {
-        const formattedDescription = description.map(value => ({ [value.key]: value.value }));
-        return JSON.stringify(formattedDescription, null, 2);
+        return JSON.stringify(description);
     }
 
     const handleCreateProduct = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const newProduct = new FormData(e.currentTarget);
 
+        // check if fields are empty
         if (!subcategoryId) {
             handleError("You did't pick category!");
+            return;
+        }
+        if (!description) {
+            handleError("You did't enter description!");
             return;
         }
         newProduct.forEach((value, key) => {
@@ -77,7 +84,6 @@ export const ProductConstructor = () => {
         });
 
         const descriptionJson = descriptionToJsonString();
-
         const payload: TPostCreateProductRequest['payload'] = {
             photo_url: newProduct.get('photo_url') as string,
             price_currency: parseFloat(newProduct.get('price_currency') as string),
@@ -103,6 +109,8 @@ export const ProductConstructor = () => {
             }
         ];
 
+        console.log('translates => ', payload.translate);
+
         Service.ProductService.create(payload)
             .then(res => {
                 console.log(res.data);
@@ -114,38 +122,9 @@ export const ProductConstructor = () => {
             });
     }
 
-    const handleDescriptionApply = (data: DescriptionElementType[]) => {
-        setDescription(data);
-    }
-
-    const renderDescription = () => {
-        const formatValue = (value: string): string => {
-            if (!value) return '';
-    
-            if (typeof value === 'object') {
-                return 'object type';
-            }
-    
-            if (typeof value === 'boolean') {
-                return value ? 'Так' : 'Ні';
-            }
-    
-            return value;
-        };
-
-        return (
-            <div>
-                {
-                    description.map((value, index) => {
-                        return (
-                            <h4 className="pb-2" key={index}>
-                                <strong>{value.key}</strong>: {formatValue(value.value)}
-                            </h4>
-                        )
-                    })
-                }
-            </div>
-        )
+    const handleDescriptionApply = (state: RawDraftContentState) => {
+        console.log(JSON.stringify(state));
+        setDescription(state);
     }
 
     return (
@@ -207,7 +186,13 @@ export const ProductConstructor = () => {
                         onSelect={handleSubcategorySelect}
                         />
 
-                    <DescriptionConstructor onApply={handleDescriptionApply}/>
+                    <h1>Editor</h1>
+                    <p className='info-text'>
+                        <b>Important!</b> To create product you have to click 
+                        <code> <b>Apply text</b> </code> 
+                        button first to save your description.
+                    </p>
+                    <DescriptionEditor onEditorChange={handleDescriptionApply} />
 
                     <Button text='Create Product' type='submit' onClick={() => {}}/>
                     {error && <h1 className='text-xl text-red'>{error}</h1>}
@@ -216,10 +201,10 @@ export const ProductConstructor = () => {
             <div className='product-preview-container'>
                 <ProductPreview card={formData}/>
                 {
-                    description.length !== 0 ? (
+                    description ? (
                         <>
                             <h1>Description</h1>
-                            {renderDescription()}
+                            <StyledDraftText rawState={description}/>
                         </>
                     ) : (
                         null

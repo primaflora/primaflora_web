@@ -41,6 +41,7 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
     };
 
     const handleLogOutPress = () => {
+        console.log('logout')
         Service.AuthService.postLogOut();
         StorageService.removeToken('accessToken');
         StorageService.removeToken('refreshToken');

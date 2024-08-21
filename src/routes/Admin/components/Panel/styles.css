@@ -1,0 +1,302 @@
+.panel-container {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+}
+
+.panel-header-container {
+    padding: 15px 20px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+.panel-header-text {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.panel-main-container {
+    padding: 15px 20px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-tip-container {
+    background-color: #e9e9e9;
+    border: 1px solid #e0e0e0;
+    align-items: center;
+    padding: 10px 15px;
+    gap: 10px;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: row;
+}
+.panel-tip-text {
+    color: #757575;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+}
+
+.panel-notification-container {
+    background-color: #e9e9e9;
+    border: 1px solid #c3c4c7;
+    border-left-width: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    border-color: rgb(195, 196, 199);
+    border-left-color: rgb(0, 163, 42);
+    align-items: center;
+    padding: 10px 15px;
+    gap: 10px;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: row;
+    padding: 12px;
+    align-items: center;
+    justify-content: space-between;
+}
+.panel-notification-text {
+    color: rgb(60, 67, 74);
+    font-size: 13px;
+    height: 19px;
+}
+
+.panel-header-arrow {
+    transform: rotate(0deg);
+}
+.panel-header-arrow.close {
+    transform: rotate(180deg);
+}
+
+.panel-input {
+    background-color: transparent;
+    box-sizing: border-box;
+    color: #1e1e1e;
+    display: block;
+    font-family: inherit;
+    margin-top: 5px;
+    outline-style: none;
+    width: 100%;
+    font-size: 16px;
+    height: 32px;
+    line-height: 1;
+    min-height: 32px;
+    padding-left: calc(8px);
+    padding-right: calc(8px);
+    border: 1px solid gray;
+    border-radius: 2px;
+    box-shadow: none;
+}
+.panel-input:focus {
+    border: 1px solid blue;
+}
+
+.panel-button {
+    width: fit-content;
+    padding: 10px 15px;
+    background-color: #2145e6;
+    color: white;
+    border-radius: 2px;
+    transition: all 0.12s ease;
+    outline: none;
+}
+.panel-button:hover {
+    cursor: pointer;
+    background-color: rgb(0, 69, 139);
+}
+.panel-button:active {
+    outline: auto;
+}
+.panel-button-small {
+    padding: 5px 10px;
+}
+.panel-button-small > h1 {
+    font-size: 14px;
+}
+.panel-button-unfilled {
+    background: #f6f7f7;
+    border: 1px solid #2271b1;
+}
+.panel-button-unfilled > h1 {
+    color: #2271b1;
+}
+.panel-button-unfilled:hover {
+    background-color: transparent;
+}
+
+.panel-link {
+    color: #2145e6;
+}
+.panel-link:hover {
+    text-decoration: underline;
+    cursor: pointer
+}
+.panel-link:active {
+    color: rgb(0, 69, 139);   
+}
+
+.panel-form-input-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.panel-form-input-textarea {
+    width: 100%;
+    height: 100px;;
+    border: 1px solid gray;
+    border-radius: 2px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 16px;
+    outline-style: none;
+}
+
+.panel-form-input-textarea:focus {
+    border: 1px solid blue;
+}
+
+.panel-checkbox-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    height: 24px;
+}
+.panel-checkbox {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+    padding: 6px 8px;
+    width: 16px;
+    height: 16px;
+    box-shadow: 0 0 0 transparent;
+    transition: box-shadow .1s linear;
+    border-radius: 2px;
+    border: 1px solid #949494;
+    font-size: 16px;
+    line-height: normal;
+    border: 1px solid #1e1e1e;
+    margin-right: 12px;
+    transition: none;
+    border-radius: 2px;
+    background: #fff;
+    color: #1e1e1e;
+    clear: none;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 0;
+    margin: 0 4px 0 0;
+    outline: 0;
+    padding: 0 !important;
+    text-align: center;
+    vertical-align: top;
+    appearance: none;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+    transition: .1s all ease-in-out;
+}
+.panel-checkbox:checked {
+    background: #3858e9;
+    border-color: #3858e9;
+}
+.panel-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    left: 1px;
+    bottom: 13px;
+}
+
+.panel-title {
+    font-size: 23px;
+    font-weight: 400;
+    margin: 0;
+    padding: 9px 0 4px;
+    line-height: 1.3;
+    color: #1d2327;
+}
+
+.panel-list {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+.panel-list-header-elem-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+.panel-list-header-button {
+    color: #2271b1;
+}
+thead {
+    border: 1px solid #c3c4c7;
+}
+thead > tr {
+    height: 35px;
+}
+thead > tr > th {
+    text-align: left;
+    font-weight: 400;
+    line-height: 1.4em;
+    color: #1d2327;
+    font-size: 14px;
+
+}
+th:nth-child(1) {
+    width: 35px;
+    vertical-align: middle;
+    align-items: center;
+}
+tbody > tr {
+    border-bottom: 1px solid #c3c4c7;
+}
+tbody > tr:nth-child(2n-1) {
+    background-color: #f6f7f7;
+}
+tbody > tr > td {
+    vertical-align: top;
+}
+
+.panel-sort-type-selector-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.panel-sort-triangle {
+    width: 0; 
+    height: 0; 
+}
+.triangle-up {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    
+    border-bottom: 7px solid #a7aaad;
+}
+.triangle-down {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+  
+    border-top: 7px solid #a7aaad;
+}
+.triangle-up:hover {
+    cursor: pointer;
+    border-bottom: 7px solid #1d2327;
+}
+.triangle-down:hover {
+    cursor: pointer;
+    border-top: 7px solid #1d2327;
+}
+.sort-selector-active-up {
+    border-bottom: 7px solid #1d2327;
+}
+.sort-selector-active-down {
+    border-top: 7px solid #1d2327;
+}

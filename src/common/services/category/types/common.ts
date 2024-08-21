@@ -34,5 +34,5 @@ export type TComment = {
 export type TProductFull = {
     desc: string; // a json object of some product properties
     comments: TComment[];
-    category: TCategory;
+    category: TSubcategory;
 } & TProduct;

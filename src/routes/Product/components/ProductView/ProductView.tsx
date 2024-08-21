@@ -8,6 +8,7 @@ import { CommentSection } from './components/CommentSection/CommentSection';
 import './styles.css';
 import { TProductViewProps } from './types';
 import { useUserData } from '../../../../store/tools';
+import { StyledDraftText } from '../../../../components/StyledDraftText';
 
 export const ProductView = ({ product }: TProductViewProps) => {
     const { isAuth, user } = useUserData();
@@ -136,70 +137,10 @@ export const ProductView = ({ product }: TProductViewProps) => {
             </div>
 
             <Line />
-            {renderDescription(JSON.parse(product.desc))}
+                <StyledDraftText rawState={JSON.parse(product.desc)}/>
             <Line />
 
             <CommentSection comments={product.comments} />
-        </div>
-    );
-};
-
-export const renderDescription = (desc: Object) => {
-    const formatKey = (key: string): string => {
-        if (!key) return '';
-
-        const res = key.replace(/_/g, ' ');
-        return res.charAt(0).toUpperCase() + res.slice(1);
-    };
-
-    const formatValue = (value: string): string => {
-        if (!value) return '';
-
-        if (typeof value === 'object') {
-            return 'object type';
-        }
-
-        if (typeof value === 'boolean') {
-            return value ? 'Так' : 'Ні';
-        }
-
-        return value;
-    };
-
-    return (
-        <div>
-            {Object.entries(desc).map(([key, value]) => {
-                // if array
-                if (typeof value === 'object' && Array.isArray(value)) {
-                    console.log('Is Array');
-                    return (
-                        <h4>
-                            <strong>{formatKey(key)}</strong>:{' '}
-                            <ul className="pl-4">
-                                {value.map((item, index) => (
-                                    <h1 className="flex">{item}, </h1>
-                                    // <li
-                                    //     className='before:content-["•"]'
-                                    //     key={index}>
-                                    //     {item}
-                                    // </li>
-                                ))}
-                            </ul>
-                        </h4>
-                    );
-                }
-
-                // if object
-                if (typeof value === 'object') {
-                    return renderDescription(value);
-                }
-
-                return (
-                    <h4 className="pb-2">
-                        <strong>{formatKey(key)}</strong>: {formatValue(value)}
-                    </h4>
-                );
-            })}
         </div>
     );
 };

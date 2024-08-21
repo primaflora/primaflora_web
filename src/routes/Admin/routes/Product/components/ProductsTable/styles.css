@@ -1,0 +1,16 @@
+.blue-button {
+    color: #2271b1;
+    font-size: 13px;
+}
+
+.table-product-title:hover {
+    .panel-table-action-row {
+        color: #2271b1;
+        .panel-reject-button {
+            color: rgb(223, 40, 40);
+        }
+        *:not(:last-child)::after { 
+            color: rgba(0, 0, 0, 0.2);
+        }
+    }
+}

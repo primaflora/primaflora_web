@@ -20,10 +20,11 @@ export const Category = () => {
 
         if (!pickedSubcategory) {
             for (const category of categories) {
-                setPickedSubcategory(
-                    category.childrens.find(c => c.uuid === uuid)!,
-                );
-                break;
+                const currentCategory = category.childrens.find(c => c.uuid === uuid);
+                if (currentCategory) {
+                    setPickedSubcategory(currentCategory);
+                    break;
+                }
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

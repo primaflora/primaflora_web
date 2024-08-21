@@ -1,6 +1,7 @@
 export type TDropdownProps = {
     title: string;
     list: TDropdownListElem[];
+    multiSelect?: boolean;
     onSelect: (value: TDropdownListElem) => void;
 }
 

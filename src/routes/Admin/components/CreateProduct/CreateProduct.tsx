@@ -3,7 +3,7 @@ import { Button } from "../../../../components/buttons";
 import { ProductConstructor } from "./components/ProductConstructor";
 import { useTranslation } from "react-i18next";
 import "./styles.css";
-import { TDropdownListElem } from "../../../../components/DropdownList/types";
+import 'draft-js/dist/Draft.css';
 
 export const CreateProduct = () => {
     const { t } = useTranslation();

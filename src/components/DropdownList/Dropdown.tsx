@@ -3,7 +3,7 @@ import { TDropdownListElem, TDropdownProps } from './types';
 import './styles.css';
 import { Images } from '../../assets';
 
-export const Dropdown = ({ title, list, onSelect }: TDropdownProps) => {
+export const Dropdown = ({ title, list, onSelect, multiSelect = false }: TDropdownProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<TDropdownListElem | null>(null);
 
