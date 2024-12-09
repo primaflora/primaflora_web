@@ -67,7 +67,6 @@ export const ProductConstructor = () => {
     const handleCreateProduct = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const newProduct = new FormData(e.currentTarget);
-
         // check if fields are empty
         if (!subcategoryId) {
             handleError("You did't pick category!");
@@ -93,7 +92,7 @@ export const ProductConstructor = () => {
             categoryId: Number(subcategoryId),
             translate: []
         };
-
+        console.log(descriptionJson)
         payload.translate = [
             {
                 language: 'rus',

@@ -46,7 +46,7 @@ export const AdminProduct = () => {
             setNotification('Select at least one category!');
             return;
         }
-
+        console.log(description)
         const formData = new FormData(e.currentTarget);
 
         // check if all fields are filled
@@ -66,7 +66,7 @@ export const AdminProduct = () => {
                     language: 'ukr',
                     title: formData.get('title') as string,
                     shortDesc: formData.get('shortDesc') as string,
-                    desc: JSON.stringify(description)
+                    desc: "It is full desc"
                 }
             ]
         }
