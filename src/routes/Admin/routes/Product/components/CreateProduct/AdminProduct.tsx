@@ -66,7 +66,7 @@ export const AdminProduct = () => {
                     language: 'ukr',
                     title: formData.get('title') as string,
                     shortDesc: formData.get('shortDesc') as string,
-                    desc: "It is full desc"
+                    desc: JSON.stringify(description)
                 }
             ]
         }
