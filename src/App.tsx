@@ -19,6 +19,9 @@ import { AdminComments } from './routes/Admin/routes/Comments';
 import { AdminProduct, ProductsTable } from './routes/Admin/routes/Product';
 import { AdminProductEdit } from './routes/Admin/routes/Product/components/EditProduct';
 import { useUserData } from './store/tools';
+import AdminCreateCategories from './routes/Admin/routes/Categories/components/AdminCreateCategories';
+import AdminCategoriesTable from './routes/Admin/routes/Categories/components/AdminCategoriesTable';
+import AdminSubcategoryEdit from './routes/Admin/routes/Categories/components/AdminSubcategoryEdit';
 
 function App() {
     const { setIsAuth } = useAuth();
@@ -60,6 +63,11 @@ function App() {
                         <Route path='table' element={<ProductsTable/>}/>
                     </Route>
                     <Route path="comments" element={<AdminComments/>}/>
+                    <Route path="categories">
+                        <Route path='create' element={<AdminCreateCategories/>}/>
+                        <Route path='table' element={<AdminCategoriesTable/>}/>
+                        <Route path='subcategory/edit/:subcategoryId' element={<AdminSubcategoryEdit/>}/>
+                    </Route>
                 </Route>
             </Routes>
 

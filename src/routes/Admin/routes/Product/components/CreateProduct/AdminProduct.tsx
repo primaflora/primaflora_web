@@ -12,13 +12,16 @@ import './styles.css';
 import { TProduct } from '../../../../../../common/services/product/types';
 import { Service } from '../../../../../../common/services';
 import { TProductPayload } from '../../../../../../common/services/product/types/postCreateProduct';
+import axios from 'axios';
 
 export const AdminProduct = () => {
-    const { categories } = useUserData();
+    // const { categories } = useUserData();
+    const [categories, setCategories] = useState<any[]>([]);
     const [description, setDescription] = useState<RawDraftContentState>();
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [card, setCard] = useState<Partial<TProduct>>();
     const [notification, setNotification] = useState<string>();
+    const [isHidden, setIsHidden] = useState(false);
 
     const updateCard = (key: keyof Partial<TProduct>, value: string | number) => {
         setCard(prevState => ({...prevState, [key]: value}));
@@ -30,9 +33,11 @@ export const AdminProduct = () => {
 
     const categoriesToTags = () => {
         const arr: Tag[] = [];
+        console.log(categories);
         categories.forEach(category => {
-            category.childrens.forEach(subcategory => {
-                arr.push({ label: subcategory.name, value: subcategory.id.toString() });
+            category.childrens.forEach((subcategory: any) => {
+                console.log(subcategory);
+                arr.push({ label: subcategory.translate[0].name, value: subcategory.id.toString() });
             })
         })
 
@@ -61,6 +66,7 @@ export const AdminProduct = () => {
             price_points: 0,
             percent_discount: 0,
             categoryId: Number(selectedTags[0].value),
+            isPublished: !isHidden,
             translate: [
                 {
                     language: 'ukr',
@@ -86,13 +92,26 @@ export const AdminProduct = () => {
 
     }
 
-    const handleAddTag = (tag: Tag) => {
+    const handleAddTag = (tag: any) => {
         setSelectedTags([...selectedTags, tag]);
     }
 
-    const handleRemoveTag = (tag: Tag) => {
+    const handleRemoveTag = (tag: any) => {
         setSelectedTags(selectedTags.filter(t => t !== tag));
     }
+
+    const fetchSubcategories = async () => {
+        try {
+          const response = await axios.get("https://primaflora-12d77550da26.herokuapp.com/categories");
+          setCategories(response.data);
+        } catch (error) {
+          console.error("Ошибка при загрузке категорий:", error);
+          alert("Не удалось загрузить категории.");
+        }
+      };
+    useEffect(() => {
+        fetchSubcategories();
+    }, [])
 
     return (
         <div>
@@ -137,6 +156,7 @@ export const AdminProduct = () => {
                                         name='shortDesc'
                                         onTextChange={(newText) => updateCard('shortDesc', newText)}
                                         isTextArea />
+                                    <Panel.Checkbox label='Is Hidden' state={isHidden} onChange={() => setIsHidden(prev => !prev)} />
                                     {/* <Panel.Checkbox label='Is Hidden' onChange={() => {}} /> */}
                             </Panel.Body>
                             <Panel.Body>
@@ -163,14 +183,17 @@ export const AdminProduct = () => {
                         <Panel.Header 
                             title='Select Category'
                             style={{ textAlign: 'center', justifyContent: 'space-between' }}>
-                                <Panel.Link to='/admin-page/categories' text='View all' />
+                                <Panel.Link to='/admin-page/categories/table' text='View all' />
                         </Panel.Header>
                         <Panel.Body>
-                            <TagsInput 
+                            {
+                                categories.length &&
+                                <TagsInput 
                                 tags={categoriesToTags()} 
                                 selectedTags={selectedTags}
                                 onTagAdd={handleAddTag}
                                 onTagRemove={handleRemoveTag} />
+                            }
                         </Panel.Body>
                     </Panel.Container>
                 </Column>

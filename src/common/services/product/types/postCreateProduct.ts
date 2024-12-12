@@ -12,6 +12,7 @@ export type TProductPayload = {
     percent_discount: number,
     categoryId: number;
     translate: TProductTranslatePayload[];
+    isPublished: boolean;
 }
 
 type TProductTranslatePayload = {

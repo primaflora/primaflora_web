@@ -10,10 +10,18 @@ export const Dashboard = () => {
                 <h1 className='dashboard-title-text'>Admin Dashboard</h1>
             </div>
             <DashboardElem title='Users' icon={Images.UserIconMob} link='/admin-page/users' />
-            <DashboardElem title='Categories' icon={Images.FolderIcon} link='/admin-page/catgories' />
+            <DashboardElem
+                title='Categories'
+                icon={Images.FolderIcon}
+                link='/admin-page/categories/table'
+                dropdownElems={[
+                    {label: 'Categories Table', link: '/admin-page/categories/table'},
+                    { label: 'Create Category', link: '/admin-page/categories/create' },
+                ]}
+            />
             <DashboardElem 
                 title='Products' 
-                icon={Images.AddNoteIcon} 
+                icon={Images.AddNoteIcon}   
                 link='/admin-page/products/table'
                 dropdownElems={[
                     { label: 'Products Table', link: '/admin-page/products/table' },

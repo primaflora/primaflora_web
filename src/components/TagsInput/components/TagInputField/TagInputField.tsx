@@ -13,6 +13,7 @@ export const TagInputField = ({ tags }: TagInputFieldProps) => {
     const { selectTag } = useContext(TagsInputContext);
 
     const handleTextChange = (newText: string) => {
+
         setText(newText);
         updateSuggestedTags(newText);
 

@@ -16,7 +16,8 @@ import './styles.css';
 export const AdminProductEdit = () => {
     const { uuid } = useParams();
     const { categories } = useUserData();
-    const [description, setDescription] = useState<RawDraftContentState>();
+    const [isHidden, setIsHidden] = useState(false);
+    const [description, setDescription] = useState<RawDraftContentState | string>();
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [product, setProduct] = useState<TProduct>();
     const [isEdited, setIsEdited] = useState<boolean>(false);
@@ -30,7 +31,10 @@ export const AdminProductEdit = () => {
 
                 setProduct(res.data);
                 console.log(res.data);
-                setDescription(JSON.parse(res.data.desc));
+                try {
+                    setDescription(JSON.parse(res.data.desc));
+                } catch (e: any) {
+                }
                 // TODO: make multiple categories
                 setSelectedTags([{ 
                     label: (res.data.category as any).translate[0].name, 
@@ -174,7 +178,7 @@ export const AdminProductEdit = () => {
                                     title='Short description' 
                                     name='shortDesc'
                                     isTextArea />
-                                <Panel.Checkbox label='Is Hidden' onChange={() => {}} />
+                                <Panel.Checkbox label='Is Hidden' state={isHidden} onChange={() => setIsHidden(prev => !prev)} />
                             </Panel.Body>
                             <Panel.Body>
                                 <Panel.Tip>
