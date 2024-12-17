@@ -10,7 +10,7 @@ export type TProductPayload = {
     price_currency: number;
     price_points: number;
     percent_discount: number,
-    categoryId: number;
+    categoryIds: number[];
     translate: TProductTranslatePayload[];
     isPublished: boolean;
 }

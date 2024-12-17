@@ -80,7 +80,12 @@ export const ProductView = ({ product }: TProductViewProps) => {
 
     return (
         <div className="mt-10">
-            <h1 className="category-name">{product.category.name}</h1>
+            <h1 className="category-name">
+                {product.categories.map(category => {
+                    console.log(category)
+                    return category.translate[0].name;
+                }).join(', ') || 'No Categories'}
+            </h1>
             <div className="product-view-container">
                 <img
                     className="product-avatar"

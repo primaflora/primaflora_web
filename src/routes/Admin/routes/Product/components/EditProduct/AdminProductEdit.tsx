@@ -36,10 +36,16 @@ export const AdminProductEdit = () => {
                 } catch (e: any) {
                 }
                 // TODO: make multiple categories
-                setSelectedTags([{ 
-                    label: (res.data.category as any).translate[0].name, 
-                    value: res.data.category.uuid 
-                }]);
+                // setSelectedTags([{ 
+                //     label: (res.data.category as any).translate[0].name, 
+                //     value: res.data.category.uuid 
+                // }]);
+                setSelectedTags(res.data.categories.map(cat => {
+                    return {
+                        label: cat.translate[0].name, 
+                        value: cat.id as string
+                    }
+                }));
             })
     }, []);
 
@@ -78,6 +84,7 @@ export const AdminProductEdit = () => {
     }
 
     const generatePayload = (fields: object) => {
+        console.log("Fields", fields)
         let payload = {} as Partial<TProductUpdate>;
 
         for (const [key, value] of Object.entries(fields)) {
@@ -118,6 +125,11 @@ export const AdminProductEdit = () => {
 
         // create payload for request
         const payload = generatePayload(updatedFields);
+        console.log(payload)
+        payload.categoryIds = selectedTags.map(item => {
+            console.log(item);
+            return Number(item.value)
+        })
 
         Service.ProductService.update({ productUid: product.uuid, toUpdate: payload })
             .then(res => {

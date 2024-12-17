@@ -38,15 +38,20 @@ export const Product = () => {
     useEffect(() => {
         if (!pickedSubcategory && product) {
             for (const category of categories) {
-                const protuctCategory = category.childrens.find(c => c.uuid === product?.category.uuid);
-                if (protuctCategory) {
-                    setPickedSubcategory(protuctCategory);
-                    console.log('selected category => ', category.childrens.find(c => c.uuid === uuid)!);
-                    break;
+                // Проверяем все категории продукта
+                for (const productCategory of product.categories) {
+                    const matchedSubcategory = category.childrens.find(
+                        c => c.uuid === productCategory.uuid
+                    );
+                    if (matchedSubcategory) {
+                        setPickedSubcategory(matchedSubcategory);
+                        console.log('Selected category => ', matchedSubcategory);
+                        return;
+                    }
                 }
             }
         }
-    }, [product, categories]);
+    }, [product, categories, pickedSubcategory, setPickedSubcategory]);
 
     return (
         <div className="home-container main-global-padding py-10">

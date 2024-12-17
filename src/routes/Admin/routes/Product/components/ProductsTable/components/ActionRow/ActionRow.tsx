@@ -14,7 +14,7 @@ export const ActionRow = ({ isHidden, onAction }: TActionRowProps) => {
                 isHidden 
                 ? <button 
                     className='panel-approve-button' 
-                    onClick={() => handleAction('publish')}>Publish</button>
+                    onClick={() => handleAction('show')}>Publish</button>
                 : <button 
                     className='panel-reject-button'
                     onClick={() => handleAction('hide')} >Hide</button>

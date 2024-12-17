@@ -15,8 +15,8 @@ import './styles.css';
 const ListHeaders: Array<THeaderElem> = [
     { label: 'Title', value: 'title' },
     { label: 'Price', value: 'price_currency' },
-    { label: 'Is Published', value: 'isHidden' },
-    { label: 'Categories', value: 'category' },
+    { label: 'Is Published', value: 'isPublished' },
+    { label: 'Categories', value: 'categories' },
 ];
 const ListHeadersWidth = [
     { columnIndex: 0, widthPercent: 50 },
@@ -26,7 +26,6 @@ const ListHeadersWidth = [
 ];
 type Product = {
     isChecked: boolean;
-    isHidden: boolean;
 } & TProductTable;
 const ActionListOptions = [
     { label: 'Hide', value: 'hide' },
@@ -47,7 +46,7 @@ export const ProductsTable = () => {
         Service.ProductService.findAll()
             .then(res => {
                 const newProducts = res.data.map((product, index) => 
-                    ({ ...product, isChecked: false, isHidden: false })
+                    ({ ...product, isChecked: false })
                 );
                 setProducts(newProducts);
                 setUpdatedProducts(newProducts);
@@ -79,37 +78,45 @@ export const ProductsTable = () => {
 
     const handleSortChange = (sortBy: string, sortType: TSortType) => {
         console.log('Sort By: ', sortBy, ". Sort Type: ", sortType);
+        console.log(updatedProducts)
         const sortedProducts = [...updatedProducts].sort((a: Product, b: Product) => {
+            console.log(a)
             const aValue = a[sortBy as keyof Product];
             const bValue = b[sortBy as keyof Product];
 
-            // if values are categories
-            if (typeof aValue === 'object' && typeof bValue === 'object') {
-                if (aValue.name < bValue.name) {
-                    return sortType === 'ASC' ? -1 : 1;
-                } else {
-                    return sortType === 'ASC' ? 1 : -1;
-                }
-            }
+            console.log(aValue, bValue)
+            // Если значение - массив (например, categories), берем первый элемент для сортировки
+            if (Array.isArray(aValue) && Array.isArray(bValue)) {
+                const aName = aValue[0]?.name || ''; // Берем name первой категории
+                const bName = bValue[0]?.name || '';
 
-            if (aValue < bValue) {
-                return sortType === 'ASC' ? -1 : 1;
-            } else if (aValue > bValue) {
-                return sortType === 'ASC' ? 1 : -1;
-            } else {
+                if (aName < bName) return sortType === 'ASC' ? -1 : 1;
+                if (aName > bName) return sortType === 'ASC' ? 1 : -1;
                 return 0;
             }
+
+            // Обычная сортировка по числовым или строковым значениям
+            if (aValue < bValue) return sortType === 'ASC' ? -1 : 1;
+            if (aValue > bValue) return sortType === 'ASC' ? 1 : -1;
+            return 0;
         });
 
         setUpdatedProducts(sortedProducts);
     }
 
     const handleFilterByTags = () => {
-        if (selectedTags.length === 0) return;
-
-        const filteredProducts = [...products].filter(product => {
-            return selectedTags.some(tag => tag.value === product.category.uuid);
-        })
+        if (selectedTags.length === 0) {
+            setUpdatedProducts(products); // Если теги не выбраны, показываем все продукты
+            return;
+        }
+    
+        const filteredProducts = products.filter(product => {
+            // Проверяем, хотя бы одна категория продукта совпадает с выбранным тегом
+            return product.categories.some(category =>
+                selectedTags.some(tag => tag.value === category.uuid)
+            );
+        });
+    
         setUpdatedProducts(filteredProducts);
     }
 
@@ -167,12 +174,26 @@ export const ProductsTable = () => {
     }
     
     const handleApplyAction = (action: string, productUid: string) => {
+        console.log(action, productUid)
         switch (action) {
             case 'edit':
                 navigate(`/admin-page/products/edit/${productUid}`);
                 break;
             case 'hide':
                 // selectedProduct?.isHidden ? selectedProduct.isHidden = false : selectedProduct.isHidden = true;
+                Service.ProductService.update({ productUid: productUid, toUpdate: {isPublished: false} }).then(() => {
+                    setUpdatedProducts(prevState =>
+                        prevState.map(product =>
+                            product.uuid === productUid
+                                ? { ...product, isPublished: false }
+                                : product
+                        )
+                    );
+                    setNotifications(prevState => [
+                        ...prevState,
+                        `Product ${productUid} is hidden successfully`,
+                    ]);
+                })
                 break;
             case 'delete':
                 Service.ProductService.delete({ uuid: productUid }).then(() => {
@@ -181,7 +202,19 @@ export const ProductsTable = () => {
                 })
                 break;
             case 'show':
-                // selectedProduct?.isHidden ? selectedProduct.isHidden = false : selectedProduct.isHidden = true;
+                Service.ProductService.update({ productUid: productUid, toUpdate: {isPublished: true} }).then(() => {
+                    setUpdatedProducts(prevState =>
+                        prevState.map(product =>
+                            product.uuid === productUid
+                                ? { ...product, isPublished: true }
+                                : product
+                        )
+                    );
+                    setNotifications(prevState => [
+                        ...prevState,
+                        `Product ${productUid} is published successfully`,
+                    ]);
+                })
                 break;
             default:
                 break;
@@ -259,14 +292,18 @@ export const ProductsTable = () => {
                             </a>
                             <ActionRow 
                                 onAction={(action) => handleApplyAction(action, entry.uuid)} 
-                                isHidden={entry.isHidden} />
+                                isHidden={!entry.isPublished} />
                         </td>
                         <td>{entry.price_currency}</td>
-                        <td>{entry.isHidden ? 'No' : 'Yes'}</td>
+                        <td>{entry.isPublished ? "Yes" : 'No'}</td>
                         <td>
-                            <CategoryTag 
-                                title={entry.category.name} 
-                                link={`/category/${entry.category.uuid}`} />
+                            {
+                                entry.categories.map(item => (
+                                    <CategoryTag 
+                                        title={item.name} 
+                                        link={`/category/${item.uuid}`} />
+                                ))
+                            }
                         </td>
                     </tr>
                 )}

@@ -2,8 +2,10 @@ import { TBasicDataBaseData, TUser } from '../../types.ts';
 
 export type TSubcategory = {
     image: string;
-    name: string;
-    desc: string;
+    translate: [{
+        language: string;
+        name: string;
+    }]
     language: string;
 } & TBasicDataBaseData;
 
@@ -34,5 +36,5 @@ export type TComment = {
 export type TProductFull = {
     desc: string; // a json object of some product properties
     comments: TComment[];
-    category: TSubcategory;
+    categories: TSubcategory[];
 } & TProduct;

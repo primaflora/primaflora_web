@@ -58,14 +58,14 @@ export const AdminProduct = () => {
         formData.forEach((value, key) => {
             console.log(`${key}: ${value}`);
         })
-
+        console.log(selectedTags[0].value)
         // create payload for request
         const payload: TProductPayload = {
             photo_url: formData.get('photo_url') as string,
             price_currency: Number(formData.get('price_currency')),
             price_points: 0,
             percent_discount: 0,
-            categoryId: Number(selectedTags[0].value),
+            categoryIds: selectedTags.map(item => Number(item.value)),
             isPublished: !isHidden,
             translate: [
                 {

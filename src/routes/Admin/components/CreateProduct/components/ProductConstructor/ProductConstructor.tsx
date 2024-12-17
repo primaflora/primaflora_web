@@ -36,7 +36,7 @@ export const ProductConstructor = () => {
 
         categories.map(category => (
             category.childrens.map(subcategory => { 
-                list.push({ title: subcategory.name, value: String(subcategory.id) })
+                list.push({ title: subcategory.translate[0].name, value: String(subcategory.id) })
             })
         ));
 

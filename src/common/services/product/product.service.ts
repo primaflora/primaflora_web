@@ -42,6 +42,7 @@ export class ProductService {
     static async update(
         data: TPatchUpdateProduct['payload']
     ): Promise<TPatchUpdateProduct['response']> {
+        console.log(data.toUpdate)
         return apiPrivate.patch(
             `/products/update/${data.productUid}`, 
             data.toUpdate,

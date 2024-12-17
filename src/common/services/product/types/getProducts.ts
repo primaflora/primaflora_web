@@ -11,7 +11,7 @@ export type TProductTable = {
     uuid: string;
     createdAt: string;
     price_currency: number;
-    category: {
+    categories: [{
         id: number;
         uuid: string;
         createdAt: string;
@@ -19,7 +19,8 @@ export type TProductTable = {
         image: string;
         name: string;
         language: string;
-    };
+    }];
+    isPublished: boolean;
     title: string;
     language: string;
 }

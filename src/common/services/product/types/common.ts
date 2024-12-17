@@ -9,4 +9,6 @@ export type TProduct = {
     price_points: number;
     percent_discount: number;
     rating: number;
+    isPublished: boolean;
+    categoryIds: number[];
 } & TBasicDataBaseData;
