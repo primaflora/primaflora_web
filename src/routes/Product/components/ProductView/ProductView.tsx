@@ -9,6 +9,8 @@ import './styles.css';
 import { TProductViewProps } from './types';
 import { useUserData } from '../../../../store/tools';
 import { StyledDraftText } from '../../../../components/StyledDraftText';
+import {stateFromHTML} from 'draft-js-import-html';
+import {convertToRaw} from 'draft-js'
 
 export const ProductView = ({ product }: TProductViewProps) => {
     const { isAuth, user } = useUserData();
@@ -142,7 +144,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
             </div>
 
             <Line />
-                <StyledDraftText rawState={JSON.parse(product.desc)}/>
+                <StyledDraftText rawState={convertToRaw(stateFromHTML(product.desc))}/>
             <Line />
 
             <CommentSection comments={product.comments} />

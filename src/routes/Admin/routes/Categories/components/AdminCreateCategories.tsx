@@ -3,25 +3,24 @@ import React, { useEffect, useState } from 'react'
 
 const AdminCreateCategories = () => {
     const [categories, setCategories] = useState<any[]>([]); // Локальный список категорий
-  const [newCategory, setNewCategory] = useState({ name_ukr: "", name_rus: "" }); // Новая категория
+  const [newCategory, setNewCategory] = useState({ name_ukr: "" }); // Новая категория
   const [selectedCategory, setSelectedCategory] = useState(""); // Выбранная категория для подкатегории
   const [newSubcategory, setNewSubcategory] = useState({
     image: "",
     parent_uid: "",
     translate: [
       { language: "ukr", name: "", desc: "" },
-      { language: "rus", name: "", desc: "" },
     ],
   });
 
   // Обработчик добавления новой категории
   const handleAddCategory = async () => {
-    if (!newCategory.name_ukr || !newCategory.name_rus) return alert("Введите названия категории!");
+    if (!newCategory.name_ukr) return alert("Введите названия категории!");
 
     try {
       const response = await axios.post("https://primaflora-12d77550da26.herokuapp.com/categories", newCategory);
       setCategories([...categories, response.data]);
-      setNewCategory({ name_ukr: "", name_rus: "" });
+      setNewCategory({ name_ukr: "" });
       alert("Категория успешно добавлена!");
     } catch (error) {
       console.error("Ошибка при добавлении категории:", error);
@@ -51,7 +50,6 @@ const AdminCreateCategories = () => {
         parent_uid: "",
         translate: [
           { language: "ukr", name: "", desc: "" },
-          { language: "rus", name: "", desc: "" },
         ],
       });
     } catch (error) {
@@ -70,23 +68,16 @@ const AdminCreateCategories = () => {
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "auto", fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Управление категориями</h2>
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Управління категоріями</h2>
 
       {/* Добавление новой категории */}
       <div style={{ marginBottom: "20px" }}>
-        <h3>Добавить категорию</h3>
+        <h3>Додати категорію</h3>
         <input
           type="text"
           value={newCategory.name_ukr}
           onChange={(e) => setNewCategory({ ...newCategory, name_ukr: e.target.value })}
           placeholder="Название категории (укр)"
-          style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
-        />
-        <input
-          type="text"
-          value={newCategory.name_rus}
-          onChange={(e) => setNewCategory({ ...newCategory, name_rus: e.target.value })}
-          placeholder="Название категории (рус)"
           style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
         />
         <button
@@ -100,13 +91,13 @@ const AdminCreateCategories = () => {
             cursor: "pointer",
           }}
         >
-          Добавить категорию
+          Додати категорію
         </button>
       </div>
 
       {/* Добавление новой подкатегории */}
       <div style={{ marginBottom: "20px" }}>
-        <h3>Добавить подкатегорию</h3>
+        <h3>Додати підкатегорію</h3>
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
@@ -118,7 +109,7 @@ const AdminCreateCategories = () => {
             borderRadius: "4px",
           }}
         >
-          <option value="">Выберите категорию</option>
+          <option value="">Оберіть категорію</option>
           {categories.map((category, index) => (
             <option key={index} value={category.uuid}>
               {category.name_ukr}
@@ -129,9 +120,10 @@ const AdminCreateCategories = () => {
           type="text"
           value={newSubcategory.image}
           onChange={(e) => setNewSubcategory({ ...newSubcategory, image: e.target.value })}
-          placeholder="Ссылка на изображение"
+          placeholder="Посилання на зображення"
           style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
         />
+        <img src={newSubcategory.image}/>
         <input
           type="text"
           value={newSubcategory.translate[0].name}
@@ -144,7 +136,7 @@ const AdminCreateCategories = () => {
               ],
             })
           }
-          placeholder="Название подкатегории (укр)"
+          placeholder="Назва підкатегорії"
           style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
         />
         <textarea
@@ -158,36 +150,7 @@ const AdminCreateCategories = () => {
               ],
             })
           }
-          placeholder="Описание подкатегории (укр)"
-          style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
-        ></textarea>
-        <input
-          type="text"
-          value={newSubcategory.translate[1].name}
-          onChange={(e) =>
-            setNewSubcategory({
-              ...newSubcategory,
-              translate: [
-                newSubcategory.translate[0],
-                { ...newSubcategory.translate[1], name: e.target.value },
-              ],
-            })
-          }
-          placeholder="Название подкатегории (рус)"
-          style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
-        />
-        <textarea
-          value={newSubcategory.translate[1].desc}
-          onChange={(e) =>
-            setNewSubcategory({
-              ...newSubcategory,
-              translate: [
-                newSubcategory.translate[0],
-                { ...newSubcategory.translate[1], desc: e.target.value },
-              ],
-            })
-          }
-          placeholder="Описание подкатегории (рус)"
+          placeholder="Опис підкатегорії"
           style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
         ></textarea>
         <button
@@ -201,7 +164,7 @@ const AdminCreateCategories = () => {
             cursor: "pointer",
           }}
         >
-          Добавить подкатегорию
+          Додати підкатегорію
         </button>
       </div>
     </div>

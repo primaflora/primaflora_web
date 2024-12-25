@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const AdminCategoriesTable = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [editingCategory, setEditingCategory] = useState<any | null>(null);
-    const [editCategoryData, setEditCategoryData] = useState({ name_ukr: "", name_rus: "" });
+    const [editCategoryData, setEditCategoryData] = useState({ name_ukr: "" });
     const navigate = useNavigate();
   
     useEffect(() => {
@@ -54,11 +54,11 @@ const AdminCategoriesTable = () => {
   
     const handleEditCategory = (category: any) => {
       setEditingCategory(category);
-      setEditCategoryData({ name_ukr: category.name_ukr, name_rus: category.name_rus });
+      setEditCategoryData({ name_ukr: category.name_ukr });
     };
   
     const handleSaveCategory = async () => {
-      if (!editCategoryData.name_ukr || !editCategoryData.name_rus) {
+      if (!editCategoryData.name_ukr) {
         alert("Заполните все поля!");
         return;
       }
@@ -79,13 +79,13 @@ const AdminCategoriesTable = () => {
   
     return (
       <div style={{ padding: "20px", maxWidth: "1000px", margin: "auto", fontFamily: "Arial, sans-serif" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Список категорий и подкатегорий</h2>
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Список категорії та підкатегорій</h2>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ backgroundColor: "#f4f4f4" }}>
-              <th style={{ border: "1px solid #ddd", padding: "10px", textAlign: "left" }}>Категория</th>
-              <th style={{ border: "1px solid #ddd", padding: "10px", textAlign: "left" }}>Подкатегории</th>
-              <th style={{ border: "1px solid #ddd", padding: "10px", textAlign: "center" }}>Действия</th>
+              <th style={{ border: "1px solid #ddd", padding: "10px", textAlign: "left" }}>Категорія</th>
+              <th style={{ border: "1px solid #ddd", padding: "10px", textAlign: "left" }}>Підкатегорія</th>
+              <th style={{ border: "1px solid #ddd", padding: "10px", textAlign: "center" }}>Дії</th>
             </tr>
           </thead>
           <tbody>
@@ -97,19 +97,12 @@ const AdminCategoriesTable = () => {
                       type="text"
                       value={editCategoryData.name_ukr}
                       onChange={(e) => setEditCategoryData({ ...editCategoryData, name_ukr: e.target.value })}
-                      placeholder="Название (укр)"
+                      placeholder="Назва"
                       style={{ width: "100%", padding: "5px" }}
-                    />
-                    <input
-                      type="text"
-                      value={editCategoryData.name_rus}
-                      onChange={(e) => setEditCategoryData({ ...editCategoryData, name_rus: e.target.value })}
-                      placeholder="Название (рус)"
-                      style={{ width: "100%", padding: "5px", marginTop: "5px" }}
                     />
                   </td>
                   <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                    <em>Редактирование подкатегорий отключено при редактировании категории.</em>
+                    <em>Редагування підкатегорій вимкнено під час редагування категорії.</em>
                   </td>
                   <td style={{ border: "1px solid #ddd", padding: "10px", textAlign: "center" }}>
                     <button
@@ -124,7 +117,7 @@ const AdminCategoriesTable = () => {
                         cursor: "pointer",
                       }}
                     >
-                      Сохранить
+                      Зберегти
                     </button>
                     <button
                       onClick={() => setEditingCategory(null)}
@@ -137,7 +130,7 @@ const AdminCategoriesTable = () => {
                         cursor: "pointer",
                       }}
                     >
-                      Отмена
+                      Відміна
                     </button>
                   </td>
                 </tr>
@@ -145,8 +138,6 @@ const AdminCategoriesTable = () => {
                 <tr key={category.uuid}>
                   <td style={{ border: "1px solid #ddd", padding: "10px", verticalAlign: "top" }}>
                     <p style={{color: 'black', fontSize: 16, fontWeight: 600, textWrap: 'nowrap'}}>{category.name_ukr}</p>
-                    <hr/>
-                    <p style={{color: 'black', fontSize: 16, fontWeight: 600, textWrap: 'nowrap'}}>{category.name_rus}</p>
                   </td>
                   <td style={{ border: "1px solid #ddd", padding: "10px" }}>
                     <ul style={{ margin: 0, padding: 0, listStyleType: "none" }}>
@@ -165,7 +156,7 @@ const AdminCategoriesTable = () => {
                               cursor: "pointer",
                             }}
                           >
-                            Редактировать
+                            Редагувати
                           </button>
                           <button
                             onClick={() => handleDeleteSubcategory(category.uuid, child.uuid)}
@@ -179,7 +170,7 @@ const AdminCategoriesTable = () => {
                               cursor: "pointer",
                             }}
                           >
-                            Удалить
+                            Видалити
                           </button>
                         </li>
                       ))}
@@ -198,7 +189,7 @@ const AdminCategoriesTable = () => {
                         cursor: "pointer",
                       }}
                     >
-                      Редактировать
+                      Редагувати
                     </button>
                     <button
                       onClick={() => handleDeleteCategory(category.uuid)}
@@ -211,7 +202,7 @@ const AdminCategoriesTable = () => {
                         cursor: "pointer",
                       }}
                     >
-                      Удалить
+                      Видалити
                     </button>
                   </td>
                 </tr>

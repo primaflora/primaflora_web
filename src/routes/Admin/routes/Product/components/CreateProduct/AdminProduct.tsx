@@ -13,6 +13,8 @@ import { TProduct } from '../../../../../../common/services/product/types';
 import { Service } from '../../../../../../common/services';
 import { TProductPayload } from '../../../../../../common/services/product/types/postCreateProduct';
 import axios from 'axios';
+import {stateToHTML} from 'draft-js-export-html';
+import { convertFromRaw } from 'draft-js';
 
 export const AdminProduct = () => {
     // const { categories } = useUserData();
@@ -59,6 +61,8 @@ export const AdminProduct = () => {
             console.log(`${key}: ${value}`);
         })
         console.log(selectedTags[0].value)
+        const desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
+        console.log(desc);
         // create payload for request
         const payload: TProductPayload = {
             photo_url: formData.get('photo_url') as string,
@@ -72,7 +76,7 @@ export const AdminProduct = () => {
                     language: 'ukr',
                     title: formData.get('title') as string,
                     shortDesc: formData.get('shortDesc') as string,
-                    desc: JSON.stringify(description)
+                    desc: stateToHTML(convertFromRaw(description as RawDraftContentState ))
                 }
             ]
         }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { RawDraftContentState } from 'draft-js';
+import { convertFromRaw, convertToRaw, RawDraftContentState } from 'draft-js';
 import { useUserData } from '../../../../../../store/tools';
 import { Tag } from '../../../../../../components/TagsInput/types';
 import { Row } from '../../../../../../components/common';
@@ -12,12 +12,14 @@ import { redirect, useParams } from 'react-router-dom';
 import { Service } from '../../../../../../common/services';
 import { TProductUpdate } from '../../../../../../common/services/product/types/patchUpdateProduct';
 import './styles.css';
+import { stateFromHTML } from 'draft-js-import-html';
+import { stateToHTML } from 'draft-js-export-html';
 
 export const AdminProductEdit = () => {
     const { uuid } = useParams();
     const { categories } = useUserData();
     const [isHidden, setIsHidden] = useState(false);
-    const [description, setDescription] = useState<RawDraftContentState | string>();
+    const [description, setDescription] = useState<RawDraftContentState>();
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [product, setProduct] = useState<TProduct>();
     const [isEdited, setIsEdited] = useState<boolean>(false);
@@ -32,7 +34,7 @@ export const AdminProductEdit = () => {
                 setProduct(res.data);
                 console.log(res.data);
                 try {
-                    setDescription(JSON.parse(res.data.desc));
+                    setDescription(convertToRaw(stateFromHTML(res.data.desc)));
                 } catch (e: any) {
                 }
                 // TODO: make multiple categories
@@ -87,11 +89,18 @@ export const AdminProductEdit = () => {
         console.log("Fields", fields)
         let payload = {} as Partial<TProductUpdate>;
 
+        payload.translate = [];
+
+        const translate: any = {language: 'ukr'}
+
         for (const [key, value] of Object.entries(fields)) {
             if (key === 'title' || key === 'shortDesc') {
+                translate[key] = value;
                 // add field to translate obejct in payload
-                if (!payload.translate) payload.translate = {};
-                payload.translate[key] = value as string;
+                // if (!payload.translate) payload.translate = [];
+                // payload.translate.push({
+                //     [key]: value
+                // })
             } else {
                 if (key === 'price_currency') 
                     payload[key] = Number(value);
@@ -100,10 +109,14 @@ export const AdminProductEdit = () => {
             }
         }
 
-        if (JSON.stringify(description) !== product?.desc) {
-            if (!payload.translate) payload.translate = {};
-            payload.translate['desc'] = JSON.stringify(description);
+        console.log(stateToHTML(convertFromRaw(description as RawDraftContentState )))
+        console.log(product?.desc);
+        if (stateToHTML(convertFromRaw(description as RawDraftContentState )) !== product?.desc) {
+            // if (!payload.translate) payload.translate = [];
+            translate.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
         }
+
+        payload.translate.push(translate)
 
         return payload;
     }
@@ -130,7 +143,12 @@ export const AdminProductEdit = () => {
             console.log(item);
             return Number(item.value)
         })
-
+        // payload.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
+        // payload.translate = [{
+        //     title: formData.get('title') as string,
+        //     shortDesc: formData.get('shortDesc') as string,
+        //     desc: stateToHTML(convertFromRaw(description as RawDraftContentState ))
+        // }]
         Service.ProductService.update({ productUid: product.uuid, toUpdate: payload })
             .then(res => {
                 setIsEdited(true);

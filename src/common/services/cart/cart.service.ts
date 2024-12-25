@@ -18,7 +18,7 @@ export class CartService {
     static async getAll(): Promise<TGetAllCartItemsByUserId['response']> {
         return apiPrivate.get('/cart/getAll', {
             headers: {
-                'Accept-Language': i18n.language,
+                'Accept-Language': "ukr",
             },
         });
     }

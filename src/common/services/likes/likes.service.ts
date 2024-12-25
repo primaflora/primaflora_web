@@ -13,7 +13,7 @@ export class LikesService {
     static async getLikes(): Promise<TGetLikes['response']> {
         return apiPrivate.get('/like/likes', {
             headers: {
-                'Accept-Language': i18n.language,
+                'Accept-Language': "ukr",
             },
         });
     }

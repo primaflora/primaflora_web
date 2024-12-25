@@ -11,7 +11,7 @@ export class CategoryService {
             `/categories/findSubcategoryWithProducts/${data.subcategoryId}`,
             {
                 headers: {
-                    'Accept-Language': i18n.language,
+                    'Accept-Language': "ukr",
                 },
             }    
         );
@@ -20,7 +20,7 @@ export class CategoryService {
     static async getAll(): Promise<TGetAllRequest['response']> {
         return await apiPrivate.get('/categories/findAllWithSub', {
             headers: {
-                'Accept-Language': i18n.language,
+                'Accept-Language': "ukr",
             },
         });
     }

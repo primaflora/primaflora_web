@@ -20,7 +20,7 @@ export class ProductService {
     static async findAll(): Promise<TGetProducts['response']> {
         return apiPrivate.get('/products/getAll', { 
             headers: { 
-                'Accept-Language': i18n.language, 
+                'Accept-Language': "ukr", 
             } 
         });
     }
@@ -30,7 +30,7 @@ export class ProductService {
     ): Promise<TGetProductById['response']> {
         return apiPrivate.get(`/products/getWithComments/${params.uuid}`, {
             headers: {
-                'Accept-Language': i18n.language,
+                'Accept-Language': "ukr",
             },
         });
     }
@@ -48,7 +48,7 @@ export class ProductService {
             data.toUpdate,
             {
                 headers: {
-                    'Accept-Language': i18n.language,
+                    'Accept-Language': "ukr",
                 }
             }
         );

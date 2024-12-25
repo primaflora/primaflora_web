@@ -68,6 +68,7 @@ const AdminSubcategoryEdit = () => {
     return (
       <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Редактировать подкатегорию</h2>
+        <img src={subcategory.image}/>
         <div style={{ marginBottom: "20px" }}>
           <label>Ссылка на изображение:</label>
           <input
