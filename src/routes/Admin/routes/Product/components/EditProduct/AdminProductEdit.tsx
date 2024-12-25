@@ -89,13 +89,13 @@ export const AdminProductEdit = () => {
         console.log("Fields", fields)
         let payload = {} as Partial<TProductUpdate>;
 
-        payload.translate = [];
 
         const translate: any = {language: 'ukr'}
 
         for (const [key, value] of Object.entries(fields)) {
             if (key === 'title' || key === 'shortDesc') {
-                translate[key] = value;
+                if (!payload.translate) payload.translate = {};
+                payload.translate[key] = value;
                 // add field to translate obejct in payload
                 // if (!payload.translate) payload.translate = [];
                 // payload.translate.push({
@@ -111,12 +111,13 @@ export const AdminProductEdit = () => {
 
         console.log(stateToHTML(convertFromRaw(description as RawDraftContentState )))
         console.log(product?.desc);
+        console.log(stateToHTML(convertFromRaw(description as RawDraftContentState )) !== product?.desc)
         if (stateToHTML(convertFromRaw(description as RawDraftContentState )) !== product?.desc) {
-            // if (!payload.translate) payload.translate = [];
-            translate.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
+            if (!payload.translate) payload.translate = {};
+            payload.translate.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
         }
 
-        payload.translate.push(translate)
+        // payload.translate.push(translate)
 
         return payload;
     }

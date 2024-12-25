@@ -9,7 +9,7 @@ type TPayload = {
 }
 
 export type TProductUpdate = {
-    translate?: Partial<TProductTranslate>[];
+    translate?: Partial<TProductTranslate>;
 } & TProduct;
 
 type TProductTranslate = {
