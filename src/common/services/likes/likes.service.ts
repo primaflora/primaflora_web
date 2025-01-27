@@ -19,6 +19,6 @@ export class LikesService {
     }
 
     static async deleteLike(params: TDeleteLike['payload']): Promise<TDeleteLike['response']> {
-        return apiPrivate.delete(`/like/${params.likeUuid}`);
+        return apiPrivate.delete(`/like/${params.productUuid}`);
     }
 }

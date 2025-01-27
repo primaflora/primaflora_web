@@ -46,7 +46,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
             return;
         }
 
-        Service.LikesService.deleteLike({ likeUuid: product.like.uuid });
+        Service.LikesService.deleteLike({ productUuid: product.uuid });
         removeLike(product.id);
         setIsLike(false);
         notifySuccess(`Ви видалили ${product.title} зі списку побажань`);

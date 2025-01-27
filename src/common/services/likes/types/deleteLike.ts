@@ -4,7 +4,7 @@ import { TProduct } from '../../product';
 export type TDeleteLike = TRequest<TPayload, TResponse>
 
 type TPayload = {
-    likeUuid: string
+    productUuid: string
 }
 
 type TResponse = {
