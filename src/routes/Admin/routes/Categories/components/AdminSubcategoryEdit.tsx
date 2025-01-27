@@ -7,6 +7,7 @@ const AdminSubcategoryEdit = () => {
     const navigate = useNavigate();
     const [subcategory, setSubcategory] = useState<any>(null); // Данные подкатегории
     const [isLoading, setIsLoading] = useState(false);
+    const language = 'ukr';
   
     // Загрузка данных подкатегории
     useEffect(() => {
@@ -22,7 +23,17 @@ const AdminSubcategoryEdit = () => {
         );
         console.log("!!!!!!!!!!!!!!!!!!!!")
         console.log(response.data);
-        setSubcategory(response.data);
+        const translation = response.data.translate.find((t: any) => t.language === language);
+
+        if (!translation) {
+            throw new Error(`Перевод для языка "${language}" не найден!`);
+        }
+
+        setSubcategory({
+            ...response.data,
+            translate: translation,
+        });
+        // setSubcategory(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке подкатегории:", error);
       } finally {
@@ -32,14 +43,15 @@ const AdminSubcategoryEdit = () => {
   
     // Обновление данных подкатегории
     const handleSave = async () => {
-      if (!subcategory.image || subcategory.translate.some((t: any) => !t.name || !t.desc)) {
+        console.log(subcategory)
+      if (!subcategory.image || !subcategory.translate.name || !subcategory.translate.desc ) {
         alert("Заполните все обязательные поля!");
         return;
       }
   
       try {
         await axios.put(
-          `https://primaflora-12d77550da26.herokuapp.com/categories/subcategory/${subcategoryId}`,
+          `http://localhost:5000/categories/subcategory/${subcategoryId}`,
           subcategory
         );
         alert("Подкатегория успешно обновлена!");
@@ -56,11 +68,14 @@ const AdminSubcategoryEdit = () => {
     };
   
     // Обновление перевода
-    const handleTranslationChange = (index: number, field: string, value: string) => {
-      const updatedTranslations = subcategory.translate.map((translation: any, idx: any) =>
-        idx === index ? { ...translation, [field]: value } : translation
-      );
-      setSubcategory({ ...subcategory, translate: updatedTranslations });
+    const handleTranslationChange = (field: string, value: string) => {
+        setSubcategory({
+            ...subcategory,
+            translate: {
+                ...subcategory.translate,
+                [field]: value,
+            },
+        });
     };
   
     if (isLoading || !subcategory) return <div>Загрузка...</div>;
@@ -80,7 +95,7 @@ const AdminSubcategoryEdit = () => {
           />
         </div>
   
-        {subcategory.translate.map((translation: any, index: any) => (
+        {/* {subcategory.translate.map((translation: any, index: any) => (
           <div key={translation.uuid || index} style={{ marginBottom: "20px" }}>
             <h3>Перевод ({translation.language.toUpperCase()})</h3>
             <label>Название:</label>
@@ -110,7 +125,37 @@ const AdminSubcategoryEdit = () => {
               }}
             ></textarea>
           </div>
-        ))}
+        ))} */}
+
+<div style={{ marginBottom: "20px" }}>
+                <h3>Перевод ({subcategory.translate.language.toUpperCase()})</h3>
+                <label>Название:</label>
+                <input
+                    type="text"
+                    value={subcategory.translate.name}
+                    onChange={(e) => handleTranslationChange("name", e.target.value)}
+                    placeholder={`Название (${subcategory.translate.language})`}
+                    style={{
+                        width: "100%",
+                        padding: "10px",
+                        marginBottom: "10px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                    }}
+                />
+                <label>Описание:</label>
+                <textarea
+                    value={subcategory.translate.desc}
+                    onChange={(e) => handleTranslationChange("desc", e.target.value)}
+                    placeholder={`Описание (${subcategory.translate.language})`}
+                    style={{
+                        width: "100%",
+                        padding: "10px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                    }}
+                ></textarea>
+            </div>
   
         <button
           onClick={handleSave}
