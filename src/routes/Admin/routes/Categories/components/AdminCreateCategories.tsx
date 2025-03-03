@@ -30,7 +30,8 @@ const AdminCreateCategories = () => {
 
   // Обработчик добавления новой подкатегории
   const handleAddSubcategory = async () => {
-    if (!selectedCategory || !newSubcategory.translate[0].name || !newSubcategory.translate[1].name) {
+    console.log(newSubcategory)
+    if (!selectedCategory || !newSubcategory.translate[0].name) {
       return alert("Выберите категорию и заполните данные подкатегории!");
     }
 
@@ -57,6 +58,10 @@ const AdminCreateCategories = () => {
       alert("Ошибка при добавлении подкатегории!");
     }
   };
+
+  useEffect(() => {
+    console.log(newSubcategory)
+  }, [newSubcategory]);
 
   useEffect(() => {
     axios.get("https://primaflora-12d77550da26.herokuapp.com/categories")
@@ -128,12 +133,11 @@ const AdminCreateCategories = () => {
           type="text"
           value={newSubcategory.translate[0].name}
           onChange={(e) =>
-            setNewSubcategory({
-              ...newSubcategory,
-              translate: [
-                { ...newSubcategory.translate[0], name: e.target.value },
-                newSubcategory.translate[1],
-              ],
+            setNewSubcategory(prev => {
+                return {
+                    ...newSubcategory,
+                    translate: [{...prev.translate[0], name: e.target.value}]
+                } 
             })
           }
           placeholder="Назва підкатегорії"
@@ -146,7 +150,6 @@ const AdminCreateCategories = () => {
               ...newSubcategory,
               translate: [
                 { ...newSubcategory.translate[0], desc: e.target.value },
-                newSubcategory.translate[1],
               ],
             })
           }

@@ -22,11 +22,14 @@ import { useUserData } from './store/tools';
 import AdminCreateCategories from './routes/Admin/routes/Categories/components/AdminCreateCategories';
 import AdminCategoriesTable from './routes/Admin/routes/Categories/components/AdminCategoriesTable';
 import AdminSubcategoryEdit from './routes/Admin/routes/Categories/components/AdminSubcategoryEdit';
+import { Checkout } from './routes/Checkout/Checkout';
+import { CheckoutSuccess } from './routes/CheckoutSuccess/CheckoutSuccess';
 
 function App() {
     const { setIsAuth } = useAuth();
     const { load: loadUserData } = useLoadUserData();
     const { load: loadCategories } = useLoadCategories();
+    const { user } = useUserData();
 
     useEffect(() => {
         if (
@@ -50,6 +53,8 @@ function App() {
                 <Route path="/product/:uuid" element={<Product />} />
                 <Route path="/likes" element={<Likes />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout userId={user?.uuid}/>} />
+                <Route path="/checkout/success" element={<CheckoutSuccess/>} />
                 <Route path="/user-info" element={<UserInfo />} />
                 <Route path="/auth/log-in" element={<LogIn />} />
                 <Route

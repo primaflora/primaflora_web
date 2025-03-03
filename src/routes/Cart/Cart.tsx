@@ -9,11 +9,14 @@ import './styles.css';
 import { useUserData } from '../../store/tools';
 import { CatalogStripeMob } from '../../components/common/CatalogStripeMob';
 import { useTranslation } from 'react-i18next';
+import { StorageService } from '../../common/storage/storage.service';
+import { useNavigate } from 'react-router-dom';
 
 export const Cart = () => {
     const { t } = useTranslation();
     const { isAuth } = useUserData();
     const [cart, setCart] = useState<TCartItem[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isAuth) {
@@ -22,13 +25,32 @@ export const Cart = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuth]);
 
-    const onCartItemQuantityChange = (productUid: string, quantity: number) => {
+    const onCartItemQuantityChange = async (productUid: string, quantity: number) => {
         console.log('uuid: ', productUid, ' quantity: ', quantity);
         setCart(oldCart =>
             oldCart.map(item =>
                 item.product.uuid === productUid ? { ...item, quantity } : item,
             ),
         );
+        const token = await StorageService.getToken('accessToken');
+        console.log(token);
+        const response = await fetch(
+            `${process.env.REACT_APP_HOST_URL}/cart`,
+            {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    'Accept-language' : 'ukr'
+                },
+                body: JSON.stringify({
+                    productUuid: productUid,
+                    quantity: quantity
+                })
+            }
+        );
+        const data = await response.json();
+        console.log(data);
     };
 
     const handleCartItemRemove = (cartItemUid: string) => {
@@ -106,7 +128,7 @@ export const Cart = () => {
                         ))}
 
                         <div className="cart-total-price-container pb-4">
-                            <TotalPrice onSubmit={handleSubmit} price={calculateTotalPrice()} />
+                            <TotalPrice onSubmit={() => navigate('/checkout')} price={calculateTotalPrice()} />
                         </div>
                     </div>
                 )}

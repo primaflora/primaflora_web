@@ -51,7 +51,7 @@ const AdminSubcategoryEdit = () => {
   
       try {
         await axios.put(
-          `http://localhost:5000/categories/subcategory/${subcategoryId}`,
+          `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`,
           subcategory
         );
         alert("Подкатегория успешно обновлена!");
