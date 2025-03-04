@@ -24,6 +24,7 @@ import AdminCategoriesTable from './routes/Admin/routes/Categories/components/Ad
 import AdminSubcategoryEdit from './routes/Admin/routes/Categories/components/AdminSubcategoryEdit';
 import { Checkout } from './routes/Checkout/Checkout';
 import { CheckoutSuccess } from './routes/CheckoutSuccess/CheckoutSuccess';
+import { AdminOrders } from './routes/Admin/routes/Orders/AdminOrders';
 
 function App() {
     const { setIsAuth } = useAuth();
@@ -73,6 +74,7 @@ function App() {
                         <Route path='table' element={<AdminCategoriesTable/>}/>
                         <Route path='subcategory/edit/:subcategoryId' element={<AdminSubcategoryEdit/>}/>
                     </Route>
+                    <Route path="orders" element={<AdminOrders/>}/>
                 </Route>
             </Routes>
 
