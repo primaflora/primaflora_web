@@ -19,7 +19,7 @@ const AdminSubcategoryEdit = () => {
       try {
         console.log(subcategoryId);
         const response = await axios.get(
-          `https://primaflora-12d77550da26.herokuapp.com/categories/subcategory/${subcategoryId}`
+          `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`
         );
         console.log("!!!!!!!!!!!!!!!!!!!!")
         console.log(response.data);

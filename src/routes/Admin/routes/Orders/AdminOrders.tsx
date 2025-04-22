@@ -57,7 +57,7 @@ export const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
 
     const fetchOrders = async () => {
-        const response = await apiPrivate.get("https://primaflora-12d77550da26.herokuapp.com/orders");
+        const response = await apiPrivate.get(`${process.env.REACT_APP_HOST_URL}/orders`);
         setOrders(response.data)
     }
     useEffect(() => {

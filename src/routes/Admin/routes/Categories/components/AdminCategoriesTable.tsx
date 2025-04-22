@@ -14,7 +14,7 @@ const AdminCategoriesTable = () => {
   
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("https://primaflora-12d77550da26.herokuapp.com/categories");
+        const response = await axios.get(`${process.env.REACT_APP_HOST_URL}/categories`);
         setCategories(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке категорий:", error);
@@ -25,7 +25,7 @@ const AdminCategoriesTable = () => {
       if (!window.confirm("Вы уверены, что хотите удалить эту категорию?")) return;
   
       try {
-        await axios.delete(`https://primaflora-12d77550da26.herokuapp.com/categories/${id}`);
+        await axios.delete(`${process.env.REACT_APP_HOST_URL}/categories/${id}`);
         setCategories(categories.filter((category) => category.uuid !== id));
         alert("Категория успешно удалена!");
       } catch (error) {
@@ -38,7 +38,7 @@ const AdminCategoriesTable = () => {
       if (!window.confirm("Вы уверены, что хотите удалить эту подкатегорию?")) return;
   
       try {
-        await axios.delete(`https://primaflora-12d77550da26.herokuapp.com/categories/subcategory/${subcategoryId}`);
+        await axios.delete(`${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`);
         const updatedCategories = categories.map((category) =>
           category.uuid === categoryId
             ? { ...category, childrens: category.childrens.filter((child: any) => child.uuid !== subcategoryId) }
@@ -64,7 +64,10 @@ const AdminCategoriesTable = () => {
       }
   
       try {
-        await axios.put(`https://primaflora-12d77550da26.herokuapp.com/categories/${editingCategory.uuid}`, editCategoryData);
+        console.warn(editCategoryData)
+        console.warn(editingCategory.uuid)
+
+        await axios.put(`${process.env.REACT_APP_HOST_URL}/categories/${editingCategory.uuid}`, editCategoryData);
         const updatedCategories = categories.map((category) =>
           category.uuid === editingCategory.uuid ? { ...category, ...editCategoryData } : category
         );

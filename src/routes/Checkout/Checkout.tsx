@@ -75,7 +75,7 @@ export const Checkout = ({ userId }: any) => {
         setError('');
     
         try {
-          const response = await fetch('https://primaflora-12d77550da26.herokuapp.com/orders/create', {
+          const response = await fetch(`${process.env.REACT_APP_HOST_URL}/orders/create`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId }),
@@ -99,7 +99,7 @@ export const Checkout = ({ userId }: any) => {
         setError('');
     
         try {
-          const response = await fetch('https://primaflora-12d77550da26.herokuapp.com/orders/pay', {
+          const response = await fetch(`${process.env.REACT_APP_HOST_URL}/orders/pay`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ orderId }),

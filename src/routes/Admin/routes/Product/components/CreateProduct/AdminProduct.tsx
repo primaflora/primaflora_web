@@ -37,9 +37,18 @@ export const AdminProduct = () => {
         const arr: Tag[] = [];
         console.log(categories);
         categories.forEach(category => {
-            category.childrens.forEach((subcategory: any) => {
+            category.childrens?.forEach((subcategory: any) => {
+                const name = subcategory?.translate?.[0]?.name;
+                if (name) {
+                    arr.push({
+                        label: name,
+                        value: subcategory.id.toString()
+                    });
+                } else {
+                    console.warn('Подкатегория без имени:', subcategory);
+                }
                 console.log(subcategory);
-                arr.push({ label: subcategory.translate[0].name, value: subcategory.id.toString() });
+                // arr.push({ label: subcategory.translate[0].name, value: subcategory.id.toString() });
             })
         })
 
@@ -106,7 +115,7 @@ export const AdminProduct = () => {
 
     const fetchSubcategories = async () => {
         try {
-          const response = await axios.get("https://primaflora-12d77550da26.herokuapp.com/categories");
+          const response = await axios.get(`${process.env.REACT_APP_HOST_URL}/categories`);
           setCategories(response.data);
         } catch (error) {
           console.error("Ошибка при загрузке категорий:", error);

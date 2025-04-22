@@ -18,7 +18,7 @@ const AdminCreateCategories = () => {
     if (!newCategory.name_ukr) return alert("Введите названия категории!");
 
     try {
-      const response = await axios.post("https://primaflora-12d77550da26.herokuapp.com/categories", newCategory);
+      const response = await axios.post(`${process.env.REACT_APP_HOST_URL}/categories`, newCategory);
       setCategories([...categories, response.data]);
       setNewCategory({ name_ukr: "" });
       alert("Категория успешно добавлена!");
@@ -42,7 +42,7 @@ const AdminCreateCategories = () => {
 
     try {
       const response = await axios.post(
-        "https://primaflora-12d77550da26.herokuapp.com/categories/subcategory/create",
+        `${process.env.REACT_APP_HOST_URL}/categories/subcategory/create`,
         subcategoryData
       );
       alert("Подкатегория успешно добавлена!");
@@ -64,7 +64,7 @@ const AdminCreateCategories = () => {
   }, [newSubcategory]);
 
   useEffect(() => {
-    axios.get("https://primaflora-12d77550da26.herokuapp.com/categories")
+    axios.get(`${process.env.REACT_APP_HOST_URL}/categories`)
     .then(res => {
         console.log(res.data)
         setCategories(res.data)
