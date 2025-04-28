@@ -12,7 +12,7 @@ export const Main = () => {
                 <CatalogStripeMob />
             </div>
             <Line />
-            <b className="block mb-2 h-[60vh]">Main. Please, pick category</b>
+            <b className="block mb-2 h-[60vh]" style={{maxWidth: 1040, margin: "0 auto"}}>Main. Please, pick category</b>
         </div>
     );
 };
