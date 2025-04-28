@@ -80,7 +80,7 @@ export const Slider = () => {
             }}>
             <div
                 className="flex relative w-full h-[345px] items-center overflow-hidden"
-                style={{boxSizing: "border-box"}}
+                style={{boxSizing: "border-box", maxWidth: 1040, margin: "0 auto"}}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}>
                 <Arrows />
