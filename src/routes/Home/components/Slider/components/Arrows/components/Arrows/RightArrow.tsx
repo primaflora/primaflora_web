@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TSvgProps } from './types';
 
-const onPressColor = '#51C72F80';
+const onPressColor = '#72BF4480';
 
 const RightArrow = ({
     color = '#454545',

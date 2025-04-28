@@ -47,13 +47,13 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    color: black;
+    color: #454545;
     padding: 3px 10px;
 }
 
 .language-selector-list-element:hover {
     cursor: pointer;
-    background-color: rgb(81, 199, 47);
+    background-color: #72BF44;
     color: white;
 }
 

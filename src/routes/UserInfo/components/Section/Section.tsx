@@ -107,7 +107,7 @@ export const Section = ({ title, content, button }: TSectionProps) => {
                                     borderRadius: '7px',
                                     borderTopRightRadius: '0',
                                     borderBottomRightRadius: '0',
-                                    backgroundColor: 'rgb(81, 199, 47)',
+                                    backgroundColor: '#72BF44',
                                     border: 'none',
                                 }}
                                 onClick={

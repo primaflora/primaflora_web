@@ -109,11 +109,11 @@ export const Cart = () => {
                 <Line />
                 <h1 className="cart-title">{t('navigation.cart')}</h1>
                 {!isAuth ? (
-                    <h1 className="justify-self-center text-black text-3xl pb-12">
+                    <h1 className="justify-self-center text-3xl pb-12">
                         {t('global.unauthorized')}
                     </h1>
                 ) : cart.length === 0 ? (
-                    <h1 className="justify-self-center text-black text-3xl pb-12">
+                    <h1 className="justify-self-center text-3xl pb-12">
                         {t('global.empty')}
                     </h1>
                 ) : (

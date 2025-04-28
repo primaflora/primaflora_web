@@ -7,7 +7,7 @@ export const Button = ({
     imageUrl,
     onClick,
     style,
-    backgroundColor = 'rgba(81, 199, 47, 1)',
+    backgroundColor = '#72BF44',
     filled = true,
     small = false,
     isClickable = true,

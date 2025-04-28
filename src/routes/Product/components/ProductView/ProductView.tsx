@@ -106,7 +106,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
                             marginTop: 50,
                             marginBottom: 50,
                         }}>
-                        <h1 className="text-black text-xl">
+                        <h1 className="text-xl">
                             Rating: {product.rating} / 5
                         </h1>
                         <Like

@@ -7,6 +7,7 @@ export const Main = () => {
     return (
         <div className="main-home-container">
             <Slider />
+            {/* <NewSlider /> */}
             <div className="catalog-stripe-main-mob-container">
                 <CatalogStripeMob />
             </div>

@@ -30,7 +30,7 @@ export const Likes = () => {
                     <Slider />
                     <div className="pt-10">
                         {likes.length === 0 ? (
-                            <h1 className="justify-self-center text-black text-3xl">
+                            <h1 className="justify-self-center text-3xl">
                                 {t('global.empty')}
                             </h1>
                         ) : (

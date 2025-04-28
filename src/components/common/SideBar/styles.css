@@ -42,7 +42,7 @@
     font-weight: 700;
     line-height: 16.44px;
     text-align: left;
-    color: rgba(81, 199, 47, 1);
+    color: #72BF44;
     padding: 10px;
     border-bottom-width: 1px;
     border-style: solid;
@@ -64,7 +64,7 @@
 
 .subcategory-title:hover {
     cursor: pointer;
-    background: rgba(81, 199, 47, 1);
+    background: #72BF44;
     color: rgba(255, 255, 255, 1);
 }
 

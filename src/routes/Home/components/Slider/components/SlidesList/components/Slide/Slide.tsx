@@ -11,7 +11,7 @@ export const Slide = ({ slide, number }: TSlideProps) => {
             <img
                 src={slide.image}
                 alt="nature"
-                className="h-full w-full object-cover items-center"
+                className="h-[345px] w-full object-cover"
             />
             <p className="slider-text">
                 {slide.text}

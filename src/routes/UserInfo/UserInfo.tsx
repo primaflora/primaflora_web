@@ -57,7 +57,7 @@ export const UserInfo = () => {
                 </Row>
             </div>
             <div className="justify-end flex">
-                <h1 className="text-black">{t('user-info.press-to-copy')}</h1>
+                <h1 className="">{t('user-info.press-to-copy')}</h1>
             </div>
 
             <div className="section-container">

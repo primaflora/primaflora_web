@@ -55,7 +55,7 @@ export const LanguageSelector = () => {
                 className={`language-selector-inner-container ${
                     isSelectorOpen && 'selector-open'
                 }`}>
-                <h1 className="text-m text-black self-center">
+                <h1 className="text-m self-center">
                     {selectedLanguage.toUpperCase()}
                 </h1>
                 <img src={selectFlag()} width={35} alt="language" />

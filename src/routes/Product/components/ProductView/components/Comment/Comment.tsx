@@ -18,7 +18,7 @@ export const Comment = ({ comment }: TCommentProps) => {
                     <h1 className="comment-username">{comment.user.name}</h1>
                     <p className="comment-text">{comment.text}</p>
                 </Row>
-                <p className="text-black font-light ">
+                <p className="font-light ">
                     {comment.rating} / 5
                 </p>
             </Row>

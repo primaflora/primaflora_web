@@ -11,7 +11,7 @@
 }
 
 .card:hover {
-    border: 1px solid #51c72f;
+    border: 1px solid #72BF44;
 }
 
 .card img {
@@ -54,7 +54,7 @@
     font-weight: 700;
     line-height: 21.94px;
     text-align: left;
-    color: #51c72f;
+    color: #72BF44;
 }
 
 .small-text {

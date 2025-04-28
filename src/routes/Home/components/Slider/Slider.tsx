@@ -79,7 +79,8 @@ export const Slider = () => {
                 slidesCount: slides.length,
             }}>
             <div
-                className="flex relative w-full items-center overflow-hidden"
+                className="flex relative w-full h-[345px] items-center overflow-hidden"
+                style={{boxSizing: "border-box"}}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}>
                 <Arrows />
