@@ -28,7 +28,7 @@ export const Home = () => {
     const handleMoveToLogIn = () => {};
 
     return (
-        <div className="home-container main-global-padding py-10 max-lg:py-0">
+        <div className="home-container py-10 max-lg:py-0">
             <div className="flex">
                 <SideBar />
                 <Main />

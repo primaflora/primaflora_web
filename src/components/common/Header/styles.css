@@ -83,11 +83,7 @@
 }
 
 .header-stripe {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     width: 100%;
-    height: 60px;
     background: #fafafa;
     border: 0.5px solid #ebeff1;
 }

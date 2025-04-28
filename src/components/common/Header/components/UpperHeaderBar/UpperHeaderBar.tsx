@@ -54,7 +54,7 @@ export const UpperHeaderBar = ({ isAuth }: TUpperHeaderBarProps) => {
     };
 
     return (
-        <div className="upper-header main-global-padding">
+        <div className="upper-header layout">
             <p className="header-title">
                 {t('header.upper-header-title')}
             </p>

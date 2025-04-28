@@ -14,6 +14,7 @@ import { useLoadCategories } from './components/loader/categories.loader';
 import { useLoadUserData } from './components/loader/user-data.loader';
 import './common/i18n';
 import './index.css';
+import './App.css'
 import { Admin } from './routes/Admin';
 import { AdminComments } from './routes/Admin/routes/Comments';
 import { AdminProduct, ProductsTable } from './routes/Admin/routes/Product';
@@ -46,38 +47,39 @@ function App() {
 
     return (
         <div className="app-main-container">
-            <Header />
+                <Header />
+            <div className='layout'>
 
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/category/:uuid" element={<Category />} />
-                <Route path="/product/:uuid" element={<Product />} />
-                <Route path="/likes" element={<Likes />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout userId={user?.uuid}/>} />
-                <Route path="/checkout/success" element={<CheckoutSuccess/>} />
-                <Route path="/user-info" element={<UserInfo />} />
-                <Route path="/auth/log-in" element={<LogIn />} />
-                <Route
-                    path="/auth/sign-up/invite/:inviteCode"
-                    element={<Home />}
-                />
-                <Route path="/admin-page" element={<Admin/>}>
-                    <Route path="products">
-                        <Route path='create' element={<AdminProduct/>}/>
-                        <Route path='edit/:uuid' element={<AdminProductEdit/>}/>
-                        <Route path='table' element={<ProductsTable/>}/>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/category/:uuid" element={<Category />} />
+                    <Route path="/product/:uuid" element={<Product />} />
+                    <Route path="/likes" element={<Likes />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout userId={user?.uuid}/>} />
+                    <Route path="/checkout/success" element={<CheckoutSuccess/>} />
+                    <Route path="/user-info" element={<UserInfo />} />
+                    <Route path="/auth/log-in" element={<LogIn />} />
+                    <Route
+                        path="/auth/sign-up/invite/:inviteCode"
+                        element={<Home />}
+                    />
+                    <Route path="/admin-page" element={<Admin/>}>
+                        <Route path="products">
+                            <Route path='create' element={<AdminProduct/>}/>
+                            <Route path='edit/:uuid' element={<AdminProductEdit/>}/>
+                            <Route path='table' element={<ProductsTable/>}/>
+                        </Route>
+                        <Route path="comments" element={<AdminComments/>}/>
+                        <Route path="categories">
+                            <Route path='create' element={<AdminCreateCategories/>}/>
+                            <Route path='table' element={<AdminCategoriesTable/>}/>
+                            <Route path='subcategory/edit/:subcategoryId' element={<AdminSubcategoryEdit/>}/>
+                        </Route>
+                        <Route path="orders" element={<AdminOrders/>}/>
                     </Route>
-                    <Route path="comments" element={<AdminComments/>}/>
-                    <Route path="categories">
-                        <Route path='create' element={<AdminCreateCategories/>}/>
-                        <Route path='table' element={<AdminCategoriesTable/>}/>
-                        <Route path='subcategory/edit/:subcategoryId' element={<AdminSubcategoryEdit/>}/>
-                    </Route>
-                    <Route path="orders" element={<AdminOrders/>}/>
-                </Route>
-            </Routes>
-
+                </Routes>
+            </div>
             <Footer />
             <Toast />
         </div>
