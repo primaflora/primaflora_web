@@ -9,7 +9,7 @@ export const Footer = () => {
     return (
         <div className="footer-main-container">
             <hr />
-            <div className="footer-inner-container">
+            <div className="footer-inner-container layout">
                 <SocialLinks />
                 <div className="footer-contacts">
                     <p>+ 38 (093) 826-51-99</p>
@@ -18,7 +18,7 @@ export const Footer = () => {
             </div>
             <hr />
 
-            <div className="footer-bottom-container">
+            <div className="footer-bottom-container layout">
                 <p className="footer-bottom-text">
                     {t('footer.bottom-title')} ®
                 </p>
