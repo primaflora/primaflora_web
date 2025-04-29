@@ -31,7 +31,7 @@ export const Category = () => {
     }, [categories]);
 
     return (
-        <div className="home-container main-global-padding">
+        <div className="home-container py-10">
             <div className="flex">
                 <SideBar />
                 <div className="category-main-container">
