@@ -1,0 +1,32 @@
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    min-height: 21px;
+  }
+  
+  .breadcrumb-link {
+    color: #454545;
+    text-decoration: none;
+    font-family: Raleway;
+    padding: 0px;
+  }
+  
+  .breadcrumb-link:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumb-separator {
+    margin: 0 8px;
+    color: #6c757d;
+  }
+  
+  .breadcrumb-current {
+    color: #72BF44;
+    font-family: Raleway;
+  }
+
+  .breadcrump-wrapper {
+    padding: 14px 0;
+    border-bottom: 2px solid #EBEFF1;
+  }

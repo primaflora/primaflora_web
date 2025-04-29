@@ -8,12 +8,16 @@ import { TProductFull } from '../../common/services/category/types/common';
 import { Service } from '../../common/services';
 import { useUserData } from '../../store/tools';
 import { usePickedSubcategory } from '../../common/hooks/usePickedSubcategory';
+import { useDispatch } from 'react-redux';
+import { productSliceActions } from '../../store/modules/product/reducer';
 
 export const Product = () => {
     const { pickedSubcategory, categories } = useUserData();
     const { setPickedSubcategory } = usePickedSubcategory();
     const { uuid } = useParams();
     const [product, setProduct] = useState<TProductFull | null>(null);
+
+    const dispatch = useDispatch();
 
     // TODO: getch full product data
     useEffect(() => {
@@ -30,6 +34,7 @@ export const Product = () => {
                 return;
             }
             setProduct(res.data);
+            dispatch(productSliceActions.setSelectedProduct(res.data));
             console.log('Full product => ', res.data);
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -7,12 +7,14 @@ import { useUserData } from '../../store/tools';
 import { CategoryView } from './components/CategoryView';
 import './styles.css';
 import { CatalogStripeMob } from '../../components/common/CatalogStripeMob';
+import { useDispatch } from 'react-redux';
+import { productSliceActions } from '../../store/modules/product/reducer';
 
 export const Category = () => {
     const { uuid } = useParams();
     const { pickedSubcategory, categories } = useUserData();
     const { setPickedSubcategory } = usePickedSubcategory();
-
+    const dispatch = useDispatch();
     // if user go the link of the category (so he do not pikedCategory), we should set it
     useEffect(() => {
         // if categories have not loaded yet
@@ -30,8 +32,12 @@ export const Category = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categories]);
 
+    useEffect(() => {
+        dispatch(productSliceActions.setSelectedProduct(null));
+    }, [])
+
     return (
-        <div className="home-container py-10">
+        <div className="home-container py-[32px]">
             <div className="flex">
                 <SideBar />
                 <div className="category-main-container">

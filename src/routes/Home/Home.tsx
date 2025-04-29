@@ -4,17 +4,27 @@ import { SignInModal } from '../../components/common/Modals/SignInModal';
 import { SideBar } from '../../components/common/SideBar';
 import { Main } from './components/Main/Main';
 import './styles.css';
+import { usePickedSubcategory } from '../../common/hooks/usePickedSubcategory';
+import { useDispatch } from 'react-redux';
+import { productSliceActions } from '../../store/modules/product/reducer';
 
 export const Home = () => {
     const navigate = useNavigate();
     const inviteCode = useParams().inviteCode as string;
     const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+    const { clearPickedSubcategory } = usePickedSubcategory();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (inviteCode) {
             handleSignUpOpen();
         }
     });
+
+    useEffect(() => {
+        clearPickedSubcategory();
+        dispatch(productSliceActions.setSelectedProduct(null));
+    }, []);
 
     const handleSignInModalClose = () => {
         setIsSignUpModalOpen(false);

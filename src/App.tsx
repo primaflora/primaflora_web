@@ -26,6 +26,7 @@ import AdminSubcategoryEdit from './routes/Admin/routes/Categories/components/Ad
 import { Checkout } from './routes/Checkout/Checkout';
 import { CheckoutSuccess } from './routes/CheckoutSuccess/CheckoutSuccess';
 import { AdminOrders } from './routes/Admin/routes/Orders/AdminOrders';
+import { CategoryBreadcrumbs } from './components/CategoryBreadcrumbs/CategoryBreadcrumbs';
 
 function App() {
     const { setIsAuth } = useAuth();
@@ -48,7 +49,9 @@ function App() {
     return (
         <div className="app-main-container">
                 <Header />
+                <CategoryBreadcrumbs />
             <div className='layout'>
+                
 
                 <Routes>
                     <Route path="/" element={<Home />} />
