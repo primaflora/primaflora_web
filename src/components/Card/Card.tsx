@@ -76,7 +76,7 @@ export const Card = ({ card }: TCardProps) => {
     return (
         <div className="card">
             <Link to={`/product/${card.uuid}`}>
-                <img src={card.photo_url} alt={card.title} />
+                <img src={card.photo_url} alt={card.title} style={{width: 220, height: 212, objectFit: "cover"}} />
             </Link>
             <h1 className="card-title">{card.title}</h1>
             <p className="card-description">{card?.shortDesc}</p>

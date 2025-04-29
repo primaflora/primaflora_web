@@ -25,13 +25,16 @@
     line-height: 16.44px;
     text-align: left;
     color: #454545;
+    height: 32px;
 }
 
 .card-description {
     font-family: Raleway;
     font-size: 14px;
+    max-height: 52px;
     font-weight: 400;
-    line-height: 16.44px;
+    line-height: 100%;
+    overflow: hidden;
     text-align: left;
     color: #454545;
     padding-top: 10px;
