@@ -12,6 +12,7 @@
 .product-view-container {
     width: 95%;
     display: grid;
+    margin-top: 46px;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 

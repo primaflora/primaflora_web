@@ -11,4 +11,5 @@ export type TProduct = {
     rating: number;
     isPublished: boolean;
     categoryIds: number[];
+    descriptionPoints: string[];
 } & TBasicDataBaseData;

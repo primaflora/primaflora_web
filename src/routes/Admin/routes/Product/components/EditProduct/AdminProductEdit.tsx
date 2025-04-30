@@ -78,8 +78,15 @@ export const AdminProductEdit = () => {
         
         // return only updated fields
         formData.forEach((value, key) => {
-            if (value !== product?.[key as keyof TProduct]) {
-                updatedFields[key as keyof TProduct] = value as any;
+            if (key === 'descriptionPoints') {
+                const newVal = (value as string).split('\n').map(v => v.trim()).filter(Boolean);
+                if (JSON.stringify(newVal) !== JSON.stringify(product?.descriptionPoints)) {
+                  updatedFields[key as keyof TProduct] = newVal as any;
+                }
+            } else {
+                if (value !== product?.[key as keyof TProduct]) {
+                    updatedFields[key as keyof TProduct] = value as any;
+                }
             }
         });
         return updatedFields;
@@ -101,6 +108,8 @@ export const AdminProductEdit = () => {
                 // payload.translate.push({
                 //     [key]: value
                 // })
+            } else if (key === 'descriptionPoints') {
+                payload.descriptionPoints = value as string[];
             } else {
                 if (key === 'price_currency') 
                     payload[key] = Number(value);
@@ -209,6 +218,12 @@ export const AdminProductEdit = () => {
                                     title='Short description' 
                                     name='shortDesc'
                                     isTextArea />
+                                <Panel.FormInput
+                                    defaultValue={product?.descriptionPoints?.join('\n')}
+                                    title='Detailed points (one per line)'
+                                    name='descriptionPoints'
+                                    isTextArea
+                                />
                                 <Panel.Checkbox label='Is Hidden' state={isHidden} onChange={() => setIsHidden(prev => !prev)} />
                             </Panel.Body>
                             <Panel.Body>

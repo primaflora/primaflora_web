@@ -25,7 +25,7 @@ export const AdminProduct = () => {
     const [notification, setNotification] = useState<string>();
     const [isHidden, setIsHidden] = useState(false);
 
-    const updateCard = (key: keyof Partial<TProduct>, value: string | number) => {
+    const updateCard = (key: keyof Partial<TProduct>, value: string | number | string[]) => {
         setCard(prevState => ({...prevState, [key]: value}));
     }
 
@@ -65,6 +65,11 @@ export const AdminProduct = () => {
         console.log(description)
         const formData = new FormData(e.currentTarget);
 
+        const rawPoints = (formData.get('descriptionPoints') as string || '')
+        .split('\n')
+        .map(point => point.trim())
+        .filter(Boolean);
+
         // check if all fields are filled
         formData.forEach((value, key) => {
             console.log(`${key}: ${value}`);
@@ -87,7 +92,8 @@ export const AdminProduct = () => {
                     shortDesc: formData.get('shortDesc') as string,
                     desc: stateToHTML(convertFromRaw(description as RawDraftContentState ))
                 }
-            ]
+            ],
+            descriptionPoints: rawPoints,
         }
 
         console.log(payload);
@@ -169,6 +175,15 @@ export const AdminProduct = () => {
                                         name='shortDesc'
                                         onTextChange={(newText) => updateCard('shortDesc', newText)}
                                         isTextArea />
+                                    <Panel.FormInput
+                                        title='Detailed points (one per line)'
+                                        name='descriptionPoints'
+                                        isTextArea
+                                        onTextChange={(text) => {
+                                            const lines = text.split('\n').map((line) => line.trim()).filter(Boolean);
+                                            updateCard('descriptionPoints' as any, lines);
+                                        }}
+                                    />
                                     <Panel.Checkbox label='Is Hidden' state={isHidden} onChange={() => setIsHidden(prev => !prev)} />
                                     {/* <Panel.Checkbox label='Is Hidden' onChange={() => {}} /> */}
                             </Panel.Body>

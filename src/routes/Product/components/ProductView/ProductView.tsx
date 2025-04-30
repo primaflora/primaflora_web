@@ -13,6 +13,7 @@ import {stateFromHTML} from 'draft-js-import-html';
 import {convertToRaw} from 'draft-js'
 
 export const ProductView = ({ product }: TProductViewProps) => {
+    console.log("PRODUCTdsjfklsjdflk", product)
     const { isAuth, user } = useUserData();
     const { notifySuccess, notifyError } = useToast();
     const { addLike, removeLike } = useLikes();
@@ -81,7 +82,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
     };
 
     return (
-        <div className="mt-10">
+        <div className="">
             <h1 className="category-name">
                 {product.categories.map(category => {
                     console.log(category)
@@ -97,7 +98,12 @@ export const ProductView = ({ product }: TProductViewProps) => {
                 <div>
                     <h1 className="product-title">{product.title}</h1>
                     <ul className="product-description">
-                        {product.shortDesc}
+                        {
+                            product.descriptionPoints?.map((item: string) => (
+                                <li>{item}</li>
+                            ))
+                        }
+                        {/* {product.shortDesc} */}
                     </ul>
 
                     <Row

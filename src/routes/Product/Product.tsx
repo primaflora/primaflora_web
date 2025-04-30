@@ -19,7 +19,7 @@ export const Product = () => {
 
     const dispatch = useDispatch();
 
-    // TODO: getch full product data
+    // TODO: fetch full product data
     useEffect(() => {
         if (!uuid) {
             return;
@@ -59,11 +59,12 @@ export const Product = () => {
     }, [product, categories, pickedSubcategory, setPickedSubcategory]);
 
     return (
-        <div className="home-container main-global-padding py-10">
+        <div className="home-container py-10">
             <div className="flex">
                 <SideBar />
                 <div className="product-main-container">
                     <CategoryUpperView />
+                    <div style={{width: "100%", height: 1, margin: "24px 0 16px", background: "#EBEFF1"}}/>
                     {product ? (
                         <ProductView product={product} />
                     ) : (

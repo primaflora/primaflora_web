@@ -140,7 +140,7 @@ export const Button = ({ text, type = 'button', style, small = false, isFilled =
                 ${small ? 'panel-button-small' : ''} 
                 ${isFilled ? '' : 'panel-button-unfilled'}`} 
             onClick={onClick} >
-            <h1 className='panel-button-text'>{text}</h1>
+            <h1 className='panel-button-text text-white'>{text}</h1>
         </button>
     );
 }

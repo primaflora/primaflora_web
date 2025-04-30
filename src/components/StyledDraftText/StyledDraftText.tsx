@@ -54,19 +54,14 @@ export const renderDescription = (desc: Object) => {
                 if (typeof value === 'object' && Array.isArray(value)) {
                     console.log('Is Array');
                     return (
-                        <h4>
-                            <strong>{formatKey(key)}</strong>:{' '}
-                            <ul className="pl-4">
+                        <div className="pb-4">
+                            <strong>{formatKey(key)}</strong>:
+                            <ul className="pl-4 list-disc list-inside">
                                 {value.map((item, index) => (
-                                    <h1 className="flex">{item}, </h1>
-                                    // <li
-                                    //     className='before:content-["•"]'
-                                    //     key={index}>
-                                    //     {item}
-                                    // </li>
+                                <li key={index} className="text-justify break-words">{item}</li>
                                 ))}
                             </ul>
-                        </h4>
+                        </div>
                     );
                 }
 

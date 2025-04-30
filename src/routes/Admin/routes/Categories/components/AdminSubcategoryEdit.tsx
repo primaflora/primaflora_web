@@ -6,14 +6,25 @@ const AdminSubcategoryEdit = () => {
     const { subcategoryId } = useParams();
     const navigate = useNavigate();
     const [subcategory, setSubcategory] = useState<any>(null); // Данные подкатегории
+    const [categories, setCategories] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const language = 'ukr';
   
     // Загрузка данных подкатегории
     useEffect(() => {
       fetchSubcategory();
+      fetchCategories();
     }, []);
   
+    const fetchCategories = async () => {
+        try {
+          const res = await axios.get(`${process.env.REACT_APP_HOST_URL}/categories`);
+          setCategories(res.data);
+        } catch (e) {
+          console.error("Ошибка при загрузке категорий:", e);
+        }
+      };
+    
     const fetchSubcategory = async () => {
       setIsLoading(true);
       try {
@@ -41,6 +52,14 @@ const AdminSubcategoryEdit = () => {
       }
     };
   
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedUuid = e.target.value;
+        const selectedCategory = categories.find(cat => cat.uuid === selectedUuid);
+        if (selectedCategory) {
+          setSubcategory((prev: any) => ({ ...prev, parent: selectedCategory }));
+        }
+      };
+    
     // Обновление данных подкатегории
     const handleSave = async () => {
         console.log(subcategory)
@@ -48,11 +67,14 @@ const AdminSubcategoryEdit = () => {
         alert("Заполните все обязательные поля!");
         return;
       }
-  
+      console.log(subcategory)
       try {
         await axios.put(
           `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`,
-          subcategory
+          {
+            ...subcategory,
+            parentId: subcategory.parent.uuid
+          }
         );
         alert("Подкатегория успешно обновлена!");
         navigate("/admin-page/categories/table"); // Возврат на страницу категорий
@@ -94,6 +116,26 @@ const AdminSubcategoryEdit = () => {
             style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
           />
         </div>
+        <div style={{ marginBottom: "20px" }}>
+            <label>Категория:</label>
+            <select
+                value={subcategory.parent?.uuid || ''}
+                onChange={handleCategoryChange}
+                style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                }}
+            >
+                <option value="">Выберите категорию</option>
+                {categories.map((cat: any) => (
+                <option key={cat.uuid} value={cat.uuid}>
+                    {cat.name_ukr}
+                </option>
+                ))}
+            </select>
+            </div>
   
         {/* {subcategory.translate.map((translation: any, index: any) => (
           <div key={translation.uuid || index} style={{ marginBottom: "20px" }}>

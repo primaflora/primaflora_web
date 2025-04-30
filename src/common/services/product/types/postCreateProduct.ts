@@ -13,6 +13,7 @@ export type TProductPayload = {
     categoryIds: number[];
     translate: TProductTranslatePayload[];
     isPublished: boolean;
+    descriptionPoints: string[];
 }
 
 type TProductTranslatePayload = {

@@ -25,6 +25,7 @@ export type TProduct = {
     title: string;
     comments: number;
     like: { id: number; uuid: string } | null;
+    descriptionPoints: string[]
 } & TBasicDataBaseData;
 
 export type TComment = {

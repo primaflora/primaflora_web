@@ -1,3 +1,8 @@
 .draft-editor-container {
-    word-break: break-all;
+    /* word-break: break-all; */
 }
+
+.draft-editor-container .public-DraftEditor-content {
+    white-space: pre-line;     /* сохранение переносов строк */
+    word-break: break-word;    /* перенос длинных слов */
+  }
