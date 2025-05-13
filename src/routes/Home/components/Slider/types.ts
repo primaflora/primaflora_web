@@ -1,7 +1,7 @@
 export type TSliderContextProps = {
     slidesCount: number;
     slideIndex: number;
-    slides: { image: string; text: string }[];
+    slides: { imageUrl: string; title: string }[];
     changeSlide: (direction: 1 | -1) => void;
     goToSlide: (index: number) => void;
 };

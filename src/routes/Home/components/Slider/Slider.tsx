@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Arrows } from './components/Arrows';
 import { Dots } from './components/Dots';
 import { SlidesList } from './components/SlidesList/SlidesList';
 import './styles.css';
 import { TSliderContextProps } from './types';
 import { Images } from '../../../../assets';
+import { apiPrivate } from '../../../../common/api';
 
 export const SliderContext = React.createContext<TSliderContextProps>({
     slidesCount: 0,
@@ -16,17 +17,18 @@ export const SliderContext = React.createContext<TSliderContextProps>({
 
 const Image = Images.SliderImage;
 
-const slides = [
-    { image: Image, text: 'Some Text 1' },
-    { image: Image, text: 'Some Text 2' },
-    { image: Image, text: 'Some Text 3' },
-    { image: Image, text: 'Some Text 4' },
-    { image: Image, text: 'Some Text 5' },
-];
+// const slides = [
+//     { image: Image, text: 'Some Text 1' },
+//     { image: Image, text: 'Some Text 2' },
+//     { image: Image, text: 'Some Text 3' },
+//     { image: Image, text: 'Some Text 4' },
+//     { image: Image, text: 'Some Text 5' },
+// ];
 
 export const Slider = () => {
     const [slideIndex, setSlideIndex] = useState<number>(0);
     const [touchPosition, setTouchPosition] = useState<number | null>(null);
+    const [slides, setSlides] = useState<any>([])
 
     const goToSlide = (index: number) => {
         setSlideIndex(index);
@@ -69,6 +71,12 @@ export const Slider = () => {
         }
     };
 
+    useEffect(() => {
+        apiPrivate.get('/slides').then(res => {
+            setSlides(res.data.filter((s: any) => s.isActive));
+        });
+    }, []);
+
     return (
         <SliderContext.Provider
             value={{
@@ -80,7 +88,7 @@ export const Slider = () => {
             }}>
             <div
                 className="flex relative w-full h-[345px] items-center overflow-hidden"
-                style={{boxSizing: "border-box", maxWidth: 1040, margin: "0 auto"}}
+                style={{boxSizing: "border-box", maxWidth: 1100, margin: "0 auto"}}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}>
                 <Arrows />

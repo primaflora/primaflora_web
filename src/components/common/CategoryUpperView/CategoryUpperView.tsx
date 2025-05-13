@@ -12,7 +12,7 @@ export const CategoryUpperView = () => {
             </div>
 
             <img
-                src={Images.CategoryImage}
+                src={pickedSubcategory?.image}
                 className="category-image"
                 alt="category"
             />

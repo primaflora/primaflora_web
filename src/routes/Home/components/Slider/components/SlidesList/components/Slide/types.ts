@@ -1,4 +1,4 @@
 export type TSlideProps = {
-    slide: { image: string; text: string };
+    slide: { imageUrl: string; title: string };
     number: number;
 };

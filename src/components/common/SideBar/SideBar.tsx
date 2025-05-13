@@ -25,7 +25,7 @@ export const SideBar = ({
     const handleClickSubcategory = (pickedSubcategory: TSubcategory) => {
         setPickedSubcategory(pickedSubcategory);
         onClose();
-        navigate(`/category/${pickedSubcategory.uuid}`);
+        // navigate(`/category/${pickedSubcategory.uuid}`);
     };
 
     return (
@@ -81,8 +81,8 @@ const Subcategory = ({
     onClick: () => void;
 }) => {
     return (
-        <p className="subcategory-title" onClick={onClick}>
+        <a href={`/category/${subcategory.uuid}`} className="subcategory-title" onClick={onClick}>
             {subcategory.name}
-        </p>
+        </a>
     );
 };

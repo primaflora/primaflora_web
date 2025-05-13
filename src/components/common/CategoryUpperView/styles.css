@@ -30,8 +30,9 @@
 .category-image {
     width: 30%;
     height: 30%;
-    min-height: 200px;
-    min-width: 250px;
+    max-height: 200px;
+    max-width: 250px;
+    object-fit: cover;
 }
 
 @media screen and (max-width: 1000px) {

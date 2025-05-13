@@ -27,6 +27,7 @@ import { Checkout } from './routes/Checkout/Checkout';
 import { CheckoutSuccess } from './routes/CheckoutSuccess/CheckoutSuccess';
 import { AdminOrders } from './routes/Admin/routes/Orders/AdminOrders';
 import { CategoryBreadcrumbs } from './components/CategoryBreadcrumbs/CategoryBreadcrumbs';
+import AdminSlides from './routes/Admin/routes/Slides/AdminSlides';
 
 function App() {
     const { setIsAuth } = useAuth();
@@ -80,6 +81,7 @@ function App() {
                             <Route path='subcategory/edit/:subcategoryId' element={<AdminSubcategoryEdit/>}/>
                         </Route>
                         <Route path="orders" element={<AdminOrders/>}/>
+                        <Route path="slides" element={<AdminSlides/>}/>
                     </Route>
                 </Routes>
             </div>
