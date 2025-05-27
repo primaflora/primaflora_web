@@ -8,14 +8,22 @@ export const Slide = ({ slide, number }: TSlideProps) => {
 
     return (
         <div className={`slide ${slideIndex === number ? 'selected' : 'hide'}`}>
-            <p className="slider-text">
+            {/* <p className="slider-text">
                 {slide.title}
             </p>
             <img
                 src={slide.imageUrl}
                 alt="nature"
                 className="slide-image"
+            /> */}
+            <img
+                src={slide.imageUrl}
+                alt="nature"
+                className="h-[345px] w-full object-cover"
             />
+            <p className="slider-text">
+                {slide.title}
+            </p>
         </div>
     );
 };

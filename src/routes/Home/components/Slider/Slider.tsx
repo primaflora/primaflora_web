@@ -72,9 +72,10 @@ export const Slider = () => {
     };
 
     useEffect(() => {
-        apiPrivate.get('/slides').then(res => {
-            setSlides(res.data.filter((s: any) => s.isActive));
-        });
+        apiPrivate.get('/slides').then(res =>
+            // console.log(res.data)
+            setSlides(res.data.sort((a: any, b: any) => a.order - b.order))
+        );
     }, []);
 
     return (

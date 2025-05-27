@@ -2,16 +2,56 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Button, TextField
+  TableHead, TableRow, Paper, Button, TextField,
+  IconButton
 } from '@mui/material';
 import { apiPrivate } from '../../../../common/api';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import { blue, green, red } from '@mui/material/colors';
 
 const AdminSlides = () => {
   const [slides, setSlides] = useState<any>([]);
   const [form, setForm] = useState({ title: '', subtitle: '', imageUrl: '' });
 
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState<string>('');
+
+
+  const [editingImageId, setEditingImageId] = useState<number | null>(null);
+  const [editImageUrl, setEditImageUrl] = useState<string>('');
+
+  const startEditing = (id: number, currentTitle: string) => {
+    setEditingId(id);
+    setEditTitle(currentTitle);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditTitle('');
+  };
+
+  const saveTitle = async (id: number) => {
+    await apiPrivate.patch(`/slides/${id}`, { title: editTitle });
+    setSlides((prev: any) =>
+      prev.map((slide: any) =>
+        slide.id === id ? { ...slide, title: editTitle } : slide
+      )
+    );
+    cancelEditing();
+  };
+
+  // useEffect(() => {
+  //   apiPrivate.get('/slides').then(res => setSlides(res.data));
+  // }, []);
+
   useEffect(() => {
-    apiPrivate.get('/slides').then(res => setSlides(res.data));
+    apiPrivate.get('/slides').then(res =>
+      // console.log(res.data)
+        setSlides(res.data.sort((a: any, b: any) => a.order - b.order))
+    );
   }, []);
 
   const handleSubmit = async (e: any) => {
@@ -21,9 +61,44 @@ const AdminSlides = () => {
     setForm({ title: '', subtitle: '', imageUrl: '' });
   };
 
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination) return;
+
+    const reordered = Array.from(slides);
+    const [moved] = reordered.splice(result.source.index, 1);
+    reordered.splice(result.destination.index, 0, moved);
+
+    setSlides(reordered);
+
+    await apiPrivate.post('/slides/reorder', {
+      orderedIds: reordered.map((s: any) => s.id),
+    });
+  };
+  
   const handleDelete = async (id: any) => {
     await apiPrivate.delete(`/slides/${id}`);
     setSlides((prev: any) => prev.filter((slide: any) => slide.id !== id));
+  };
+
+
+  const startEditingImage = (id: number, currentUrl: string) => {
+    setEditingImageId(id);
+    setEditImageUrl(currentUrl);
+  };
+
+  const cancelEditingImage = () => {
+    setEditingImageId(null);
+    setEditImageUrl('');
+  };
+
+  const saveImageUrl = async (id: number) => {
+    await apiPrivate.patch(`/slides/${id}`, { imageUrl: editImageUrl });
+    setSlides((prev: any) =>
+      prev.map((slide: any) =>
+        slide.id === id ? { ...slide, imageUrl: editImageUrl } : slide
+      )
+    );
+    cancelEditingImage();
   };
 
   return (
@@ -33,7 +108,10 @@ const AdminSlides = () => {
         <TextField
           label="Заголовок"
           value={form.title}
-          onChange={(e: any) => setForm({ ...form, title: e.target.value })}
+          onChange={e => setForm({ ...form, title: e.target.value })}
+          multiline
+          minRows={2}
+          fullWidth
           required
         />
         <TextField
@@ -46,45 +124,113 @@ const AdminSlides = () => {
       </form>
 
       <h2>Список слайдов</h2>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Изображение</TableCell>
-              <TableCell>Заголовок</TableCell>
-              <TableCell>Активен</TableCell>
-              <TableCell>Действия</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {slides.map((slide: any) => (
-              <TableRow key={slide.id}>
-                <TableCell>{slide.id}</TableCell>
-                <TableCell>
-                  <img src={slide.imageUrl} alt={slide.title} style={{ width: 80 }} />
-                </TableCell>
-                <TableCell>{slide.title}</TableCell>
-                <TableCell>{slide.isActive ? 'Да' : 'Нет'}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => handleDelete(slide.id)}
-                  >
-                    Удалить
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-            {slides.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={6} align="center">Нет слайдов</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="slides">
+          {(provided) => (
+          <TableContainer component={Paper} {...provided.droppableProps}
+              ref={provided.innerRef}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Изображение</TableCell>
+                  <TableCell>Заголовок</TableCell>
+                  <TableCell>Активен</TableCell>
+                  <TableCell>Действия</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {slides.map((slide: any, index: number) => (
+                  <Draggable key={slide.id} draggableId={slide.id.toString()} index={index}>
+                    {(provided) => (
+                    <TableRow
+                      key={slide.id}
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={{
+                        ...provided.draggableProps.style,
+                        background: '#fafafa',
+                        cursor: 'grab',
+                      }}
+                    >
+                      <TableCell>{slide.id}</TableCell>
+                      <TableCell>
+                        {editingImageId === slide.id ? (
+                          <>
+                            <TextField
+                              value={editImageUrl}
+                              onChange={(e) => setEditImageUrl(e.target.value)}
+                              fullWidth
+                              size="small"
+                              placeholder="URL изображения"
+                            />
+                            <IconButton onClick={() => saveImageUrl(slide.id)}><SaveIcon sx={{color: green[500]}} /></IconButton>
+                            <IconButton onClick={cancelEditingImage}><CloseIcon sx={{color: red[500]}} /></IconButton>
+                          </>
+                        ) : (
+                          <>
+                            <img
+                              src={slide.imageUrl}
+                              alt={slide.title}
+                              style={{ width: 80, cursor: 'pointer' }}
+                              onClick={() => startEditingImage(slide.id, slide.imageUrl)}
+                            />
+                          </>
+                        )}
+                      </TableCell>
+
+                      <TableCell>
+                        {editingId === slide.id ? (
+                          <>
+                            <TextField
+                              value={editTitle}
+                              onChange={(e) => setEditTitle(e.target.value)}
+                              multiline
+                              fullWidth
+                              size="small"
+                            />
+                            <IconButton onClick={() => saveTitle(slide.id)}><SaveIcon sx={{ color: green[500] }} /></IconButton>
+                            <IconButton onClick={cancelEditing}><CloseIcon sx={{ color: red[500] }} /></IconButton>
+                          </>
+                        ) : (
+                          <>
+                          <span style={{whiteSpace: "pre-line"}}>
+                            {slide.title}
+                          </span>
+                            <IconButton onClick={() => startEditing(slide.id, slide.title)} size="small">
+                              <EditIcon fontSize="small" sx={{ color: blue[500] }} />
+                            </IconButton>
+                          </>
+                        )}
+                      </TableCell>
+                      
+                      {/* <TableCell style={{whiteSpace: "pre-line"}}>{slide.title}</TableCell> */}
+                      <TableCell>{slide.isActive ? 'Да' : 'Нет'}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleDelete(slide.id)}
+                        >
+                          Удалить
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                    )}
+                  </Draggable>
+                ))}
+                {slides.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center">Нет слайдов</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };
