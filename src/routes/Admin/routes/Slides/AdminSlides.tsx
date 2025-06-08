@@ -14,7 +14,7 @@ import { blue, green, red } from '@mui/material/colors';
 
 const AdminSlides = () => {
   const [slides, setSlides] = useState<any>([]);
-  const [form, setForm] = useState({ title: '', subtitle: '', imageUrl: '' });
+  const [form, setForm] = useState({ title: '', subtitle: '', imageUrl: '', textColor: '', link: '' });
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState<string>('');
@@ -23,6 +23,51 @@ const AdminSlides = () => {
   const [editingImageId, setEditingImageId] = useState<number | null>(null);
   const [editImageUrl, setEditImageUrl] = useState<string>('');
 
+
+  const [editingColorId, setEditingColorId] = useState<number | null>(null);
+	const [editColor, setEditColor] = useState<string>('');
+
+
+	const [editingLinkId, setEditingLinkId] = useState<number | null>(null);
+	const [editLink, setEditLink] = useState<string>('');
+
+	const startEditingLink = (id: number, currentLink: string) => {
+		setEditingLinkId(id);
+		setEditLink(currentLink || '');
+	};
+
+	const cancelEditingLink = () => {
+		setEditingLinkId(null);
+		setEditLink('');
+	};
+
+	const saveLink = async (id: number) => {
+		await apiPrivate.patch(`/slides/${id}`, { link: editLink });
+		setSlides((prev: any) =>
+			prev.map((slide: any) =>
+				slide.id === id ? { ...slide, link: editLink } : slide
+			)
+		);
+		cancelEditingLink();
+	};
+	
+
+	const saveTextColor = async (id: number) => {
+		await apiPrivate.patch(`/slides/${id}`, { textColor: editColor });
+		setSlides((prev: any) =>
+			prev.map((s: any) =>
+				s.id === id ? { ...s, textColor: editColor } : s
+			)
+		);
+		setEditingColorId(null);
+	};
+
+	const cancelEditingColor = () => {
+		setEditingColorId(null);
+		setEditColor('');
+	};
+  
+  
   const startEditing = (id: number, currentTitle: string) => {
     setEditingId(id);
     setEditTitle(currentTitle);
@@ -58,7 +103,7 @@ const AdminSlides = () => {
     e.preventDefault();
     const res = await apiPrivate.post('/slides', form);
     setSlides((prev: any) => [...prev, res.data]);
-    setForm({ title: '', subtitle: '', imageUrl: '' });
+    setForm({ title: '', subtitle: '', imageUrl: '', textColor: '', link: '' });
   };
 
   const handleDragEnd = async (result: any) => {
@@ -76,8 +121,11 @@ const AdminSlides = () => {
   };
   
   const handleDelete = async (id: any) => {
-    await apiPrivate.delete(`/slides/${id}`);
-    setSlides((prev: any) => prev.filter((slide: any) => slide.id !== id));
+		const answ = window.confirm("Удалить слайд?");
+		if (answ) {
+			await apiPrivate.delete(`/slides/${id}`);
+			setSlides((prev: any) => prev.filter((slide: any) => slide.id !== id));
+		}
   };
 
 
@@ -115,6 +163,19 @@ const AdminSlides = () => {
           required
         />
         <TextField
+            label="Цвет текста"
+            type="color"
+            value={form.textColor || '#000000'}
+            onChange={(e) => setForm({ ...form, textColor: e.target.value })}
+            style={{ width: 120 }}
+        />
+				<TextField
+					label="Ссылка"
+					value={form.link}
+					onChange={(e) => setForm({ ...form, link: e.target.value })}
+					fullWidth
+				/>
+        <TextField
           label="Ссылка на изображение"
           value={form.imageUrl}
           onChange={(e: any) => setForm({ ...form, imageUrl: e.target.value })}
@@ -135,6 +196,8 @@ const AdminSlides = () => {
                   <TableCell>ID</TableCell>
                   <TableCell>Изображение</TableCell>
                   <TableCell>Заголовок</TableCell>
+                  <TableCell>Цвет текста</TableCell>
+									<TableCell>Ссылка</TableCell>
                   <TableCell>Активен</TableCell>
                   <TableCell>Действия</TableCell>
                 </TableRow>
@@ -204,7 +267,67 @@ const AdminSlides = () => {
                           </>
                         )}
                       </TableCell>
+
+                      <TableCell>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                <div
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 4,
+                                    backgroundColor: slide.textColor,
+                                    border: '1px solid #ccc',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                    setEditingColorId(slide.id);
+                                    setEditColor(slide.textColor);
+                                }}
+                                />
+                                {editingColorId === slide.id && (
+                                <>
+                                    <input
+                                    type="color"
+                                    value={editColor}
+                                    onChange={(e) => setEditColor(e.target.value)}
+                                    />
+                                    <IconButton onClick={() => saveTextColor(slide.id)}><SaveIcon /></IconButton>
+                                    <IconButton onClick={cancelEditingColor}><CloseIcon /></IconButton>
+                                </>
+                                )}
+                            </div>
+                        </TableCell>
                       
+											<TableCell>
+												{editingLinkId === slide.id ? (
+													<>
+														<TextField
+															value={editLink}
+															onChange={(e) => setEditLink(e.target.value)}
+															fullWidth
+															size="small"
+															placeholder="https://..."
+														/>
+														<IconButton onClick={() => saveLink(slide.id)}><SaveIcon /></IconButton>
+														<IconButton onClick={cancelEditingLink}><CloseIcon /></IconButton>
+													</>
+												) : (
+													<>
+														<a
+															href={slide.link}
+															target="_blank"
+															rel="noopener noreferrer"
+															style={{ textDecoration: 'underline', color: '#0077cc' }}
+														>
+															{slide.link || '—'}
+														</a>
+														<IconButton onClick={() => startEditingLink(slide.id, slide.link)} size="small">
+															<EditIcon fontSize="small" />
+														</IconButton>
+													</>
+												)}
+											</TableCell>
+											
                       {/* <TableCell style={{whiteSpace: "pre-line"}}>{slide.title}</TableCell> */}
                       <TableCell>{slide.isActive ? 'Да' : 'Нет'}</TableCell>
                       <TableCell>

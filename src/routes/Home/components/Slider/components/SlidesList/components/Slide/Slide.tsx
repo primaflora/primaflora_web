@@ -5,25 +5,23 @@ import { SliderContext } from '../../../../Slider';
 
 export const Slide = ({ slide, number }: TSlideProps) => {
     const { slideIndex } = useContext(SliderContext);
-
+    console.log(slide)
     return (
-        <div className={`slide ${slideIndex === number ? 'selected' : 'hide'}`}>
-            {/* <p className="slider-text">
-                {slide.title}
-            </p>
-            <img
-                src={slide.imageUrl}
-                alt="nature"
-                className="slide-image"
-            /> */}
+        <div className={`slide ${slideIndex === number ? 'selected' : 'hide'}`}
+        style={{ cursor: slide.link ? 'pointer' : 'default', background: "red" }}>
+            <a
+        href={slide.link || '#'}
+        className="slide-inner"
+        rel="noopener noreferrer"
+      >
             <img
                 src={slide.imageUrl}
                 alt="nature"
                 className="h-[345px] w-full object-cover"
             />
-            <p className="slider-text">
+            <p className="slider-text" style={{ color: slide.textColor }}>
                 {slide.title}
-            </p>
+            </p></a>
         </div>
     );
 };
