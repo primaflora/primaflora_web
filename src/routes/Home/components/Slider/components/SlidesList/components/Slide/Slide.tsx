@@ -8,7 +8,7 @@ export const Slide = ({ slide, number }: TSlideProps) => {
     console.log(slide)
     return (
         <div className={`slide ${slideIndex === number ? 'selected' : 'hide'}`}
-        style={{ cursor: slide.link ? 'pointer' : 'default', background: "red" }}>
+        style={{ cursor: slide.link ? 'pointer' : 'default'}}>
             <a
         href={slide.link || '#'}
         className="slide-inner"
