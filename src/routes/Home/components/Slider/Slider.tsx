@@ -73,10 +73,20 @@ export const Slider = () => {
 
     useEffect(() => {
         apiPrivate.get('/slides').then(res =>
-            // console.log(res.data)
             setSlides(res.data.sort((a: any, b: any) => a.order - b.order))
         );
     }, []);
+
+    // Добавьте этот useEffect для автопролистывания
+    useEffect(() => {
+        if (slides.length === 0) return;
+
+        const interval = setInterval(() => {
+            changeSlide(1);
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, [slideIndex, slides.length]); // следим за slideIndex и slides.length
 
     return (
         <SliderContext.Provider
