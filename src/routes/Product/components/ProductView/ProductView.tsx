@@ -19,6 +19,15 @@ export const ProductView = ({ product }: TProductViewProps) => {
     const { addLike, removeLike } = useLikes();
     const [isLike, setIsLike] = useState<boolean>(!!product.like);
 
+    // Функция для формирования полного URL изображения
+    const getImageUrl = (imageUrl: string) => {
+        if (!imageUrl) return '';
+        if (imageUrl.startsWith('http')) {
+            return imageUrl; // Уже полный URL
+        }
+        return `${process.env.REACT_APP_HOST_URL}${imageUrl}`; // Добавляем базовый URL
+    };
+
     const handleLike = async () => {
         if (!isAuth) {
             notifyError('Error while tring to like product. (Not authorized!)');
@@ -92,7 +101,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
             <div className="product-view-container">
                 <img
                     className="product-avatar"
-                    src={product.photo_url}
+                    src={getImageUrl(product.photo_url)}
                     alt={product.title}
                 />
                 <div>

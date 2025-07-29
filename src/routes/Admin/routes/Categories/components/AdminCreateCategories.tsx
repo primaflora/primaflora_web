@@ -1,12 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { FileEntity } from '../../../../../common/services/upload/types';
+import { ImageSelector } from '../../../components/ImageSelector';
 
 const AdminCreateCategories = () => {
     const [categories, setCategories] = useState<any[]>([]); // Локальный список категорий
   const [newCategory, setNewCategory] = useState({ name_ukr: "" }); // Новая категория
   const [selectedCategory, setSelectedCategory] = useState(""); // Выбранная категория для подкатегории
   const [newSubcategory, setNewSubcategory] = useState({
-    image: "",
+    imageFile: null as File | null,
+    archiveImage: null as FileEntity | null,
     parent_uid: "",
     translate: [
       { language: "ukr", name: "", desc: "" },
@@ -31,23 +34,50 @@ const AdminCreateCategories = () => {
   // Обработчик добавления новой подкатегории
   const handleAddSubcategory = async () => {
     console.log(newSubcategory)
-    if (!selectedCategory || !newSubcategory.translate[0].name) {
-      return alert("Выберите категорию и заполните данные подкатегории!");
+    if (!selectedCategory || !newSubcategory.translate[0].name || (!newSubcategory.imageFile && !newSubcategory.archiveImage)) {
+      return alert("Выберите категорию, заполните данные подкатегории и выберите изображение!");
     }
 
-    const subcategoryData = {
-      ...newSubcategory,
-      parent_uid: selectedCategory,
-    };
-
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_HOST_URL}/categories/subcategory/create`,
-        subcategoryData
-      );
+      let response;
+      
+      if (newSubcategory.imageFile) {
+        // Создание с новым файлом (FormData)
+        const formData = new FormData();
+        formData.append('parent_uid', selectedCategory);
+        formData.append('translate', JSON.stringify(newSubcategory.translate));
+        formData.append('image', newSubcategory.imageFile);
+        
+        response = await axios.post(
+          `${process.env.REACT_APP_HOST_URL}/categories/subcategory/create-with-image`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+      } else if (newSubcategory.archiveImage) {
+        // Создание с существующим изображением из архива (JSON)
+        response = await axios.post(
+          `${process.env.REACT_APP_HOST_URL}/categories/subcategory/create-with-existing-image`,
+          {
+            existing_file_id: newSubcategory.archiveImage.uuid,
+            parent: selectedCategory,
+            translate: newSubcategory.translate
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+      }
+      
       alert("Подкатегория успешно добавлена!");
       setNewSubcategory({
-        image: "",
+        imageFile: null,
+        archiveImage: null,
         parent_uid: "",
         translate: [
           { language: "ukr", name: "", desc: "" },
@@ -121,14 +151,21 @@ const AdminCreateCategories = () => {
             </option>
           ))}
         </select>
-        <input
-          type="text"
-          value={newSubcategory.image}
-          onChange={(e) => setNewSubcategory({ ...newSubcategory, image: e.target.value })}
-          placeholder="Посилання на зображення"
-          style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
-        />
-        <img src={newSubcategory.image}/>
+        <div style={{ marginBottom: "10px" }}>
+          <ImageSelector
+            selectedImage={newSubcategory.archiveImage}
+            onImageSelect={(img: FileEntity) => setNewSubcategory({ ...newSubcategory, archiveImage: img, imageFile: null })}
+            onFileUpload={(file: File) => setNewSubcategory({ ...newSubcategory, imageFile: file, archiveImage: null })}
+            label="Вибрати з архіву або завантажити нове"
+          />
+          {newSubcategory.imageFile && (
+            <div style={{ marginBottom: "10px" }}>
+              <span style={{ fontSize: '12px', color: '#666' }}>
+                Вибрано файл: {newSubcategory.imageFile.name}
+              </span>
+            </div>
+          )}
+        </div>
         <input
           type="text"
           value={newSubcategory.translate[0].name}

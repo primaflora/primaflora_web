@@ -18,6 +18,15 @@ export const Card = ({ card }: TCardProps) => {
         card.like,
     );
 
+    // Функция для формирования полного URL изображения
+    const getImageUrl = (imageUrl: string) => {
+        if (!imageUrl) return '';
+        if (imageUrl.startsWith('http')) {
+            return imageUrl; // Уже полный URL
+        }
+        return `${process.env.REACT_APP_HOST_URL}${imageUrl}`; // Добавляем базовый URL
+    };
+
     const handleLike = async () => {
         console.log('IsAuthed => ', isAuth);
         if (!isAuth) {
@@ -76,7 +85,7 @@ export const Card = ({ card }: TCardProps) => {
     return (
         <div className="card">
             <Link to={`/product/${card.uuid}`}>
-                <img src={card.photo_url} alt={card.title} style={{width: 220, height: 212, objectFit: "cover"}} />
+                <img src={getImageUrl(card.photo_url)} alt={card.title} style={{width: 220, height: 212, objectFit: "cover"}} />
             </Link>
             <h1 className="card-title">{card.title}</h1>
             <p className="card-description">{card?.shortDesc}</p>

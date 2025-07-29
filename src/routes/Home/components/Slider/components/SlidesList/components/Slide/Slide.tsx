@@ -6,6 +6,15 @@ import { SliderContext } from '../../../../Slider';
 export const Slide = ({ slide, number }: TSlideProps) => {
     const { slideIndex } = useContext(SliderContext);
     console.log(slide)
+    
+    // Формируем полный URL для изображения
+    const getImageUrl = (imageUrl: string) => {
+        if (imageUrl.startsWith('http')) {
+            return imageUrl; // Уже полный URL
+        }
+        return `${process.env.REACT_APP_HOST_URL}${imageUrl}`; // Добавляем базовый URL
+    };
+    
     return (
         <div className={`slide ${slideIndex === number ? 'selected' : 'hide'}`}
         style={{ cursor: slide.link ? 'pointer' : 'default'}}>
@@ -15,7 +24,7 @@ export const Slide = ({ slide, number }: TSlideProps) => {
         rel="noopener noreferrer"
       >
             <img
-                src={slide.imageUrl}
+                src={getImageUrl(slide.imageUrl)}
                 alt="nature"
                 className="h-[345px] w-full object-cover"
             />

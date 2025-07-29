@@ -83,7 +83,7 @@ export const Slider = () => {
 
         const interval = setInterval(() => {
             changeSlide(1);
-        }, 10000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [slideIndex, slides.length]); // следим за slideIndex и slides.length

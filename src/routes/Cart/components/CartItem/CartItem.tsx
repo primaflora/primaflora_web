@@ -13,6 +13,15 @@ export const CartItem = ({
 }: TCartItemProps) => {
     const [quantity, setQuantity] = useState(item.quantity);
 
+    // Функция для формирования полного URL изображения
+    const getImageUrl = (imageUrl: string) => {
+        if (!imageUrl) return '';
+        if (imageUrl.startsWith('http')) {
+            return imageUrl; // Уже полный URL
+        }
+        return `${process.env.REACT_APP_HOST_URL}${imageUrl}`; // Добавляем базовый URL
+    };
+
     const handleQuantityChange = (value: number) => {
         if (value < 1) {
             return;
@@ -25,7 +34,7 @@ export const CartItem = ({
     return (
         <div className="w-full flex flex-row p-4 item-cart-border">
             <img
-                src={item.product.photo_url}
+                src={getImageUrl(item.product.photo_url)}
                 alt={item.product.title}
                 className="item-cart-image"
             />

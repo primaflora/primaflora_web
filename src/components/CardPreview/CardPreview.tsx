@@ -5,9 +5,18 @@ import './styles.css';
 import { TCardPreviewProps } from './types';
 
 export const CardPreview: React.FC<TCardPreviewProps> = ({ card }) => {
+    // Функция для формирования полного URL изображения
+    const getImageUrl = (imageUrl: string) => {
+        if (!imageUrl) return '';
+        if (imageUrl.startsWith('http')) {
+            return imageUrl; // Уже полный URL
+        }
+        return `${process.env.REACT_APP_HOST_URL}${imageUrl}`; // Добавляем базовый URL
+    };
+
     return (
         <div className="card">
-            {card.photo_url && <img src={card.photo_url} alt={card.title || 'Product Image'} />}
+            {card.photo_url && <img src={getImageUrl(card.photo_url)} alt={card.title || 'Product Image'} />}
             {card.title && <h1 className="card-title">{card.title}</h1>}
             {card.shortDesc && <p className="card-description">{card.shortDesc}</p>}
 

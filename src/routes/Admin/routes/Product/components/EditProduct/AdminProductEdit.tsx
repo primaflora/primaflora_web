@@ -14,6 +14,7 @@ import { TProductUpdate } from '../../../../../../common/services/product/types/
 import './styles.css';
 import { stateFromHTML } from 'draft-js-import-html';
 import { stateToHTML } from 'draft-js-export-html';
+import { apiPrivate } from '../../../../../../common/api';
 
 export const AdminProductEdit = () => {
     const { uuid } = useParams();
@@ -23,6 +24,16 @@ export const AdminProductEdit = () => {
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [product, setProduct] = useState<TProduct>();
     const [isEdited, setIsEdited] = useState<boolean>(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+
+    // Функция для формирования полного URL изображения
+    const getImageUrl = (imageUrl: string) => {
+        if (!imageUrl) return '';
+        if (imageUrl.startsWith('http')) {
+            return imageUrl; // Уже полный URL
+        }
+        return `${process.env.REACT_APP_HOST_URL}${imageUrl}`; // Добавляем базовый URL
+    };
 
     useEffect(() => {
         if (!uuid) redirect('/admin-page/products/table');
@@ -137,35 +148,68 @@ export const AdminProductEdit = () => {
 
         if (!product) return;
 
-        // check if all fields are filled
-        formData.forEach((value, key) => {
-            console.log(`${key}: ${value}`);
-        });
+        // Если выбран новый файл изображения, используем новый эндпоинт
+        if (imageFile) {
+            const submitFormData = new FormData();
+            submitFormData.append('image', imageFile);
+            
+            // Добавляем все остальные поля формы
+            formData.forEach((value, key) => {
+                if (key !== 'photo_url') { // Исключаем старое поле URL
+                    submitFormData.append(key, value as string);
+                }
+            });
 
-        // get only updated fields
-        const updatedFields = getUpdatedFieldsOnly(formData);
-        console.log('updatedFields => ', updatedFields);
+            // Добавляем категории
+            selectedTags.forEach(tag => {
+                submitFormData.append('categoryIds', tag.value);
+            });
 
-        // create payload for request
-        const payload = generatePayload(updatedFields);
-        console.log(payload)
-        payload.categoryIds = selectedTags.map(item => {
-            console.log(item);
-            return Number(item.value)
-        })
-        // payload.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
-        // payload.translate = [{
-        //     title: formData.get('title') as string,
-        //     shortDesc: formData.get('shortDesc') as string,
-        //     desc: stateToHTML(convertFromRaw(description as RawDraftContentState ))
-        // }]
-        Service.ProductService.update({ productUid: product.uuid, toUpdate: payload })
-            .then(res => {
-                setIsEdited(true);
+            // Добавляем описание
+            if (description) {
+                submitFormData.append('desc', stateToHTML(convertFromRaw(description)));
+            }
+
+            // Используем новый эндпоинт для обновления продукта с изображением
+            apiPrivate.patch(`/products/update-with-image/${product.uuid}`, submitFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             })
-            .catch(err => {
+            .then(() => {
+                setIsEdited(true);
+                setImageFile(null);
+            })
+            .catch((err) => {
                 console.log('err => ', err);
             });
+        } else {
+            // Используем старый метод для обновления без изображения
+            // check if all fields are filled
+            formData.forEach((value, key) => {
+                console.log(`${key}: ${value}`);
+            });
+
+            // get only updated fields
+            const updatedFields = getUpdatedFieldsOnly(formData);
+            console.log('updatedFields => ', updatedFields);
+
+            // create payload for request
+            const payload = generatePayload(updatedFields);
+            console.log(payload)
+            payload.categoryIds = selectedTags.map(item => {
+                console.log(item);
+                return Number(item.value)
+            })
+            
+            Service.ProductService.update({ productUid: product.uuid, toUpdate: payload })
+                .then(res => {
+                    setIsEdited(true);
+                })
+                .catch(err => {
+                    console.log('err => ', err);
+                });
+        }
     }
 
     const handleAddTag = (tag: Tag) => {
@@ -196,12 +240,30 @@ export const AdminProductEdit = () => {
                                     name='title'
                                     title='Title' />
                                 <Row style={{ gap: '15px', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Panel.FormInput 
-                                        defaultValue={product?.photo_url} 
-                                        title='Image (URL)' 
-                                        type='url' 
-                                        name='photo_url'
-                                        style={{ width: '150%' }} />
+                                    <div style={{ display: 'flex', flexDirection: 'column', width: '230%' }}>
+                                        <label>Product Image</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                                            style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                                        />
+                                        {imageFile && (
+                                            <span style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                                                Selected file: {imageFile.name}
+                                            </span>
+                                        )}
+                                        {!imageFile && product?.photo_url && (
+                                            <div style={{ marginTop: '5px' }}>
+                                                <span style={{ fontSize: '12px', color: '#666' }}>Current image:</span>
+                                                <img 
+                                                    src={getImageUrl(product.photo_url)} 
+                                                    alt="Current product" 
+                                                    style={{ width: '100px', height: '100px', objectFit: 'cover', marginTop: '5px' }}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
                                     <Panel.FormInput 
                                         defaultValue={product?.price_currency} 
                                         title='Price' 

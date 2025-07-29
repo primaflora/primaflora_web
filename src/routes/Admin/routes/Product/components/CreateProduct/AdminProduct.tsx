@@ -15,6 +15,9 @@ import { TProductPayload } from '../../../../../../common/services/product/types
 import axios from 'axios';
 import {stateToHTML} from 'draft-js-export-html';
 import { convertFromRaw } from 'draft-js';
+import { apiPrivate } from '../../../../../../common/api';
+import { ImageSelector } from '../../../../components/ImageSelector';
+import { FileEntity } from '../../../../../../common/services/upload/types';
 
 export const AdminProduct = () => {
     // const { categories } = useUserData();
@@ -24,10 +27,32 @@ export const AdminProduct = () => {
     const [card, setCard] = useState<Partial<TProduct>>();
     const [notification, setNotification] = useState<string>();
     const [isHidden, setIsHidden] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [selectedImageFromArchive, setSelectedImageFromArchive] = useState<FileEntity | null>(null);
 
     const updateCard = (key: keyof Partial<TProduct>, value: string | number | string[]) => {
         setCard(prevState => ({...prevState, [key]: value}));
     }
+
+    // Обновление карточки при выборе изображения из архива
+    const handleImageFromArchiveSelect = (file: FileEntity | null) => {
+        setSelectedImageFromArchive(file);
+        if (file) {
+            setImageFile(null); // Очищаем файл, если выбираем из архива
+            updateCard('photo_url', file.url);
+        }
+    };
+
+    // Обновление карточки при загрузке нового файла
+    const handleFileUpload = (file: File | null) => {
+        setImageFile(file);
+        if (file) {
+            setSelectedImageFromArchive(null); // Очищаем выбор из архива
+            // Создаем временный URL для preview
+            const tempUrl = URL.createObjectURL(file);
+            updateCard('photo_url', tempUrl);
+        }
+    };
 
     const handleDescriptionApply = (state: RawDraftContentState) => {
         setDescription(state);
@@ -62,6 +87,13 @@ export const AdminProduct = () => {
             setNotification('Select at least one category!');
             return;
         }
+        
+        // Проверяем, что выбрано изображение (либо файл, либо из архива)
+        if (!imageFile && !selectedImageFromArchive) {
+            setNotification('Выберите изображение для продукта!');
+            return;
+        }
+        
         console.log(description)
         const formData = new FormData(e.currentTarget);
 
@@ -77,34 +109,82 @@ export const AdminProduct = () => {
         console.log(selectedTags[0].value)
         const desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
         console.log(desc);
-        // create payload for request
-        const payload: TProductPayload = {
-            photo_url: formData.get('photo_url') as string,
-            price_currency: Number(formData.get('price_currency')),
-            price_points: 0,
-            percent_discount: 0,
-            categoryIds: selectedTags.map(item => Number(item.value)),
-            isPublished: !isHidden,
-            translate: [
-                {
+
+        if (selectedImageFromArchive) {
+            // Создание продукта с существующим изображением из архива
+            const payload = {
+                existing_file_id: selectedImageFromArchive.uuid,
+                price_currency: Number(formData.get('price_currency')) || 0,
+                price_points: Number(formData.get('price_points')) || 0, // Добавляем обязательное поле
+                percent_discount: Number(formData.get('percent_discount')) || 0, // Добавляем обязательное поле
+                rating: Number(formData.get('rating')) || 1, // Добавляем обязательное поле
+                categoryIds: selectedTags.map(item => Number(item.value)),
+                isPublished: !isHidden,
+                translate: [{
                     language: 'ukr',
                     title: formData.get('title') as string,
                     shortDesc: formData.get('shortDesc') as string,
-                    desc: stateToHTML(convertFromRaw(description as RawDraftContentState ))
-                }
-            ],
-            descriptionPoints: rawPoints,
-        }
+                    desc: desc
+                }],
+                descriptionPoints: rawPoints
+            };
 
-        console.log(payload);
-        Service.ProductService.create(payload)
-        .then(() => {
-            setNotification(`Product ${formData.get('title') as string} created!`);
-        })
-        .catch((err) => {
-            console.log(err);
-            setNotification('Something went wrong!');
-        })
+            console.log('Создание продукта с изображением из архива:', payload);
+            console.log('Selected image from archive:', selectedImageFromArchive);
+
+            apiPrivate.post('/products/create-with-existing-image', payload)
+                .then((response) => {
+                    console.log('Продукт успешно создан:', response.data);
+                    setNotification(`Product ${formData.get('title') as string} created with existing image!`);
+                    // Очищаем форму
+                    setSelectedImageFromArchive(null);
+                    setSelectedTags([]);
+                    setCard({});
+                    setDescription(undefined);
+                })
+                .catch((err) => {
+                    console.error('Ошибка создания продукта:', err);
+                    console.error('Error response:', err.response?.data);
+                    const errorMessage = err.response?.data?.message || err.message || 'Something went wrong!';
+                    setNotification(`Ошибка: ${errorMessage}`);
+                });
+        } else if (imageFile) {
+            // Создание продукта с новым изображением
+            const submitFormData = new FormData();
+            submitFormData.append('image', imageFile);
+            submitFormData.append('price_currency', formData.get('price_currency') as string);
+            submitFormData.append('categoryIds', JSON.stringify(selectedTags.map(item => Number(item.value))));
+            submitFormData.append('isPublished', (!isHidden).toString());
+            submitFormData.append('translate', JSON.stringify([{
+                language: 'ukr',
+                title: formData.get('title') as string,
+                shortDesc: formData.get('shortDesc') as string,
+                desc: desc
+            }]));
+            submitFormData.append('descriptionPoints', JSON.stringify(rawPoints));
+
+            console.log('Sending form data...');
+            
+            // Используем новый эндпоинт для создания продукта с изображением
+            apiPrivate.post('/products/create-with-image', submitFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then(() => {
+                setNotification(`Product ${formData.get('title') as string} created!`);
+                // Очищаем форму
+                setImageFile(null);
+                setSelectedImageFromArchive(null);
+                setSelectedTags([]);
+                setCard({});
+                setDescription(undefined);
+            })
+            .catch((err) => {
+                console.log(err);
+                setNotification('Something went wrong!');
+            });
+        }
     }
 
     const handlePreview = () => {
@@ -134,8 +214,6 @@ export const AdminProduct = () => {
 
     return (
         <div>
-            <Panel.Title text='Create Product!' />
-
             { notification && 
                 <Panel.Notification 
                     onRemove={() => setNotification(undefined)}>
@@ -154,14 +232,15 @@ export const AdminProduct = () => {
                                         defaultValue={card?.title} 
                                         name='title'
                                         title='Title' />
-                                    <Row style={{ gap: '15px', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Panel.FormInput 
-                                            defaultValue={card?.photo_url} 
-                                            onTextChange={(newText) => updateCard('photo_url', newText)}
-                                            title='Image (URL)' 
-                                            name='photo_url'
-                                            type='url' 
-                                            style={{ width: '150%' }} />
+                                    <Row style={{ gap: '15px', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                        <div style={{ width: '150%' }}>
+                                            <ImageSelector
+                                                selectedImage={selectedImageFromArchive}
+                                                onImageSelect={handleImageFromArchiveSelect}
+                                                onFileUpload={handleFileUpload}
+                                                label="Product Image"
+                                            />
+                                        </div>
                                         <Panel.FormInput 
                                         name='price_currency'
                                         defaultValue={card?.price_currency} 

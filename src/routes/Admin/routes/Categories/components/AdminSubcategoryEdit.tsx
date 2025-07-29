@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
+import { FileEntity } from '../../../../../common/services/upload/types';
+import { ImageSelector } from '../../../components/ImageSelector';
 
 const AdminSubcategoryEdit = () => {
     const { subcategoryId } = useParams();
@@ -8,6 +10,8 @@ const AdminSubcategoryEdit = () => {
     const [subcategory, setSubcategory] = useState<any>(null); // Данные подкатегории
     const [categories, setCategories] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [newImageFile, setNewImageFile] = useState<File | null>(null);
+    const [selectedArchiveImage, setSelectedArchiveImage] = useState<FileEntity | null>(null);
     const language = 'ukr';
   
     // Загрузка данных подкатегории
@@ -63,19 +67,50 @@ const AdminSubcategoryEdit = () => {
     // Обновление данных подкатегории
     const handleSave = async () => {
         console.log(subcategory)
-      if (!subcategory.image || !subcategory.translate.name || !subcategory.translate.desc ) {
+      if (!subcategory.translate.name || !subcategory.translate.desc ) {
         alert("Заполните все обязательные поля!");
         return;
       }
       console.log(subcategory)
       try {
-        await axios.put(
-          `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`,
-          {
-            ...subcategory,
-            parentId: subcategory.parent.uuid
-          }
-        );
+        let response;
+        
+        if (newImageFile) {
+          // Обновляем с новым изображением (загрузка файла)
+          const formData = new FormData();
+          formData.append('image', newImageFile);
+          formData.append('translate', JSON.stringify(subcategory.translate));
+          formData.append('parentId', subcategory.parent.uuid);
+          response = await axios.put(
+            `${process.env.REACT_APP_HOST_URL}/categories/subcategory-with-image/${subcategoryId}`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            }
+          );
+        } else if (selectedArchiveImage) {
+          // Обновляем с изображением из архива (uuid файла)
+          response = await axios.put(
+            `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`,
+            {
+              ...subcategory,
+              parentId: subcategory.parent.uuid,
+              image: selectedArchiveImage.url // или .uuid, если бек ожидает uuid
+            }
+          );
+        } else {
+          // Обновляем без изменения изображения
+          response = await axios.put(
+            `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`,
+            {
+              ...subcategory,
+              parentId: subcategory.parent.uuid
+            }
+          );
+        }
+        
         alert("Подкатегория успешно обновлена!");
         navigate("/admin-page/categories/table"); // Возврат на страницу категорий
       } catch (error) {
@@ -85,8 +120,16 @@ const AdminSubcategoryEdit = () => {
     };
   
     // Обновление изображения
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSubcategory({ ...subcategory, image: e.target.value });
+    const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setNewImageFile(e.target.files?.[0] || null);
+    };
+  
+    // Функция для формирования полного URL изображения
+    const getImageUrl = (imageUrl: string) => {
+      if (imageUrl.startsWith('http')) {
+        return imageUrl; // Уже полный URL
+      }
+      return `${process.env.REACT_APP_HOST_URL}${imageUrl}`; // Добавляем базовый URL
     };
   
     // Обновление перевода
@@ -105,15 +148,40 @@ const AdminSubcategoryEdit = () => {
     return (
       <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Редактировать подкатегорию</h2>
-        <img src={subcategory.image}/>
+        <img 
+          src={getImageUrl(subcategory.image)}
+          alt="Подкатегория"
+          style={{ width: "200px", height: "auto", marginBottom: "10px" }}
+        />
+
         <div style={{ marginBottom: "20px" }}>
-          <label>Ссылка на изображение:</label>
+          <label>Новое изображение (оставьте пустым, чтобы не менять):</label>
           <input
-            type="text"
-            value={subcategory.image}
-            onChange={handleImageChange}
-            placeholder="URL изображения"
+            type="file"
+            accept="image/*"
+            onChange={handleImageFileChange}
             style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
+          />
+          {newImageFile && (
+            <span style={{ fontSize: '12px', color: '#666' }}>
+              Выбран новый файл: {newImageFile.name}
+            </span>
+          )}
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <ImageSelector
+            selectedImage={selectedArchiveImage}
+            onImageSelect={img => {
+              setSelectedArchiveImage(img);
+              setNewImageFile(null); // сбрасываем файл, если выбрано из архива
+            }}
+            onFileUpload={file => {
+              setNewImageFile(file);
+              setSelectedArchiveImage(null); // сбрасываем архив, если выбран файл
+            }}
+            showUploadOption={false}
+            label="Выбрать из архива"
           />
         </div>
         <div style={{ marginBottom: "20px" }}>
