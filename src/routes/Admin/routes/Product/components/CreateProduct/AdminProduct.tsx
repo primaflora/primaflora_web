@@ -113,7 +113,7 @@ export const AdminProduct = () => {
         if (selectedImageFromArchive) {
             // Создание продукта с существующим изображением из архива
             const payload = {
-                existing_file_id: selectedImageFromArchive.uuid,
+                existing_file_id: selectedImageFromArchive.id,
                 price_currency: Number(formData.get('price_currency')) || 0,
                 price_points: Number(formData.get('price_points')) || 0, // Добавляем обязательное поле
                 percent_discount: Number(formData.get('percent_discount')) || 0, // Добавляем обязательное поле

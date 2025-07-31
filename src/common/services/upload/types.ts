@@ -1,5 +1,5 @@
 export interface FileEntity {
-  uuid: string;
+  id: string;
   original_name: string;
   filename: string;
   path: string;

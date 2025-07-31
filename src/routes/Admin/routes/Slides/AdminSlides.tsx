@@ -121,6 +121,10 @@ const AdminSlides = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     
+    console.log('=== СОЗДАНИЕ СЛАЙДА ===');
+    console.log('form:', form);
+    console.log('selectedImageFromArchive:', selectedImageFromArchive);
+    
     // Проверяем, что выбрано изображение (либо файл, либо из архива)
     if (!form.imageFile && !selectedImageFromArchive) {
       alert('Пожалуйста, выберите изображение');
@@ -133,14 +137,17 @@ const AdminSlides = () => {
       if (selectedImageFromArchive) {
         // Создание слайда с существующим изображением из архива
         const payload = {
-          existing_file_id: selectedImageFromArchive.uuid,
+          existing_file_id: selectedImageFromArchive.id,
           title: form.title,
           textColor: form.textColor,
           link: form.link,
         };
 
+        console.log('=== ОТПРАВКА С АРХИВНЫМ ИЗОБРАЖЕНИЕМ ===');
         console.log('Создание слайда с изображением из архива:', payload);
+        console.log('URL:', '/slides/create-with-existing-image');
         response = await apiPrivate.post('/slides/create-with-existing-image', payload);
+        console.log('Response:', response.data);
       } else if (form.imageFile) {
         // Создание слайда с новым изображением
         const formData = new FormData();
@@ -149,21 +156,28 @@ const AdminSlides = () => {
         formData.append('link', form.link);
         formData.append('image', form.imageFile);
 
+        console.log('=== ОТПРАВКА С НОВЫМ ФАЙЛОМ ===');
+        console.log('Создание слайда с новым файлом');
+        console.log('URL:', '/slides/create-with-image');
         response = await apiPrivate.post('/slides/create-with-image', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
+        console.log('Response:', response.data);
       }
 
       if (response) {
+        console.log('=== СЛАЙД СОЗДАН УСПЕШНО ===');
         setSlides((prev: any) => [...prev, response.data]);
         setForm({ title: '', subtitle: '', imageFile: null, textColor: '', link: '' });
         setSelectedImageFromArchive(null);
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('=== ОШИБКА СОЗДАНИЯ СЛАЙДА ===');
       console.error('Error creating slide:', error);
-      alert('Ошибка при создании слайда');
+      console.error('Error response:', error.response?.data);
+      alert('Ошибка при создании слайда: ' + (error.response?.data?.message || error.message));
     }
   };
 

@@ -54,6 +54,10 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('=== handleUpload ВЫЗВАН ===');
+    console.log('Event target:', e.target);
+    console.log('Event type:', e.type);
+    
     if (!uploadFile) {
       setNotification('Пожалуйста, выберите файл для загрузки');
       return;
@@ -117,7 +121,7 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
       
       // Перезагружаем список файлов
       console.log('Перезагружаем список файлов...');
-      loadFiles();
+      await loadFiles();
     } catch (error: any) {
       console.log('=== ОШИБКА ЗАГРУЗКИ ===');
       console.error('Full error object:', error);
@@ -170,7 +174,7 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
       <Panel.Container>
         <Panel.Header title="Загрузить новое изображение" />
         <Panel.Body>
-          <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div>
               <label>Выберите файл:</label>
               <input
@@ -178,7 +182,6 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
                 accept="image/*"
                 onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                 style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
-                required
               />
             </div>
             
@@ -213,12 +216,32 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
                 Загрузка файла...
               </div>
             ) : (
-              <Panel.Button 
-                text="Загрузить в архив" 
-                type="submit"
-              />
+              <button 
+                type="button"
+                disabled={loading}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500'
+                }}
+                onClick={async (e) => {
+                  console.log('=== КНОПКА НАЖАТА ===');
+                  console.log('Button click event:', e);
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('=== ВЫЗЫВАЕМ handleUpload НАПРЯМУЮ ===');
+                  await handleUpload(e as any);
+                }}
+              >
+                Загрузить в архив
+              </button>
             )}
-          </form>
+          </div>
         </Panel.Body>
       </Panel.Container>
 
@@ -293,8 +316,8 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
               <div className="archive-gallery">
                 {files.map((file) => (
                   <div 
-                    key={file.uuid} 
-                    className={`gallery-item ${selectedImageId === file.uuid ? 'selected' : ''}`}
+                    key={file.id} 
+                    className={`gallery-item ${selectedImageId === file.id ? 'selected' : ''}`}
                     onClick={() => showSelectButton && onImageSelect && onImageSelect(file)}
                     title={`${file.original_name}${file.description ? ' - ' + file.description : ''}`}
                   >

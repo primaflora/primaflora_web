@@ -62,7 +62,7 @@ const AdminCreateCategories = () => {
         response = await axios.post(
           `${process.env.REACT_APP_HOST_URL}/categories/subcategory/create-with-existing-image`,
           {
-            existing_file_id: newSubcategory.archiveImage.uuid,
+            existing_file_id: newSubcategory.archiveImage.id,
             parent: selectedCategory,
             translate: newSubcategory.translate
           },

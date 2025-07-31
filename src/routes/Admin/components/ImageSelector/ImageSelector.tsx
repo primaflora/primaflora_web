@@ -106,7 +106,7 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
               <ImageArchive 
                 onImageSelect={handleArchiveSelect}
                 showSelectButton={true}
-                selectedImageId={selectedImage?.uuid}
+                selectedImageId={selectedImage?.id}
               />
             </div>
           </div>

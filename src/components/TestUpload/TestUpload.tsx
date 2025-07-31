@@ -31,7 +31,7 @@ export const TestUpload: React.FC = () => {
       });
       
       console.log('Test upload successful:', response);
-      setMessage(`Успешно загружено! UUID: ${response.file.uuid}`);
+      setMessage(`Успешно загружено! UUID: ${response.file.id}`);
     } catch (error) {
       console.error('Test upload failed:', error);
       setMessage(`Ошибка: ${error}`);
