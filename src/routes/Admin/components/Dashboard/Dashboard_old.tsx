@@ -30,7 +30,6 @@ export const Dashboard = () => {
             <DashboardElem title='Comments' icon={Images.AddCommentIcon} link='/admin-page/comments' />
             <DashboardElem title='Orders' icon={Images.CartIconMob} link='/admin-page/orders' />
             <DashboardElem title='Slides' icon={Images.CartIconMob} link='/admin-page/slides' />
-            <DashboardElem title='Архив файлов' icon={Images.FolderIcon} link='/admin-page/file-archive' />
         </aside>
     );
 };

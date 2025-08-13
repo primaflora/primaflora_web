@@ -5,6 +5,8 @@ import { Panel } from '../Panel';
 import { Row } from '../../../../components/common';
 import { Column } from '../../../../components/common/Column';
 import { apiPrivate } from '../../../../common/api';
+import { Images } from '../../../../assets';
+import { transliterate, hasCyrillic, getSafeFileName, transliterateFileName } from '../../../../utils/transliteration';
 import './styles.css';
 
 interface ImageArchiveProps {
@@ -27,6 +29,10 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
   const [uploadDescription, setUploadDescription] = useState('');
   const [uploadTags, setUploadTags] = useState('');
   const [notification, setNotification] = useState('');
+  const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [showTransliterated, setShowTransliterated] = useState(false);
 
   useEffect(() => {
     loadFiles();
@@ -75,7 +81,21 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
     try {
       console.log('Создаем FormData...');
       const formData = new FormData();
-      formData.append('file', uploadFile);
+      
+      // Всегда транслитерируем файлы с кириллицей
+      let fileToUpload = uploadFile;
+      if (hasCyrillic(uploadFile.name)) {
+        const transliteratedName = transliterateFileName(uploadFile.name);
+        console.log('Транслитерируем имя файла:', uploadFile.name, '→', transliteratedName);
+        
+        // Создаем новый файл с транслитерированным именем
+        fileToUpload = new File([uploadFile], transliteratedName, {
+          type: uploadFile.type,
+          lastModified: uploadFile.lastModified
+        });
+      }
+      
+      formData.append('file', fileToUpload);
       
       if (uploadDescription.trim()) {
         formData.append('description', uploadDescription.trim());
@@ -144,6 +164,87 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
     loadFiles();
   };
 
+  const handleDeleteFile = async (fileId: string, fileName: string) => {
+    const displayName = getSafeFileName(fileName, showTransliterated);
+    if (!window.confirm(`Вы уверены, что хотите удалить файл "${displayName}"? Это действие нельзя отменить.`)) {
+      return;
+    }
+
+    setDeletingFileId(fileId);
+    
+    try {
+      console.log('Удаляем файл с ID:', fileId);
+      const response = await Service.UploadService.deleteFile(fileId);
+      console.log('Файл успешно удален:', response);
+      
+      setNotification(`✅ Файл "${displayName}" успешно удален`);
+      
+      // Обновляем список файлов
+      await loadFiles();
+    } catch (error: any) {
+      console.error('Ошибка при удалении файла:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Неизвестная ошибка';
+      setNotification(`❌ Ошибка при удалении файла: ${errorMessage}`);
+    } finally {
+      setDeletingFileId(null);
+    }
+  };
+
+  const toggleFileSelection = (fileId: string) => {
+    setSelectedFiles(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(fileId)) {
+        newSet.delete(fileId);
+      } else {
+        newSet.add(fileId);
+      }
+      return newSet;
+    });
+  };
+
+  const selectAllFiles = () => {
+    setSelectedFiles(new Set(files.map(file => file.id)));
+  };
+
+  const clearSelection = () => {
+    setSelectedFiles(new Set());
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedFiles.size === 0) return;
+
+    const fileNames = files
+      .filter(f => selectedFiles.has(f.id))
+      .map(f => getSafeFileName(f.original_name, showTransliterated));
+    
+    if (!window.confirm(`Вы уверены, что хотите удалить ${selectedFiles.size} файл(ов)?\n\n${fileNames.slice(0, 5).join('\n')}${fileNames.length > 5 ? '\n...' : ''}\n\nЭто действие нельзя отменить.`)) {
+      return;
+    }
+
+    const totalFiles = selectedFiles.size;
+    let deletedCount = 0;
+    let errors = 0;
+
+    for (const fileId of Array.from(selectedFiles)) {
+      try {
+        await Service.UploadService.deleteFile(fileId);
+        deletedCount++;
+      } catch (error) {
+        console.error(`Ошибка при удалении файла ${fileId}:`, error);
+        errors++;
+      }
+    }
+
+    if (errors === 0) {
+      setNotification(`✅ Успешно удалено ${deletedCount} файл(ов)`);
+    } else {
+      setNotification(`⚠️ Удалено ${deletedCount} из ${totalFiles} файлов. Ошибок: ${errors}`);
+    }
+
+    setSelectedFiles(new Set());
+    await loadFiles();
+  };
+
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -174,6 +275,18 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
       <Panel.Container>
         <Panel.Header title="Загрузить новое изображение" />
         <Panel.Body>
+          {/* Информация о транслитерации */}
+          <div style={{ 
+            padding: '12px', 
+            backgroundColor: '#d1ecf1', 
+            border: '1px solid #bee5eb', 
+            borderRadius: '4px',
+            marginBottom: '15px',
+            fontSize: '13px'
+          }}>
+            <strong>🔄 Автоматическая транслитерация включена:</strong> Все файлы с кириллическими именами будут автоматически переименованы в латиницу при загрузке.
+          </div>
+          
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div>
               <label>Выберите файл:</label>
@@ -206,6 +319,20 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
                 style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
               />
             </div>
+            
+            {uploadFile && hasCyrillic(uploadFile.name) && (
+              <div style={{ 
+                padding: '10px', 
+                backgroundColor: '#d4edda', 
+                border: '1px solid #c3e6cb', 
+                borderRadius: '4px',
+                fontSize: '12px'
+              }}>
+                <strong>Текущее имя:</strong> {uploadFile.name}<br/>
+                <strong>Будет сохранено как:</strong> {transliterateFileName(uploadFile.name)}
+                <span style={{ color: '#155724', fontWeight: 'bold' }}> ✓ Автоматическая транслитерация</span>
+              </div>
+            )}
             
             {!uploadFile ? (
               <div style={{ padding: '10px', backgroundColor: '#f0f0f0', color: '#666', textAlign: 'center', borderRadius: '4px' }}>
@@ -309,6 +436,65 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
       <Panel.Container>
         <Panel.Header title={`Архив изображений (${files.length} из общего количества)`} />
         <Panel.Body>
+          {/* Панель управления выбором */}
+          <div className="selection-controls">
+            <div className="selection-buttons">
+              <button
+                className={`selection-mode-button ${isSelectionMode ? 'active' : ''}`}
+                onClick={() => {
+                  setIsSelectionMode(!isSelectionMode);
+                  if (isSelectionMode) {
+                    clearSelection();
+                  }
+                }}
+              >
+                {isSelectionMode ? 'Отменить выбор' : 'Выбрать файлы'}
+              </button>
+              
+              {isSelectionMode && (
+                <>
+                  <button
+                    className="select-all-button"
+                    onClick={selectAllFiles}
+                    disabled={files.length === 0}
+                  >
+                    Выбрать все
+                  </button>
+                  <button
+                    className="clear-selection-button"
+                    onClick={clearSelection}
+                    disabled={selectedFiles.size === 0}
+                  >
+                    Очистить выбор
+                  </button>
+                  {selectedFiles.size > 0 && (
+                    <button
+                      className="delete-selected-button"
+                      onClick={handleDeleteSelected}
+                    >
+                      Удалить выбранные ({selectedFiles.size})
+                    </button>
+                  )}
+                </>
+              )}
+              
+              {/* Переключатель отображения имен файлов */}
+              <button
+                className={`transliteration-toggle ${showTransliterated ? 'active' : ''}`}
+                onClick={() => setShowTransliterated(!showTransliterated)}
+                title={showTransliterated ? 'Показать оригинальные названия' : 'Показать транслитерированные названия'}
+              >
+                {showTransliterated ? 'Abc' : 'Абв'}
+              </button>
+            </div>
+            
+            {isSelectionMode && selectedFiles.size > 0 && (
+              <div className="selection-info">
+                Выбрано файлов: {selectedFiles.size}
+              </div>
+            )}
+          </div>
+
           {loading ? (
             <div>Загрузка...</div>
           ) : (
@@ -317,21 +503,68 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
                 {files.map((file) => (
                   <div 
                     key={file.id} 
-                    className={`gallery-item ${selectedImageId === file.id ? 'selected' : ''}`}
-                    onClick={() => showSelectButton && onImageSelect && onImageSelect(file)}
-                    title={`${file.original_name}${file.description ? ' - ' + file.description : ''}`}
+                    className={`gallery-item ${selectedImageId === file.id ? 'selected' : ''} ${isSelectionMode && selectedFiles.has(file.id) ? 'selected-for-delete' : ''}`}
+                    onClick={() => {
+                      if (isSelectionMode) {
+                        toggleFileSelection(file.id);
+                      } else if (showSelectButton && onImageSelect) {
+                        onImageSelect(file);
+                      }
+                    }}
+                    title={hasCyrillic(file.original_name) ? 
+                      `${file.original_name} → ${transliterate(file.original_name)}${file.description ? '\n' + file.description : ''}` :
+                      `${file.original_name}${file.description ? ' - ' + file.description : ''}`
+                    }
                   >
                     <div className="gallery-image-container">
                       <img 
                         src={file.url} 
-                        alt={file.original_name} 
+                        alt={getSafeFileName(file.original_name, showTransliterated)} 
                         className="gallery-image"
                       />
+                      
+                      {/* Чекбокс для режима выбора */}
+                      {isSelectionMode && (
+                        <div className="gallery-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedFiles.has(file.id)}
+                            onChange={() => toggleFileSelection(file.id)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Кнопка удаления */}
+                      {!isSelectionMode && (
+                        <button
+                          className="gallery-delete-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteFile(file.id, file.original_name);
+                          }}
+                          disabled={deletingFileId === file.id}
+                          title="Удалить файл"
+                        >
+                          {deletingFileId === file.id ? (
+                            <span className="delete-loading">⏳</span>
+                          ) : (
+                            <img src={Images.TrashIcon} alt="Удалить" width={14} height={14} />
+                          )}
+                        </button>
+                      )}
                       
                       {/* Overlay с информацией - показывается при наведении */}
                       <div className="gallery-overlay">
                         <div className="gallery-overlay-content">
-                          <div className="gallery-title">{file.original_name}</div>
+                          <div className="gallery-title">
+                            {getSafeFileName(file.original_name, showTransliterated)}
+                            {hasCyrillic(file.original_name) && (
+                              <span className="cyrillic-indicator" title="Содержит кириллицу">
+                                🔤
+                              </span>
+                            )}
+                          </div>
                           <div className="gallery-meta">
                             {formatFileSize(file.size)} • {formatDate(file.uploaded_at.toString())}
                           </div>
@@ -345,7 +578,7 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
                           )}
                         </div>
                         
-                        {showSelectButton && (
+                        {showSelectButton && !isSelectionMode && (
                           <div className="gallery-select-button">
                             ✓ Выбрать
                           </div>

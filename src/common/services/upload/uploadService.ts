@@ -1,4 +1,5 @@
 import { apiPrivate } from '../../api';
+import { transliterateFileName, hasCyrillic } from '../../../utils/transliteration';
 import { 
   FileEntity, 
   UploadImageRequest, 
@@ -24,8 +25,22 @@ export class UploadService {
     console.log('API Base URL:', process.env.REACT_APP_HOST_URL);
 
     const formData = new FormData();
-    // Пробуем разные имена полей для файла, если сервер ожидает конкретное имя
-    formData.append('file', data.file);  // стандартное имя
+    
+    // Автоматически транслитерируем имя файла, если содержит кириллицу
+    let fileToUpload = data.file;
+    if (hasCyrillic(data.file.name)) {
+      const transliteratedName = transliterateFileName(data.file.name);
+      console.log('🔄 Автоматическая транслитерация файла:', data.file.name, '→', transliteratedName);
+      
+      fileToUpload = new File([data.file], transliteratedName, {
+        type: data.file.type,
+        lastModified: data.file.lastModified
+      });
+    } else {
+      console.log('✅ Файл уже имеет латинское имя:', data.file.name);
+    }
+    
+    formData.append('file', fileToUpload);
     
     if (data.description) {
       formData.append('description', data.description);
@@ -98,5 +113,21 @@ export class UploadService {
   static async updateFile(uuid: string, data: UpdateFileRequest): Promise<FileEntity> {
     const response = await apiPrivate.put<FileEntity>(`/upload/archive/${uuid}`, data);
     return response.data;
+  }
+
+  /**
+   * Удаление файла из архива
+   */
+  static async deleteFile(id: string): Promise<{ message: string; deletedFileId: string }> {
+    console.log('UploadService.deleteFile called with id:', id);
+    
+    try {
+      const response = await apiPrivate.delete(`/upload/archive/${id}`);
+      console.log('Delete response received:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Delete request failed:', error);
+      throw error;
+    }
   }
 }

@@ -28,6 +28,7 @@ import { CheckoutSuccess } from './routes/CheckoutSuccess/CheckoutSuccess';
 import { AdminOrders } from './routes/Admin/routes/Orders/AdminOrders';
 import { CategoryBreadcrumbs } from './components/CategoryBreadcrumbs/CategoryBreadcrumbs';
 import AdminSlides from './routes/Admin/routes/Slides/AdminSlides';
+import { AdminImageArchive } from './routes/Admin/routes/ImageArchive';
 
 function App() {
     const { setIsAuth } = useAuth();
@@ -82,6 +83,7 @@ function App() {
                         </Route>
                         <Route path="orders" element={<AdminOrders/>}/>
                         <Route path="slides" element={<AdminSlides/>}/>
+                        <Route path="file-archive" element={<AdminImageArchive/>}/>
                     </Route>
                 </Routes>
             </div>
