@@ -80,7 +80,7 @@ export const AdminProduct = () => {
         return arr;
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (selectedTags.length === 0) {
@@ -149,29 +149,30 @@ export const AdminProduct = () => {
                     setNotification(`Ошибка: ${errorMessage}`);
                 });
         } else if (imageFile) {
-            // Создание продукта с новым изображением
-            const submitFormData = new FormData();
-            submitFormData.append('image', imageFile);
-            submitFormData.append('price_currency', formData.get('price_currency') as string);
-            submitFormData.append('categoryIds', JSON.stringify(selectedTags.map(item => Number(item.value))));
-            submitFormData.append('isPublished', (!isHidden).toString());
-            submitFormData.append('translate', JSON.stringify([{
-                language: 'ukr',
-                title: formData.get('title') as string,
-                shortDesc: formData.get('shortDesc') as string,
-                desc: desc
-            }]));
-            submitFormData.append('descriptionPoints', JSON.stringify(rawPoints));
+            // Создание продукта с новым изображением: сначала загружаем в архив, затем создаем продукт с existing_file_id
+            try {
+                setNotification(`Загрузка изображения в архив: ${imageFile.name}`);
+                const uploadResp = await Service.UploadService.uploadImage({ file: imageFile });
+                const fileId = uploadResp.file.id;
 
-            console.log('Sending form data...');
-            
-            // Используем новый эндпоинт для создания продукта с изображением
-            apiPrivate.post('/products/create-with-image', submitFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-            .then(() => {
+                const payload = {
+                    existing_file_id: fileId,
+                    price_currency: Number(formData.get('price_currency')) || 0,
+                    price_points: Number(formData.get('price_points')) || 0,
+                    percent_discount: Number(formData.get('percent_discount')) || 0,
+                    rating: Number(formData.get('rating')) || 1,
+                    categoryIds: selectedTags.map(item => Number(item.value)),
+                    isPublished: !isHidden,
+                    translate: [{
+                        language: 'ukr',
+                        title: formData.get('title') as string,
+                        shortDesc: formData.get('shortDesc') as string,
+                        desc: desc
+                    }],
+                    descriptionPoints: rawPoints
+                };
+
+                await apiPrivate.post('/products/create-with-existing-image', payload);
                 setNotification(`Product ${formData.get('title') as string} created!`);
                 // Очищаем форму
                 setImageFile(null);
@@ -179,11 +180,10 @@ export const AdminProduct = () => {
                 setSelectedTags([]);
                 setCard({});
                 setDescription(undefined);
-            })
-            .catch((err) => {
-                console.log(err);
-                setNotification('Something went wrong!');
-            });
+            } catch (err) {
+                console.error('Ошибка при загрузке или создании продукта:', err);
+                setNotification('Ошибка при загрузке изображения или создании продукта');
+            }
         }
     }
 

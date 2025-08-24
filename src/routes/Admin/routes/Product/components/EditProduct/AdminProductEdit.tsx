@@ -10,6 +10,8 @@ import { TagsInput } from '../../../../../../components/TagsInput';
 import { TProduct } from '../../../../../../common/services/category/types/common';
 import { redirect, useParams } from 'react-router-dom';
 import { Service } from '../../../../../../common/services';
+import { ImageSelector } from '../../../../components/ImageSelector';
+import { FileEntity } from '../../../../../../common/services/upload/types';
 import { TProductUpdate } from '../../../../../../common/services/product/types/patchUpdateProduct';
 import './styles.css';
 import { stateFromHTML } from 'draft-js-import-html';
@@ -25,6 +27,8 @@ export const AdminProductEdit = () => {
     const [product, setProduct] = useState<TProduct>();
     const [isEdited, setIsEdited] = useState<boolean>(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [selectedImageFromArchive, setSelectedImageFromArchive] = useState<FileEntity | null>(null);
+    const [showArchiveModal, setShowArchiveModal] = useState(false);
 
     // Функция для формирования полного URL изображения
     const getImageUrl = (imageUrl: string) => {
@@ -55,8 +59,8 @@ export const AdminProductEdit = () => {
                 // }]);
                 setSelectedTags(res.data.categories.map(cat => {
                     return {
-                        label: cat.translate[0].name, 
-                        value: cat.id as string
+                        label: (cat.translate?.[0]?.name as any) || '', 
+                        value: (cat.id as any) as string
                     }
                 }));
             })
@@ -68,9 +72,9 @@ export const AdminProductEdit = () => {
 
     const categoriesToTags = () => {
         const arr: Tag[] = [];
-        categories.forEach(category => {
-            category.childrens.forEach(subcategory => {
-                arr.push({ label: subcategory.name, value: subcategory.uuid });
+                categories.forEach(category => {
+            category.childrens.forEach((subcategory: any) => {
+                arr.push({ label: (subcategory as any).name, value: (subcategory as any).uuid });
             })
         })
 
@@ -142,48 +146,44 @@ export const AdminProductEdit = () => {
         return payload;
     }
     
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
         if (!product) return;
 
-        // Если выбран новый файл изображения, используем новый эндпоинт
-        if (imageFile) {
-            const submitFormData = new FormData();
-            submitFormData.append('image', imageFile);
-            
-            // Добавляем все остальные поля формы
-            formData.forEach((value, key) => {
-                if (key !== 'photo_url') { // Исключаем старое поле URL
-                    submitFormData.append(key, value as string);
-                }
-            });
+    // Если выбран новый файл изображения, используем новый эндпоинт
+    if (imageFile) {
+            // First upload image to archive, then update product using existing_file_id
+            try {
+                const uploadResp = await Service.UploadService.uploadImage({ file: imageFile });
+                const fileId = uploadResp.file.id;
 
-            // Добавляем категории
-            selectedTags.forEach(tag => {
-                submitFormData.append('categoryIds', tag.value);
-            });
+                // Use the existing-file update endpoint
+                await apiPrivate.patch(`/products/update-with-existing-image/${product.uuid}`, { existing_file_id: fileId });
 
-            // Добавляем описание
-            if (description) {
-                submitFormData.append('desc', stateToHTML(convertFromRaw(description)));
-            }
-
-            // Используем новый эндпоинт для обновления продукта с изображением
-            apiPrivate.patch(`/products/update-with-image/${product.uuid}`, submitFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-            .then(() => {
                 setIsEdited(true);
                 setImageFile(null);
-            })
-            .catch((err) => {
-                console.log('err => ', err);
-            });
+                // Update local preview
+                setProduct(prev => prev ? ({ ...prev, photo_url: uploadResp.file.url } as any) : prev);
+            } catch (err) {
+                console.error('Error uploading image and updating product:', err);
+            }
         } else {
+                // If selected image from archive (and no new file), update via existing-file endpoint
+                if (selectedImageFromArchive && !imageFile) {
+                    apiPrivate.patch(`/products/update-with-existing-image/${product.uuid}`, { existing_file_id: selectedImageFromArchive.id })
+                        .then(() => {
+                            setIsEdited(true);
+                            // Update local product preview
+                            setProduct(prev => prev ? ({ ...prev, photo_url: selectedImageFromArchive.url } as any) : prev);
+                            setSelectedImageFromArchive(null);
+                        })
+                        .catch((err) => {
+                            console.error('Error updating product with existing image:', err);
+                        });
+                    return;
+                }
             // Используем старый метод для обновления без изображения
             // check if all fields are filled
             formData.forEach((value, key) => {
@@ -240,28 +240,24 @@ export const AdminProductEdit = () => {
                                     name='title'
                                     title='Title' />
                                 <Row style={{ gap: '15px', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', width: '230%' }}>
-                                        <label>Product Image</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                                            style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                                        <div style={{ display: 'flex', flexDirection: 'column', width: '230%' }}>
+                                        <ImageSelector
+                                            selectedImage={selectedImageFromArchive ? selectedImageFromArchive : product ? ({ id: product.uuid as any, url: product.photo_url, original_name: '' } as any) : undefined}
+                                            onImageSelect={(file: FileEntity) => {
+                                                setSelectedImageFromArchive(file);
+                                                if (file) {
+                                                    setImageFile(null);
+                                                }
+                                            }}
+                                            onFileUpload={(file: File | null) => {
+                                                setImageFile(file);
+                                            }}
+                                            label="Product Image"
                                         />
                                         {imageFile && (
                                             <span style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
                                                 Selected file: {imageFile.name}
                                             </span>
-                                        )}
-                                        {!imageFile && product?.photo_url && (
-                                            <div style={{ marginTop: '5px' }}>
-                                                <span style={{ fontSize: '12px', color: '#666' }}>Current image:</span>
-                                                <img 
-                                                    src={getImageUrl(product.photo_url)} 
-                                                    alt="Current product" 
-                                                    style={{ width: '100px', height: '100px', objectFit: 'cover', marginTop: '5px' }}
-                                                />
-                                            </div>
                                         )}
                                     </div>
                                     <Panel.FormInput 

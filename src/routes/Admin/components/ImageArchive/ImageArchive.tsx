@@ -26,6 +26,7 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadFiles, setUploadFiles] = useState<File[] | null>(null);
   const [uploadDescription, setUploadDescription] = useState('');
   const [uploadTags, setUploadTags] = useState('');
   const [notification, setNotification] = useState('');
@@ -33,6 +34,17 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [showTransliterated, setShowTransliterated] = useState(false);
+  const [previewFile, setPreviewFile] = useState<FileEntity | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setPreviewFile(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   useEffect(() => {
     loadFiles();
@@ -64,97 +76,49 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
     console.log('Event target:', e.target);
     console.log('Event type:', e.type);
     
-    if (!uploadFile) {
+    const filesToUpload = uploadFiles && uploadFiles.length > 0 ? uploadFiles : (uploadFile ? [uploadFile] : []);
+    if (filesToUpload.length === 0) {
       setNotification('Пожалуйста, выберите файл для загрузки');
       return;
     }
 
     setLoading(true);
-    console.log('=== НАЧАЛО ЗАГРУЗКИ ===');
-    console.log('Файл:', {
-      name: uploadFile.name,
-      type: uploadFile.type,
-      size: uploadFile.size,
-      lastModified: uploadFile.lastModified
-    });
-    
+    console.log('=== НАЧАЛО ЗАГРУЗКИ (мультифайл) ===');
+
     try {
-      console.log('Создаем FormData...');
-      const formData = new FormData();
-      
-      // Всегда транслитерируем файлы с кириллицей
-      let fileToUpload = uploadFile;
-      if (hasCyrillic(uploadFile.name)) {
-        const transliteratedName = transliterateFileName(uploadFile.name);
-        console.log('Транслитерируем имя файла:', uploadFile.name, '→', transliteratedName);
-        
-        // Создаем новый файл с транслитерированным именем
-        fileToUpload = new File([uploadFile], transliteratedName, {
-          type: uploadFile.type,
-          lastModified: uploadFile.lastModified
-        });
-      }
-      
-      formData.append('file', fileToUpload);
-      
-      if (uploadDescription.trim()) {
-        formData.append('description', uploadDescription.trim());
-        console.log('Добавлено описание:', uploadDescription.trim());
-      }
-      
-      if (uploadTags.trim()) {
-        const tagsArray = uploadTags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-        formData.append('tags', JSON.stringify(tagsArray));
-        console.log('Добавлены теги:', tagsArray);
-      }
-
-      console.log('FormData готова, проверяем содержимое:');
-      formData.forEach((value, key) => {
-        if (value instanceof File) {
-          console.log(`${key}: File(${value.name}, ${value.size} bytes)`);
-        } else {
-          console.log(`${key}: ${value}`);
+      const uploaded: string[] = [];
+      for (let i = 0; i < filesToUpload.length; i++) {
+        const f = filesToUpload[i];
+        setNotification(`Загрузка ${i + 1}/${filesToUpload.length}: ${f.name}`);
+        try {
+          const resp = await Service.UploadService.uploadImage({ file: f, description: uploadDescription.trim() || undefined, tags: uploadTags ? uploadTags.split(',').map(t => t.trim()).filter(Boolean) : undefined });
+          uploaded.push(resp.file?.original_name || resp.file?.filename || f.name);
+        } catch (err: any) {
+          console.error('Ошибка при загрузке файла', f.name, err);
+          uploaded.push(`Ошибка:${f.name}`);
         }
-      });
+      }
 
-      console.log('Отправляем POST запрос на /upload/image...');
-      const response = await apiPrivate.post('/upload/image', formData, {
-        headers: {
-          'Content-Type': undefined, // Важно! Убираем заголовок чтобы axios сам установил multipart/form-data
-        },
-      });
-      
-      console.log('=== УСПЕШНЫЙ ОТВЕТ ===');
-      console.log('Response status:', response.status);
-      console.log('Response data:', response.data);
-      
-      setNotification(`✅ Файл успешно загружен в архив! UUID: ${response.data.file?.uuid || 'N/A'}`);
-      
-      // Очищаем форму
+      setNotification(`Загрузка завершена: ${uploaded.join(', ')}`);
+
+      // Сброс полей
+      setUploadFiles(null);
       setUploadFile(null);
       setUploadDescription('');
       setUploadTags('');
-      
+
       // Очищаем input file
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-      
-      // Перезагружаем список файлов
-      console.log('Перезагружаем список файлов...');
+
       await loadFiles();
     } catch (error: any) {
-      console.log('=== ОШИБКА ЗАГРУЗКИ ===');
-      console.error('Full error object:', error);
-      console.error('Error response:', error.response);
-      console.error('Error message:', error.message);
-      console.error('Error status:', error.response?.status);
-      console.error('Error data:', error.response?.data);
-      
+      console.error('Ошибка при загрузке файлов:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Неизвестная ошибка';
-      setNotification(`❌ Ошибка при загрузке файла: ${errorMessage}`);
+      setNotification(`❌ Ошибка при загрузке: ${errorMessage}`);
     } finally {
       setLoading(false);
-      console.log('=== ЗАВЕРШЕНИЕ ЗАГРУЗКИ ===');
+      console.log('=== ЗАВЕРШЕНИЕ ЗАГРУЗКИ (мультифайл) ===');
     }
   };
 
@@ -289,11 +253,16 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div>
-              <label>Выберите файл:</label>
+              <label>Выберите файл(ы):</label>
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                multiple
+                onChange={(e) => {
+                  const list = e.target.files ? Array.from(e.target.files) : [];
+                  setUploadFiles(list.length > 0 ? list : null);
+                  setUploadFile(list[0] || null);
+                }}
                 style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
               />
             </div>
@@ -509,6 +478,9 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
                         toggleFileSelection(file.id);
                       } else if (showSelectButton && onImageSelect) {
                         onImageSelect(file);
+                      } else {
+                        // Открыть превью файла в полный размер
+                        setPreviewFile(file);
                       }
                     }}
                     title={hasCyrillic(file.original_name) ? 
@@ -588,6 +560,67 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
                   </div>
                 ))}
               </div>
+
+              {/* Модальное окно предпросмотра */}
+              {previewFile && (
+                <div
+                  className="image-preview-backdrop"
+                  onClick={() => setPreviewFile(null)}
+                  style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.6)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1200,
+                    padding: 20,
+                  }}
+                >
+                  <div
+                    className="image-preview-container"
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      maxWidth: '95%',
+                      maxHeight: '95%',
+                      background: '#fff',
+                      borderRadius: 8,
+                      boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+                      overflow: 'auto',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 12, borderBottom: '1px solid #eee' }}>
+                      <div style={{ fontWeight: 600 }}>{getSafeFileName(previewFile.original_name, showTransliterated)}</div>
+                      <div>
+                        <a
+                          href={previewFile.url}
+                          download={previewFile.original_name}
+                          style={{ marginRight: 12 }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Скачать
+                        </a>
+                        <button onClick={() => setPreviewFile(null)}>Закрыть</button>
+                      </div>
+                    </div>
+
+                    <div style={{ padding: 12, display: 'flex', justifyContent: 'center' }}>
+                      <img
+                        src={previewFile.url}
+                        alt={previewFile.original_name}
+                        style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain' }}
+                      />
+                    </div>
+
+                    {previewFile.description && (
+                      <div style={{ padding: 12, borderTop: '1px solid #eee' }}>{previewFile.description}</div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Пагинация */}
               {totalPages > 1 && (

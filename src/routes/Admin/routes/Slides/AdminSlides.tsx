@@ -6,12 +6,14 @@ import {
   IconButton
 } from '@mui/material';
 import { apiPrivate } from '../../../../common/api';
+import { Service } from '../../../../common/services';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { blue, green, red } from '@mui/material/colors';
 import { ImageSelector } from '../../components/ImageSelector';
+import { ImageArchive } from '../../components/ImageArchive/ImageArchive';
 import { FileEntity } from '../../../../common/services/upload/types';
 
 const AdminSlides = () => {
@@ -25,6 +27,8 @@ const AdminSlides = () => {
 
   const [editingImageId, setEditingImageId] = useState<number | null>(null);
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [selectedArchiveImage, setSelectedArchiveImage] = useState<FileEntity | null>(null);
 
 
   const [editingColorId, setEditingColorId] = useState<number | null>(null);
@@ -134,7 +138,7 @@ const AdminSlides = () => {
     try {
       let response;
 
-      if (selectedImageFromArchive) {
+    if (selectedImageFromArchive) {
         // Создание слайда с существующим изображением из архива
         const payload = {
           existing_file_id: selectedImageFromArchive.id,
@@ -149,22 +153,24 @@ const AdminSlides = () => {
         response = await apiPrivate.post('/slides/create-with-existing-image', payload);
         console.log('Response:', response.data);
       } else if (form.imageFile) {
-        // Создание слайда с новым изображением
-        const formData = new FormData();
-        formData.append('title', form.title);
-        formData.append('textColor', form.textColor);
-        formData.append('link', form.link);
-        formData.append('image', form.imageFile);
+        // Создание слайда с новым изображением: загружаем сначала в архив, затем создаем с использованием existing_file_id
+        try {
+          const uploadResp = await Service.UploadService.uploadImage({ file: form.imageFile });
+          const fileId = uploadResp.file.id;
 
-        console.log('=== ОТПРАВКА С НОВЫМ ФАЙЛОМ ===');
-        console.log('Создание слайда с новым файлом');
-        console.log('URL:', '/slides/create-with-image');
-        response = await apiPrivate.post('/slides/create-with-image', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        console.log('Response:', response.data);
+          const payload = {
+            existing_file_id: fileId,
+            title: form.title,
+            textColor: form.textColor,
+            link: form.link,
+          };
+
+          console.log('=== ОТПРАВКА С НОВЫМ ФАЙЛОМ (через архив) ===');
+          response = await apiPrivate.post('/slides/create-with-existing-image', payload);
+        } catch (err) {
+          console.error('Ошибка при загрузке изображения в архив для слайда:', err);
+          throw err;
+        }
       }
 
       if (response) {
@@ -207,33 +213,37 @@ const AdminSlides = () => {
   const startEditingImage = (id: number) => {
     setEditingImageId(id);
     setEditImageFile(null);
+    setSelectedArchiveImage(null);
   };
 
   const cancelEditingImage = () => {
     setEditingImageId(null);
     setEditImageFile(null);
+    setSelectedArchiveImage(null);
+    setShowArchiveModal(false);
   };
 
   const saveImageFile = async (id: number) => {
-    if (!editImageFile) {
-      alert('Пожалуйста, выберите изображение');
+    if (!editImageFile && !selectedArchiveImage) {
+      alert('Пожалуйста, выберите изображение или выберите из архива');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('image', editImageFile);
-
     try {
-      await apiPrivate.patch(`/slides/update-with-image/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      
+      if (editImageFile) {
+        // upload to archive first
+        const uploadResp = await Service.UploadService.uploadImage({ file: editImageFile });
+        const fileId = uploadResp.file.id;
+        await apiPrivate.patch(`/slides/${id}/update-with-existing-image`, { existing_file_id: fileId });
+      } else if (selectedArchiveImage) {
+        // Use dedicated endpoint to update slide with an existing archive image
+        await apiPrivate.patch(`/slides/${id}/update-with-existing-image`, {
+          existing_file_id: selectedArchiveImage.id,
+        });
+      }
       // Обновляем список слайдов
       const response = await apiPrivate.get('/slides');
       setSlides(response.data.sort((a: any, b: any) => a.order - b.order));
-      
       cancelEditingImage();
     } catch (error) {
       console.error('Error updating slide image:', error);
@@ -592,19 +602,45 @@ const AdminSlides = () => {
                               <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => setEditImageFile(e.target.files?.[0] || null)}
+                                onChange={(e) => {
+                                  setEditImageFile(e.target.files?.[0] || null);
+                                  setSelectedArchiveImage(null);
+                                }}
                                 style={{ padding: '5px' }}
                               />
-                              {editImageFile && (
-                                <span style={{ fontSize: '12px', color: '#666' }}>
-                                  {editImageFile.name}
-                                </span>
-                              )}
-                              <div>
+                              <span style={{ fontSize: '12px', color: '#666' }}>
+                                {editImageFile ? editImageFile.name : selectedArchiveImage ? selectedArchiveImage.original_name : ''}
+                              </span>
+                              <div style={{ display: 'flex', gap: 8 }}>
                                 <IconButton onClick={() => saveImageFile(slide.id)}><SaveIcon sx={{color: green[500]}} /></IconButton>
                                 <IconButton onClick={cancelEditingImage}><CloseIcon sx={{color: red[500]}} /></IconButton>
+                                <Button variant="outlined" size="small" onClick={() => { setShowArchiveModal(true); setEditImageFile(null); }}>Выбрать из архива</Button>
                               </div>
+                              {selectedArchiveImage && (
+                                <div style={{ marginTop: 10, textAlign: 'center' }}>
+                                  <img src={selectedArchiveImage.url} alt={selectedArchiveImage.original_name} style={{ width: 80, borderRadius: 6 }} />
+                                  <div style={{ fontSize: 12 }}>{selectedArchiveImage.original_name}</div>
+                                </div>
+                              )}
                             </div>
+                            {showArchiveModal && (
+                              <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.35)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ background: '#fff', borderRadius: 12, padding: 24, minWidth: 400, minHeight: 300, position: 'relative' }}>
+                                  <Button onClick={() => setShowArchiveModal(false)} style={{ position: 'absolute', top: 8, right: 8, minWidth: 32 }}>×</Button>
+                                  <h3 style={{ marginTop: 0 }}>Выберите изображение из архива</h3>
+                                  <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+                                    <ImageArchive
+                                      onImageSelect={(file: FileEntity) => {
+                                        setSelectedArchiveImage(file);
+                                        setShowArchiveModal(false);
+                                      }}
+                                      showSelectButton={true}
+                                      selectedImageId={selectedArchiveImage?.id}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </>
                         ) : (
                           <>
