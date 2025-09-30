@@ -15,14 +15,16 @@ import './styles.css';
 const ListHeaders: Array<THeaderElem> = [
     { label: 'Title', value: 'title' },
     { label: 'Price', value: 'price_currency' },
+    { label: 'Stock', value: 'inStock' },
     { label: 'Is Published', value: 'isPublished' },
     { label: 'Categories', value: 'categories' },
 ];
 const ListHeadersWidth = [
-    { columnIndex: 0, widthPercent: 50 },
+    { columnIndex: 0, widthPercent: 40 },
     { columnIndex: 1, widthPercent: 15 },
     { columnIndex: 2, widthPercent: 15 },
-    { columnIndex: 3, widthPercent: 20 }
+    { columnIndex: 3, widthPercent: 15 },
+    { columnIndex: 4, widthPercent: 15 }
 ];
 type Product = {
     isChecked: boolean;
@@ -58,7 +60,8 @@ export const ProductsTable = () => {
         const arr: Tag[] = [];
         categories.forEach(category => {
             category.childrens.forEach(subcategory => {
-                arr.push({ label: subcategory.name, value: subcategory.uuid });
+                const subcategoryName = subcategory.translate?.[0]?.name || 'Unknown';
+                arr.push({ label: subcategoryName, value: subcategory.uuid });
             })
         });
 
@@ -295,6 +298,9 @@ export const ProductsTable = () => {
                                 isHidden={!entry.isPublished} />
                         </td>
                         <td>{entry.price_currency}</td>
+                        <td>
+                            {entry.inStock ? "Yes" : "No"}
+                        </td>
                         <td>{entry.isPublished ? "Yes" : 'No'}</td>
                         <td>
                             {

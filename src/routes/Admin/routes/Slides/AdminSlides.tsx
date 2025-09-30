@@ -18,7 +18,7 @@ import { FileEntity } from '../../../../common/services/upload/types';
 
 const AdminSlides = () => {
   const [slides, setSlides] = useState<any>([]);
-  const [form, setForm] = useState({ title: '', subtitle: '', imageFile: null as File | null, textColor: '', link: '' });
+  const [form, setForm] = useState({ title: '', subtitle: '', textColor: '', link: '' });
   const [selectedImageFromArchive, setSelectedImageFromArchive] = useState<FileEntity | null>(null);
 
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -26,7 +26,6 @@ const AdminSlides = () => {
 
 
   const [editingImageId, setEditingImageId] = useState<number | null>(null);
-  const [editImageFile, setEditImageFile] = useState<File | null>(null);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [selectedArchiveImage, setSelectedArchiveImage] = useState<FileEntity | null>(null);
 
@@ -59,9 +58,6 @@ const AdminSlides = () => {
   // Обработчик выбора изображения из архива
   const handleImageFromArchiveSelect = (file: FileEntity | null) => {
     setSelectedImageFromArchive(file);
-    if (file) {
-      setForm({ ...form, imageFile: null }); // Очищаем файл, если выбираем из архива
-    }
   };
 
 	const saveLink = async (id: number) => {
@@ -129,56 +125,31 @@ const AdminSlides = () => {
     console.log('form:', form);
     console.log('selectedImageFromArchive:', selectedImageFromArchive);
     
-    // Проверяем, что выбрано изображение (либо файл, либо из архива)
-    if (!form.imageFile && !selectedImageFromArchive) {
-      alert('Пожалуйста, выберите изображение');
+    // Проверяем, что выбрано изображение из архива
+    if (!selectedImageFromArchive) {
+      alert('Пожалуйста, выберите изображение из архива');
       return;
     }
 
     try {
-      let response;
+      // Создание слайда с существующим изображением из архива
+      const payload = {
+        existing_file_id: selectedImageFromArchive.id,
+        title: form.title,
+        textColor: form.textColor,
+        link: form.link,
+      };
 
-    if (selectedImageFromArchive) {
-        // Создание слайда с существующим изображением из архива
-        const payload = {
-          existing_file_id: selectedImageFromArchive.id,
-          title: form.title,
-          textColor: form.textColor,
-          link: form.link,
-        };
+      console.log('=== ОТПРАВКА С АРХИВНЫМ ИЗОБРАЖЕНИЕМ ===');
+      console.log('Создание слайда с изображением из архива:', payload);
+      console.log('URL:', '/slides/create-with-existing-image');
+      const response = await apiPrivate.post('/slides/create-with-existing-image', payload);
+      console.log('Response:', response.data);
 
-        console.log('=== ОТПРАВКА С АРХИВНЫМ ИЗОБРАЖЕНИЕМ ===');
-        console.log('Создание слайда с изображением из архива:', payload);
-        console.log('URL:', '/slides/create-with-existing-image');
-        response = await apiPrivate.post('/slides/create-with-existing-image', payload);
-        console.log('Response:', response.data);
-      } else if (form.imageFile) {
-        // Создание слайда с новым изображением: загружаем сначала в архив, затем создаем с использованием existing_file_id
-        try {
-          const uploadResp = await Service.UploadService.uploadImage({ file: form.imageFile });
-          const fileId = uploadResp.file.id;
-
-          const payload = {
-            existing_file_id: fileId,
-            title: form.title,
-            textColor: form.textColor,
-            link: form.link,
-          };
-
-          console.log('=== ОТПРАВКА С НОВЫМ ФАЙЛОМ (через архив) ===');
-          response = await apiPrivate.post('/slides/create-with-existing-image', payload);
-        } catch (err) {
-          console.error('Ошибка при загрузке изображения в архив для слайда:', err);
-          throw err;
-        }
-      }
-
-      if (response) {
-        console.log('=== СЛАЙД СОЗДАН УСПЕШНО ===');
-        setSlides((prev: any) => [...prev, response.data]);
-        setForm({ title: '', subtitle: '', imageFile: null, textColor: '', link: '' });
-        setSelectedImageFromArchive(null);
-      }
+      console.log('=== СЛАЙД СОЗДАН УСПЕШНО ===');
+      setSlides((prev: any) => [...prev, response.data]);
+      setForm({ title: '', subtitle: '', textColor: '', link: '' });
+      setSelectedImageFromArchive(null);
     } catch (error: any) {
       console.error('=== ОШИБКА СОЗДАНИЯ СЛАЙДА ===');
       console.error('Error creating slide:', error);
@@ -212,35 +183,27 @@ const AdminSlides = () => {
 
   const startEditingImage = (id: number) => {
     setEditingImageId(id);
-    setEditImageFile(null);
     setSelectedArchiveImage(null);
   };
 
   const cancelEditingImage = () => {
     setEditingImageId(null);
-    setEditImageFile(null);
     setSelectedArchiveImage(null);
     setShowArchiveModal(false);
   };
 
   const saveImageFile = async (id: number) => {
-    if (!editImageFile && !selectedArchiveImage) {
-      alert('Пожалуйста, выберите изображение или выберите из архива');
+    if (!selectedArchiveImage) {
+      alert('Пожалуйста, выберите изображение из архива');
       return;
     }
 
     try {
-      if (editImageFile) {
-        // upload to archive first
-        const uploadResp = await Service.UploadService.uploadImage({ file: editImageFile });
-        const fileId = uploadResp.file.id;
-        await apiPrivate.patch(`/slides/${id}/update-with-existing-image`, { existing_file_id: fileId });
-      } else if (selectedArchiveImage) {
-        // Use dedicated endpoint to update slide with an existing archive image
-        await apiPrivate.patch(`/slides/${id}/update-with-existing-image`, {
-          existing_file_id: selectedArchiveImage.id,
-        });
-      }
+      // Use dedicated endpoint to update slide with an existing archive image
+      await apiPrivate.patch(`/slides/${id}/update-with-existing-image`, {
+        existing_file_id: selectedArchiveImage.id,
+      });
+      
       // Обновляем список слайдов
       const response = await apiPrivate.get('/slides');
       setSlides(response.data.sort((a: any, b: any) => a.order - b.order));
@@ -375,7 +338,12 @@ const AdminSlides = () => {
               🖼️ Выберите изображение для слайда
             </h3>
             
-            <ImageSelector onImageSelect={handleImageFromArchiveSelect} />
+            <ImageSelector 
+              onImageSelect={handleImageFromArchiveSelect} 
+              showUploadOption={false}
+              selectedImage={selectedImageFromArchive}
+              label="Выберите изображение из архива"
+            />
             
             {/* Превью выбранного изображения из архива */}
             {selectedImageFromArchive && (
@@ -433,63 +401,6 @@ const AdminSlides = () => {
                 </div>
               </div>
             )}
-            
-            {/* Превью нового файла */}
-            {form.imageFile && (
-              <div style={{ 
-                marginTop: '20px',
-                padding: '20px', 
-                border: '2px solid #007bff', 
-                borderRadius: '12px', 
-                backgroundColor: '#f0f8ff',
-                position: 'relative'
-              }}>
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '15px' 
-                }}>
-                  <div style={{
-                    width: '80px',
-                    height: '80px',
-                    background: '#007bff',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '24px'
-                  }}>
-                    📁
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '600', 
-                      color: '#007bff',
-                      marginBottom: '5px'
-                    }}>
-                      📤 Новый файл
-                    </div>
-                    <div style={{ fontSize: '14px' }}>
-                      <strong>Файл:</strong> {form.imageFile.name}
-                    </div>
-                    <div style={{ fontSize: '13px', color: '#666' }}>
-                      <strong>Размер:</strong> {(form.imageFile.size / 1024 / 1024).toFixed(2)} MB
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={() => setForm({ ...form, imageFile: null })}
-                    variant="outlined" 
-                    color="error"
-                    size="small"
-                    sx={{ minWidth: '100px' }}
-                  >
-                    Удалить
-                  </Button>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Кнопка отправки */}
@@ -498,7 +409,7 @@ const AdminSlides = () => {
               type="submit" 
               variant="contained" 
               size="large"
-              disabled={!form.title || (!form.imageFile && !selectedImageFromArchive)}
+              disabled={!form.title || !selectedImageFromArchive}
               sx={{
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 padding: '12px 40px',
@@ -515,7 +426,7 @@ const AdminSlides = () => {
                 }
               }}
             >
-              {(!form.title || (!form.imageFile && !selectedImageFromArchive)) 
+              {(!form.title || !selectedImageFromArchive) 
                 ? 'Заполните все поля' 
                 : '🚀 Создать слайд'
               }
@@ -599,22 +510,13 @@ const AdminSlides = () => {
                         {editingImageId === slide.id ? (
                           <>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                  setEditImageFile(e.target.files?.[0] || null);
-                                  setSelectedArchiveImage(null);
-                                }}
-                                style={{ padding: '5px' }}
-                              />
                               <span style={{ fontSize: '12px', color: '#666' }}>
-                                {editImageFile ? editImageFile.name : selectedArchiveImage ? selectedArchiveImage.original_name : ''}
+                                {selectedArchiveImage ? selectedArchiveImage.original_name : 'Не выбрано изображение'}
                               </span>
                               <div style={{ display: 'flex', gap: 8 }}>
                                 <IconButton onClick={() => saveImageFile(slide.id)}><SaveIcon sx={{color: green[500]}} /></IconButton>
                                 <IconButton onClick={cancelEditingImage}><CloseIcon sx={{color: red[500]}} /></IconButton>
-                                <Button variant="outlined" size="small" onClick={() => { setShowArchiveModal(true); setEditImageFile(null); }}>Выбрать из архива</Button>
+                                <Button variant="outlined" size="small" onClick={() => setShowArchiveModal(true)}>Выбрать из архива</Button>
                               </div>
                               {selectedArchiveImage && (
                                 <div style={{ marginTop: 10, textAlign: 'center' }}>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileEntity } from '../../../../../common/services/upload/types';
 import { ImageSelector } from '../../../components/ImageSelector';
+import { apiPrivate } from '../../../../../common/api';
 
 const AdminSubcategoryEdit = () => {
     const { subcategoryId } = useParams();
@@ -10,7 +11,6 @@ const AdminSubcategoryEdit = () => {
     const [subcategory, setSubcategory] = useState<any>(null); // Данные подкатегории
     const [categories, setCategories] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [newImageFile, setNewImageFile] = useState<File | null>(null);
     const [selectedArchiveImage, setSelectedArchiveImage] = useState<FileEntity | null>(null);
     const language = 'ukr';
   
@@ -22,7 +22,7 @@ const AdminSubcategoryEdit = () => {
   
     const fetchCategories = async () => {
         try {
-          const res = await axios.get(`${process.env.REACT_APP_HOST_URL}/categories`);
+          const res = await apiPrivate.get('/categories');
           setCategories(res.data);
         } catch (e) {
           console.error("Ошибка при загрузке категорий:", e);
@@ -33,21 +33,23 @@ const AdminSubcategoryEdit = () => {
       setIsLoading(true);
       try {
         console.log(subcategoryId);
-        const response = await axios.get(
-          `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`
-        );
-        console.log("!!!!!!!!!!!!!!!!!!!!")
-        console.log(response.data);
+        const response = await apiPrivate.get(`/categories/subcategory/${subcategoryId}`);
+        console.log("Subcategory API response:", response.data);
+        console.log("Parent data:", response.data.parent);
+        
         const translation = response.data.translate.find((t: any) => t.language === language);
 
         if (!translation) {
             throw new Error(`Перевод для языка "${language}" не найден!`);
         }
 
-        setSubcategory({
+        const subcategoryData = {
             ...response.data,
             translate: translation,
-        });
+        };
+        
+        console.log("Setting subcategory data:", subcategoryData);
+        setSubcategory(subcategoryData);
         // setSubcategory(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке подкатегории:", error);
@@ -59,8 +61,12 @@ const AdminSubcategoryEdit = () => {
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedUuid = e.target.value;
         const selectedCategory = categories.find(cat => cat.uuid === selectedUuid);
+        console.log('Selected category:', selectedCategory);
         if (selectedCategory) {
-          setSubcategory((prev: any) => ({ ...prev, parent: selectedCategory }));
+          setSubcategory((prev: any) => ({ 
+            ...prev, 
+            parent: selectedCategory 
+          }));
         }
       };
     
@@ -71,57 +77,54 @@ const AdminSubcategoryEdit = () => {
         alert("Заполните все обязательные поля!");
         return;
       }
+      
+      if (!subcategory.parent || !subcategory.parent.uuid) {
+        alert("Выберите родительскую категорию!");
+        return;
+      }
+      
       console.log(subcategory)
       try {
         let response;
         
-        if (newImageFile) {
-          // Обновляем с новым изображением (загрузка файла)
-          const formData = new FormData();
-          formData.append('image', newImageFile);
-          formData.append('translate', JSON.stringify(subcategory.translate));
-          formData.append('parentId', subcategory.parent.uuid);
-          response = await axios.put(
-            `${process.env.REACT_APP_HOST_URL}/categories/subcategory-with-image/${subcategoryId}`,
-            formData,
+        if (selectedArchiveImage) {
+          // Обновляем с изображением из архива (id файла)
+          console.log('Updating with existing image:', {
+            existing_file_id: selectedArchiveImage.id,
+            translate: subcategory.translate,
+            parentId: subcategory.parent?.uuid
+          });
+          response = await apiPrivate.put(
+            `/categories/subcategory-with-existing-image/${subcategoryId}`,
+            {
+              existing_file_id: selectedArchiveImage.id,
+              translate: subcategory.translate,
+              parentId: subcategory.parent?.uuid
+            },
             {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
               },
-            }
-          );
-        } else if (selectedArchiveImage) {
-          // Обновляем с изображением из архива (uuid файла)
-          response = await axios.put(
-            `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`,
-            {
-              ...subcategory,
-              parentId: subcategory.parent.uuid,
-              image: selectedArchiveImage.url // или .uuid, если бек ожидает uuid
             }
           );
         } else {
           // Обновляем без изменения изображения
-          response = await axios.put(
-            `${process.env.REACT_APP_HOST_URL}/categories/subcategory/${subcategoryId}`,
+          response = await apiPrivate.put(
+            `/categories/subcategory/${subcategoryId}`,
             {
               ...subcategory,
-              parentId: subcategory.parent.uuid
+              parentId: subcategory.parent?.uuid
             }
           );
         }
         
         alert("Подкатегория успешно обновлена!");
         navigate("/admin-page/categories/table"); // Возврат на страницу категорий
-      } catch (error) {
+      } catch (error: any) {
         console.error("Ошибка при обновлении подкатегории:", error);
-        alert("Ошибка при обновлении подкатегории!");
+        const errorMessage = error.response?.data?.message || error.message || "Неизвестная ошибка";
+        alert(`Ошибка при обновлении подкатегории: ${errorMessage}`);
       }
-    };
-  
-    // Обновление изображения
-    const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setNewImageFile(e.target.files?.[0] || null);
     };
   
     // Функция для формирования полного URL изображения
@@ -145,6 +148,10 @@ const AdminSubcategoryEdit = () => {
   
     if (isLoading || !subcategory) return <div>Загрузка...</div>;
   
+    // Отладочная информация
+    console.log('Current subcategory state:', subcategory);
+    console.log('Parent data:', subcategory.parent);
+  
     return (
       <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Редактировать подкатегорию</h2>
@@ -155,33 +162,13 @@ const AdminSubcategoryEdit = () => {
         />
 
         <div style={{ marginBottom: "20px" }}>
-          <label>Новое изображение (оставьте пустым, чтобы не менять):</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageFileChange}
-            style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
-          />
-          {newImageFile && (
-            <span style={{ fontSize: '12px', color: '#666' }}>
-              Выбран новый файл: {newImageFile.name}
-            </span>
-          )}
-        </div>
-
-        <div style={{ marginBottom: "20px" }}>
           <ImageSelector
             selectedImage={selectedArchiveImage}
             onImageSelect={img => {
               setSelectedArchiveImage(img);
-              setNewImageFile(null); // сбрасываем файл, если выбрано из архива
-            }}
-            onFileUpload={file => {
-              setNewImageFile(file);
-              setSelectedArchiveImage(null); // сбрасываем архив, если выбран файл
             }}
             showUploadOption={false}
-            label="Выбрать из архива"
+            label="Выбрать изображение из архива"
           />
         </div>
         <div style={{ marginBottom: "20px" }}>

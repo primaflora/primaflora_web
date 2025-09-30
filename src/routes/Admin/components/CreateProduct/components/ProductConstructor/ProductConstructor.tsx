@@ -36,7 +36,10 @@ export const ProductConstructor = () => {
 
         categories.map(category => (
             category.childrens.map(subcategory => { 
-                list.push({ title: subcategory.translate[0].name, value: String(subcategory.id) })
+                const categoryName = category.name_ukr || `Категорія без назви #${category.id}`;
+                const subcategoryName = subcategory.translate[0].name;
+                const displayName = `${categoryName} → ${subcategoryName}`;
+                list.push({ title: displayName, value: String(subcategory.id) })
             })
         ));
 
@@ -88,8 +91,9 @@ export const ProductConstructor = () => {
             price_currency: parseFloat(newProduct.get('price_currency') as string),
             price_points: 0,
             percent_discount: parseFloat(newProduct.get('percent_discount') as string),
-            rating: parseFloat(newProduct.get('rating') as string), 
-            categoryId: Number(subcategoryId),
+            categoryIds: [Number(subcategoryId)],
+            isPublished: true,
+            descriptionPoints: [],
             translate: []
         };
         console.log(descriptionJson)

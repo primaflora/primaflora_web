@@ -25,6 +25,7 @@
     "draft-js-import-html": "^1.4.1",
     "i18next": "^23.11.5",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.544.0",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.3.1",

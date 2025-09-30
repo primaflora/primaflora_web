@@ -18,10 +18,11 @@ const AdminCreateCategories = () => {
 
   // Обработчик добавления новой категории
   const handleAddCategory = async () => {
-    if (!newCategory.name_ukr) return alert("Введите названия категории!");
+    // Разрешаем создание категорий без названия
+    const categoryData = newCategory.name_ukr.trim() === "" ? {} : newCategory;
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_HOST_URL}/categories`, newCategory);
+      const response = await axios.post(`${process.env.REACT_APP_HOST_URL}/categories`, categoryData);
       setCategories([...categories, response.data]);
       setNewCategory({ name_ukr: "" });
       alert("Категория успешно добавлена!");
@@ -112,9 +113,12 @@ const AdminCreateCategories = () => {
           type="text"
           value={newCategory.name_ukr}
           onChange={(e) => setNewCategory({ ...newCategory, name_ukr: e.target.value })}
-          placeholder="Название категории (укр)"
+          placeholder="Название категории (укр) - оставьте пустым для категории-контейнера"
           style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
         />
+        <div style={{ fontSize: "12px", color: "#666", marginBottom: "10px" }}>
+          💡 Совет: Оставьте поле пустым, чтобы создать категорию-контейнер без названия для группировки подкатегорий
+        </div>
         <button
           onClick={handleAddCategory}
           style={{
@@ -147,24 +151,17 @@ const AdminCreateCategories = () => {
           <option value="">Оберіть категорію</option>
           {categories.map((category, index) => (
             <option key={index} value={category.uuid}>
-              {category.name_ukr}
+              {category.name_ukr || `Категорія без назви #${category.id || index + 1}`}
             </option>
           ))}
         </select>
         <div style={{ marginBottom: "10px" }}>
           <ImageSelector
             selectedImage={newSubcategory.archiveImage}
-            onImageSelect={(img: FileEntity) => setNewSubcategory({ ...newSubcategory, archiveImage: img, imageFile: null })}
-            onFileUpload={(file: File) => setNewSubcategory({ ...newSubcategory, imageFile: file, archiveImage: null })}
-            label="Вибрати з архіву або завантажити нове"
+            onImageSelect={(img: FileEntity) => setNewSubcategory({ ...newSubcategory, archiveImage: img })}
+            showUploadOption={false}
+            label="Выбрать изображение из архива"
           />
-          {newSubcategory.imageFile && (
-            <div style={{ marginBottom: "10px" }}>
-              <span style={{ fontSize: '12px', color: '#666' }}>
-                Вибрано файл: {newSubcategory.imageFile.name}
-              </span>
-            </div>
-          )}
         </div>
         <input
           type="text"

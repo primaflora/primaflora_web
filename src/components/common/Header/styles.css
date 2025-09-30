@@ -42,7 +42,7 @@
         display: none;
     }
     .header-nav-links-mob {
-        display: flex;
+        display: none; /* Скрываем мобильные кнопки в хедере */
     }
     .header-upper-container {
         display: none;

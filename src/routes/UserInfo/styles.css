@@ -8,6 +8,12 @@
     flex-direction: column;
 }
 
+.user-info-logout-botton-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .user-info-logout-botton-mob {
     display: none;
 }
@@ -26,8 +32,13 @@
         flex-direction: column;
         row-gap: 1rem !important;
     }
+    .user-info-logout-botton-desktop {
+        display: none;
+    }
     .user-info-logout-botton-mob {
         display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
     .user-info-info-section {
         display: none;

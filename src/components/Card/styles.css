@@ -18,6 +18,27 @@
     width: 100%;
 }
 
+.card-image {
+    width: 220px;
+    height: 212px;
+    object-fit: cover;
+}
+
+/* Мобильная версия - растягиваем картинку на 100% ширины */
+@media (width <= 1000px) {
+    .card-image {
+        width: 100% !important;
+        height: auto;
+        min-height: 200px;
+        max-height: 250px;
+    }
+    
+    .card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
 .card-title {
     font-family: Raleway;
     font-size: 14px;

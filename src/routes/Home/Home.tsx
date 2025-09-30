@@ -7,6 +7,7 @@ import './styles.css';
 import { usePickedSubcategory } from '../../common/hooks/usePickedSubcategory';
 import { useDispatch } from 'react-redux';
 import { productSliceActions } from '../../store/modules/product/reducer';
+import { SEOHead } from '../../components/common';
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -39,6 +40,7 @@ export const Home = () => {
 
     return (
         <div className="home-container py-10 max-lg:py-0">
+            <SEOHead />
             <div className="flex">
                 <SideBar />
                 <Main />

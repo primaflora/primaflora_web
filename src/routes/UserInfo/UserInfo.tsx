@@ -133,7 +133,42 @@ export const UserInfo = () => {
                 />
             </div>
 
+            {/* Desktop version */}
+            <div className="user-info-logout-botton-desktop pb-5">
+                <Button
+                    text="📋 Історія замовлень"
+                    onClick={() => navigate('/order-history')}
+                    filled={false}
+                    style={{ borderRadius: '7px', width: '100%', marginBottom: '10px', border: '2px solid #72BF44', color: '#72BF44' }}
+                />
+                <Button
+                    text="🔔 Відстежувані товари"
+                    onClick={() => navigate('/user/watched-products')}
+                    filled={false}
+                    style={{ borderRadius: '7px', width: '100%', marginBottom: '10px', border: '2px solid #72BF44', color: '#72BF44' }}
+                />
+                <Button
+                    text={t('auth.log-out-button')}
+                    onClick={handleLogOutPress}
+                    filled
+                    style={{ borderRadius: '7px', width: '100%' }}
+                />
+            </div>
+
+            {/* Mobile version */}
             <div className="user-info-logout-botton-mob pb-5">
+                <Button
+                    text="📋 Історія замовлень"
+                    onClick={() => navigate('/order-history')}
+                    filled={false}
+                    style={{ borderRadius: '7px', width: '100%', marginBottom: '10px', border: '2px solid #72BF44', color: '#72BF44' }}
+                />
+                <Button
+                    text="🔔 Відстежувані товари"
+                    onClick={() => navigate('/user/watched-products')}
+                    filled={false}
+                    style={{ borderRadius: '7px', width: '100%', marginBottom: '10px', border: '2px solid #72BF44', color: '#72BF44' }}
+                />
                 <Button
                     text={t('auth.log-out-button')}
                     onClick={handleLogOutPress}

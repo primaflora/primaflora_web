@@ -14,3 +14,28 @@
         }
     }
 }
+
+.stock-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stock-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.stock-low {
+    background-color: #ff4444;
+}
+
+.stock-medium {
+    background-color: #ffaa44;
+}
+
+.stock-high {
+    background-color: #44aa44;
+}

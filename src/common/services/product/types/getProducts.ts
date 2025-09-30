@@ -11,6 +11,7 @@ export type TProductTable = {
     uuid: string;
     createdAt: string;
     price_currency: number;
+    inStock: boolean;
     categories: [{
         id: number;
         uuid: string;

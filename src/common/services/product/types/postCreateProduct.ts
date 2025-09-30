@@ -21,4 +21,6 @@ type TProductTranslatePayload = {
     title: string;
     shortDesc: string;
     desc: string;
+    seoTitle?: string;
+    seoDescription?: string;
 }

@@ -59,7 +59,9 @@
     },
     "cart": {
         "make-order": "ОФОРМИТИ ЗАМОВЛЕННЯ",
-        "total": "Разом"
+        "total": "Разом",
+        "selected": "Обрано",
+        "select-all": "Обрати все"
     },
     "errors": {
         "invite-not-found": "Такого запрошення не існує!",

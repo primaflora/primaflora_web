@@ -3,12 +3,13 @@ import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { StorageService } from './common/storage/storage.service';
 import { Toast } from './common/toast';
-import { Footer, Header } from './components/common';
-import { Home, LogIn, UserInfo } from './routes';
+import { Footer, Header, BottomTabBar } from './components/common';
+import { Home, LogIn, UserInfo, WatchedProducts } from './routes';
 import { Cart } from './routes/Cart/Cart';
 import { Category } from './routes/Category';
 import { Likes } from './routes/Likes';
 import { Product } from './routes/Product';
+import { OrderHistory } from './routes/OrderHistory';
 import { useAuth } from './common/hooks/useAuth/useAuth';
 import { useLoadCategories } from './components/loader/categories.loader';
 import { useLoadUserData } from './components/loader/user-data.loader';
@@ -64,6 +65,9 @@ function App() {
                     <Route path="/checkout" element={<Checkout userId={user?.uuid}/>} />
                     <Route path="/checkout/success" element={<CheckoutSuccess/>} />
                     <Route path="/user-info" element={<UserInfo />} />
+                    <Route path="/user" element={<UserInfo />} />
+                    <Route path="/order-history" element={<OrderHistory />} />
+                    <Route path="/user/watched-products" element={<WatchedProducts />} />
                     <Route path="/auth/log-in" element={<LogIn />} />
                     <Route
                         path="/auth/sign-up/invite/:inviteCode"
@@ -88,6 +92,7 @@ function App() {
                 </Routes>
             </div>
             <Footer />
+            <BottomTabBar />
             <Toast />
         </div>
     );

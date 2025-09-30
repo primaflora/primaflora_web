@@ -13,6 +13,11 @@ export class StorageService {
         return localStorage.getItem(key);
     }
 
+    public static clearTokens(): void {
+        this.removeToken('accessToken');
+        this.removeToken('refreshToken');
+    }
+
     public static setLanguage(language: string): void {
         localStorage.setItem(this.languageKey, language);
     }

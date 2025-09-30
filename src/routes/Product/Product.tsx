@@ -10,35 +10,44 @@ import { useUserData } from '../../store/tools';
 import { usePickedSubcategory } from '../../common/hooks/usePickedSubcategory';
 import { useDispatch } from 'react-redux';
 import { productSliceActions } from '../../store/modules/product/reducer';
+import { ProductSkeleton } from '../../components/common';
 
 export const Product = () => {
-    const { pickedSubcategory, categories } = useUserData();
+    const { pickedSubcategory, categories, isAuth } = useUserData();
     const { setPickedSubcategory } = usePickedSubcategory();
     const { uuid } = useParams();
     const [product, setProduct] = useState<TProductFull | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
 
     // TODO: fetch full product data
     useEffect(() => {
         if (!uuid) {
+            setLoading(false);
             return;
         }
 
+        setLoading(true);
         Service.ProductService.getOneByUid({ uuid }).then(res => {
             if (!res.data) {
                 console.log(
                     'Cant fetch Full User Data in routes/Product/Product.tsx component by provided uuid => ',
                     uuid,
                 );
+                setLoading(false);
                 return;
             }
             setProduct(res.data);
             dispatch(productSliceActions.setSelectedProduct(res.data));
             console.log('Full product => ', res.data);
+            setLoading(false);
+        }).catch(err => {
+            console.log('Error fetching product:', err);
+            setLoading(false);
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [uuid]);
     
     useEffect(() => {
         if (!pickedSubcategory && product) {
@@ -65,10 +74,15 @@ export const Product = () => {
                 <div className="product-main-container">
                     <CategoryUpperView />
                     <div style={{width: "100%", height: 1, margin: "24px 0 16px", background: "#EBEFF1"}}/>
-                    {product ? (
+                    {loading ? (
+                        <ProductSkeleton />
+                    ) : product ? (
                         <ProductView product={product} />
                     ) : (
-                        <h1>Loading...</h1>
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                            <h2>Продукт не найден</h2>
+                            <p>Извините, запрашиваемый продукт не существует или был удален.</p>
+                        </div>
                     )}
                 </div>
             </div>

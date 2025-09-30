@@ -1,7 +1,7 @@
 import { apiPrivate } from '../../api';
 import i18n from '../../i18n/i18n.ts';
 import { TResponseWithoutPromise } from '../types.ts';
-import { TGetProductsByQuery, TProduct } from './types';
+import { TGetProductsByQuery, TProduct, TGetRandomBySubcategories } from './types';
 import { TDeleteProductById } from './types/deleteProduct.ts';
 import { TGetProductById } from './types/getProductById.ts';
 import { TGetProducts } from './types/getProducts.ts';
@@ -68,7 +68,25 @@ export class ProductService {
         return apiPrivate.delete(`/products/${data.uuid}`);
     }
 
-    static async createComment(data: TPostCreateComment['payload']): Promise<TPostCreateComment['response']> {
-        return apiPrivate.post(`/products/createComment/${data.productId}`, { text: data.text, rating: Number(data.rating) });
+    static async createComment(
+        productUuid: string, 
+        data: TPostCreateComment['payload']
+    ): Promise<TPostCreateComment['response']> {
+        return apiPrivate.post(`/products/createComment/${productUuid}`, {
+            text: data.text, 
+            rating: Number(data.rating)
+        }, {
+            headers: {
+                'Accept-Language': i18n.language || 'ukr',
+            }
+        });
+    }
+
+    static async getRandomBySubcategories(): Promise<TGetRandomBySubcategories['response']> {
+        return apiPrivate.get('/products/getRandomBySubcategories', {
+            headers: {
+                'Accept-Language': i18n.language || 'ukr',
+            }
+        });
     }
 }

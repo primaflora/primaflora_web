@@ -4,4 +4,6 @@ export type TCartItemProps = {
     item: TCartItem;
     onQuantityChange: (productUid: string, value: number) => void;
     onRemove: (cartItemUid: string) => void;
+    isSelected: boolean;
+    onSelect: (isSelected: boolean) => void;
 };

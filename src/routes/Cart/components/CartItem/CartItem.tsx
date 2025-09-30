@@ -10,6 +10,8 @@ export const CartItem = ({
     item,
     onQuantityChange,
     onRemove,
+    isSelected,
+    onSelect,
 }: TCartItemProps) => {
     const [quantity, setQuantity] = useState(item.quantity);
 
@@ -32,13 +34,21 @@ export const CartItem = ({
     };
 
     return (
-        <div className="w-full flex flex-row p-4 item-cart-border">
+        <div className={`w-full flex flex-row gap-5 p-4 item-cart-border ${!isSelected ? 'opacity-60' : ''}`}>
+            <div className="flex flex-col items-start gap-3">
+                <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={(e) => onSelect(e.target.checked)}
+                    className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 mt-2"
+                />
+            </div>
             <img
                 src={getImageUrl(item.product.photo_url)}
                 alt={item.product.title}
                 className="item-cart-image"
             />
-            <div className="w-full flex flex-col justify-between">
+            <div className="flex flex-col justify-between" style={{flex: 1}}>
                 <div>
                     <Row
                         style={{

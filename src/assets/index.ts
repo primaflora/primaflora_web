@@ -24,6 +24,7 @@ import { default as AddNoteIcon } from './images/add-note-icon.svg';
 import { default as LightbublIcon } from './images/lightbubl.svg';
 import { default as TrashIcon } from './images/trash.svg';
 import { default as CheckmarkIcon } from './images/checkmark.svg';
+import { default as OrderIcon } from './images/order-icon.svg';
 import CheckMarkDark from './images/check-mark-dark.png';
 import CheckMarkGreen from './images/check-mark-green.png';
 import RusFlag from './images/russia.png';
@@ -61,5 +62,6 @@ export const Images = {
     FolderIcon,
     AddNoteIcon,
     LightbublIcon,
-    CheckmarkIcon
+    CheckmarkIcon,
+    OrderIcon
 };

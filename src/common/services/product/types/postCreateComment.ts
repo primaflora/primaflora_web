@@ -1,9 +1,9 @@
 import { TRequest } from '../../types.ts';
+import { TComment } from './common.ts';
 
-export type TPostCreateComment = TRequest<TPayload, any>
+export type TPostCreateComment = TRequest<TPayload, TComment>
 
 type TPayload = {
-    productId: number;
     text: string;
     rating: number;
 }

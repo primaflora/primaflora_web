@@ -7,6 +7,7 @@ import {
 } from '../../../common/services/category/types/common';
 import { useUserData } from '../../../store/tools';
 import { Row } from '../Row';
+import { SideBarSkeleton } from '../LoadingSkeleton';
 import './styles.css';
 import { TSidebarProps } from './types';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +28,19 @@ export const SideBar = ({
         onClose();
         // navigate(`/category/${pickedSubcategory.uuid}`);
     };
+
+    // Show skeleton if categories haven't loaded yet
+    if (categories.length === 0) {
+        return (
+            <div
+                className={`sidebar ${
+                    isOpen ? ' sidebar-mob-open' : ' file:sidebar-mob-close'
+                }`}>
+                {isMob && <SideBarHeaderMob onClose={onClose} />}
+                <SideBarSkeleton />
+            </div>
+        );
+    }
 
     return (
         <div
@@ -58,7 +72,7 @@ const SideBarHeaderMob = ({ onClose }: { onClose: () => void }) => {
     const { t } = useTranslation();
 
     return (
-        <Row style={{ justifyContent: 'space-between', padding: '20px' }}>
+        <Row style={{ justifyContent: 'space-between', padding: '20px 10px' }}>
             <h1 className="sidebar-header-mob-title">{t('navigation.catalog-title')}</h1>
             <button
                 className="sidebar-header-mob-close-button"
@@ -70,7 +84,10 @@ const SideBarHeaderMob = ({ onClose }: { onClose: () => void }) => {
 };
 
 const Category = ({ category }: { category: TCategory }) => {
-    return <p className="category-title">{category.name.toUpperCase()}</p>;
+    // Показываем название категории или заменяющий текст для категорий без названия
+    const displayName = category.name || "";
+    if (category.name) return <p className="category-title">{category.name.toUpperCase()}</p>;
+    else return <></>;
 };
 
 const Subcategory = ({
@@ -82,7 +99,7 @@ const Subcategory = ({
 }) => {
     return (
         <a href={`/category/${subcategory.uuid}`} className="subcategory-title" onClick={onClick}>
-            {subcategory.name}
+            {(subcategory as any).name}
         </a>
     );
 };

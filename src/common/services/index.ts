@@ -6,6 +6,7 @@ import { CartService } from './cart';
 import { UserService } from './user';
 import { MonobankService } from './mono';
 import { UploadService } from './upload/uploadService';
+import { OrderService } from './order/order.service';
 
 export const Service = {
     CategoryService,
@@ -16,6 +17,7 @@ export const Service = {
     UserService,
     MonobankService,
     UploadService,
+    OrderService,
 };
 
 export * from './types.ts';

@@ -27,7 +27,7 @@ export const AdminProduct = () => {
     const [card, setCard] = useState<Partial<TProduct>>();
     const [notification, setNotification] = useState<string>();
     const [isHidden, setIsHidden] = useState(false);
-    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [inStock, setInStock] = useState(true);
     const [selectedImageFromArchive, setSelectedImageFromArchive] = useState<FileEntity | null>(null);
 
     const updateCard = (key: keyof Partial<TProduct>, value: string | number | string[]) => {
@@ -38,19 +38,7 @@ export const AdminProduct = () => {
     const handleImageFromArchiveSelect = (file: FileEntity | null) => {
         setSelectedImageFromArchive(file);
         if (file) {
-            setImageFile(null); // Очищаем файл, если выбираем из архива
             updateCard('photo_url', file.url);
-        }
-    };
-
-    // Обновление карточки при загрузке нового файла
-    const handleFileUpload = (file: File | null) => {
-        setImageFile(file);
-        if (file) {
-            setSelectedImageFromArchive(null); // Очищаем выбор из архива
-            // Создаем временный URL для preview
-            const tempUrl = URL.createObjectURL(file);
-            updateCard('photo_url', tempUrl);
         }
     };
 
@@ -63,10 +51,12 @@ export const AdminProduct = () => {
         console.log(categories);
         categories.forEach(category => {
             category.childrens?.forEach((subcategory: any) => {
-                const name = subcategory?.translate?.[0]?.name;
-                if (name) {
+                const subcategoryName = subcategory?.translate?.[0]?.name;
+                if (subcategoryName) {
+                    const categoryName = category.name_ukr || `Категорія без назви #${category.id}`;
+                    const displayName = `${categoryName} → ${subcategoryName}`;
                     arr.push({
-                        label: name,
+                        label: displayName,
                         value: subcategory.id.toString()
                     });
                 } else {
@@ -88,9 +78,9 @@ export const AdminProduct = () => {
             return;
         }
         
-        // Проверяем, что выбрано изображение (либо файл, либо из архива)
-        if (!imageFile && !selectedImageFromArchive) {
-            setNotification('Выберите изображение для продукта!');
+        // Проверяем, что выбрано изображение из архива
+        if (!selectedImageFromArchive) {
+            setNotification('Выберите изображение для продукта из архива!');
             return;
         }
         
@@ -110,81 +100,47 @@ export const AdminProduct = () => {
         const desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
         console.log(desc);
 
-        if (selectedImageFromArchive) {
-            // Создание продукта с существующим изображением из архива
-            const payload = {
-                existing_file_id: selectedImageFromArchive.id,
-                price_currency: Number(formData.get('price_currency')) || 0,
-                price_points: Number(formData.get('price_points')) || 0, // Добавляем обязательное поле
-                percent_discount: Number(formData.get('percent_discount')) || 0, // Добавляем обязательное поле
-                rating: Number(formData.get('rating')) || 1, // Добавляем обязательное поле
-                categoryIds: selectedTags.map(item => Number(item.value)),
-                isPublished: !isHidden,
-                translate: [{
-                    language: 'ukr',
-                    title: formData.get('title') as string,
-                    shortDesc: formData.get('shortDesc') as string,
-                    desc: desc
-                }],
-                descriptionPoints: rawPoints
-            };
+        // Создание продукта с существующим изображением из архива
+        const payload = {
+            existing_file_id: selectedImageFromArchive.id,
+            price_currency: Number(formData.get('price_currency')) || 0,
+            price_points: Number(formData.get('price_points')) || 0, // Добавляем обязательное поле
+            percent_discount: Number(formData.get('percent_discount')) || 0, // Добавляем обязательное поле
+            rating: Number(formData.get('rating')) || 1, // Добавляем обязательное поле
+            inStock: inStock, // Используем состояние чекбокса
+            categoryIds: selectedTags.map(item => Number(item.value)),
+            isPublished: !isHidden,
+            translate: [{
+                language: 'ukr',
+                title: formData.get('title') as string,
+                shortDesc: formData.get('shortDesc') as string,
+                desc: desc,
+                seoTitle: formData.get('seoTitle') as string,
+                seoDescription: formData.get('seoDescription') as string
+            }],
+            descriptionPoints: rawPoints
+        };
 
-            console.log('Создание продукта с изображением из архива:', payload);
-            console.log('Selected image from archive:', selectedImageFromArchive);
+        console.log('Создание продукта с изображением из архива:', payload);
+        console.log('Selected image from archive:', selectedImageFromArchive);
 
-            apiPrivate.post('/products/create-with-existing-image', payload)
-                .then((response) => {
-                    console.log('Продукт успешно создан:', response.data);
-                    setNotification(`Product ${formData.get('title') as string} created with existing image!`);
-                    // Очищаем форму
-                    setSelectedImageFromArchive(null);
-                    setSelectedTags([]);
-                    setCard({});
-                    setDescription(undefined);
-                })
-                .catch((err) => {
-                    console.error('Ошибка создания продукта:', err);
-                    console.error('Error response:', err.response?.data);
-                    const errorMessage = err.response?.data?.message || err.message || 'Something went wrong!';
-                    setNotification(`Ошибка: ${errorMessage}`);
-                });
-        } else if (imageFile) {
-            // Создание продукта с новым изображением: сначала загружаем в архив, затем создаем продукт с existing_file_id
-            try {
-                setNotification(`Загрузка изображения в архив: ${imageFile.name}`);
-                const uploadResp = await Service.UploadService.uploadImage({ file: imageFile });
-                const fileId = uploadResp.file.id;
-
-                const payload = {
-                    existing_file_id: fileId,
-                    price_currency: Number(formData.get('price_currency')) || 0,
-                    price_points: Number(formData.get('price_points')) || 0,
-                    percent_discount: Number(formData.get('percent_discount')) || 0,
-                    rating: Number(formData.get('rating')) || 1,
-                    categoryIds: selectedTags.map(item => Number(item.value)),
-                    isPublished: !isHidden,
-                    translate: [{
-                        language: 'ukr',
-                        title: formData.get('title') as string,
-                        shortDesc: formData.get('shortDesc') as string,
-                        desc: desc
-                    }],
-                    descriptionPoints: rawPoints
-                };
-
-                await apiPrivate.post('/products/create-with-existing-image', payload);
-                setNotification(`Product ${formData.get('title') as string} created!`);
+        apiPrivate.post('/products/create-with-existing-image', payload)
+            .then((response) => {
+                console.log('Продукт успешно создан:', response.data);
+                setNotification(`Product ${formData.get('title') as string} created with existing image!`);
                 // Очищаем форму
-                setImageFile(null);
                 setSelectedImageFromArchive(null);
                 setSelectedTags([]);
                 setCard({});
+                setInStock(true);
                 setDescription(undefined);
-            } catch (err) {
-                console.error('Ошибка при загрузке или создании продукта:', err);
-                setNotification('Ошибка при загрузке изображения или создании продукта');
-            }
-        }
+            })
+            .catch((err) => {
+                console.error('Ошибка создания продукта:', err);
+                console.error('Error response:', err.response?.data);
+                const errorMessage = err.response?.data?.message || err.message || 'Something went wrong!';
+                setNotification(`Ошибка: ${errorMessage}`);
+            });
     }
 
     const handlePreview = () => {
@@ -237,7 +193,7 @@ export const AdminProduct = () => {
                                             <ImageSelector
                                                 selectedImage={selectedImageFromArchive}
                                                 onImageSelect={handleImageFromArchiveSelect}
-                                                onFileUpload={handleFileUpload}
+                                                showUploadOption={false}
                                                 label="Product Image"
                                             />
                                         </div>
@@ -248,12 +204,30 @@ export const AdminProduct = () => {
                                         title='Price' 
                                         type='number' />
                                     </Row>
+                                    <Panel.Checkbox 
+                                        label='In Stock' 
+                                        state={inStock} 
+                                        onChange={() => setInStock(prev => !prev)} />
                                     <Panel.FormInput 
                                         defaultValue={card?.shortDesc} 
                                         title='Short description' 
                                         name='shortDesc'
                                         onTextChange={(newText) => updateCard('shortDesc', newText)}
                                         isTextArea />
+                                    
+                                    {/* SEO поля */}
+                                    <Panel.FormInput 
+                                        defaultValue={(card as any)?.seoTitle} 
+                                        title='SEO Title (рекомендуется до 60 символов)' 
+                                        name='seoTitle'
+                                        onTextChange={(newText) => updateCard('seoTitle' as keyof TProduct, newText)} />
+                                    <Panel.FormInput 
+                                        defaultValue={(card as any)?.seoDescription} 
+                                        title='SEO Description (рекомендуется до 160 символов)' 
+                                        name='seoDescription'
+                                        onTextChange={(newText) => updateCard('seoDescription' as keyof TProduct, newText)}
+                                        isTextArea />
+
                                     <Panel.FormInput
                                         title='Detailed points (one per line)'
                                         name='descriptionPoints'

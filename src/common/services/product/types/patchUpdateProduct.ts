@@ -16,4 +16,6 @@ type TProductTranslate = {
     title: string,
     desc: string,
     shortDesc: string,
+    seoTitle?: string,
+    seoDescription?: string,
 }

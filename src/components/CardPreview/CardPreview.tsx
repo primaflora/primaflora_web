@@ -16,7 +16,7 @@ export const CardPreview: React.FC<TCardPreviewProps> = ({ card }) => {
 
     return (
         <div className="card">
-            {card.photo_url && <img src={getImageUrl(card.photo_url)} alt={card.title || 'Product Image'} />}
+            {card.photo_url && <img src={getImageUrl(card.photo_url)} alt={card.title || 'Product Image'} className="card-image" />}
             {card.title && <h1 className="card-title">{card.title}</h1>}
             {card.shortDesc && <p className="card-description">{card.shortDesc}</p>}
 

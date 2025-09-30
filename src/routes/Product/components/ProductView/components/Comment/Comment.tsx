@@ -1,4 +1,4 @@
-import { Row } from '../../../../../../components/common';
+import { Row, StarRating } from '../../../../../../components/common';
 import './styles.css';
 import { TCommentProps } from './types';
 
@@ -18,9 +18,7 @@ export const Comment = ({ comment }: TCommentProps) => {
                     <h1 className="comment-username">{comment.user.name}</h1>
                     <p className="comment-text">{comment.text}</p>
                 </Row>
-                <p className="font-light ">
-                    {comment.rating} / 5
-                </p>
+                <StarRating rating={comment.rating} size="small" />
             </Row>
         </div>
     );

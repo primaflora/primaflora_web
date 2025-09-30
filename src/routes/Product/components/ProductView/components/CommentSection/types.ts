@@ -2,4 +2,5 @@ import { TComment } from '../../../../../../common/services/category/types/commo
 
 export type TCommentsSectionProps = {
     comments: TComment[];
+    canComment?: boolean;
 };

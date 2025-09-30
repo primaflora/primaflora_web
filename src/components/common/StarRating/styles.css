@@ -1,0 +1,39 @@
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.star-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.star-wrapper:hover {
+    transform: scale(1.1);
+}
+
+.star-wrapper.small {
+    width: 16px;
+    height: 16px;
+}
+
+.star-wrapper.medium {
+    width: 20px;
+    height: 20px;
+}
+
+.star-wrapper.large {
+    width: 24px;
+    height: 24px;
+}
+
+.star-half-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    pointer-events: none;
+}

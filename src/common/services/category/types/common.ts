@@ -11,6 +11,7 @@ export type TSubcategory = {
 
 export type TCategory = {
     name: string;
+    name_ukr?: string | null; // Добавляем поддержку name_ukr
     childrens: TSubcategory[];
 } & TBasicDataBaseData;
 
@@ -23,14 +24,20 @@ export type TProduct = {
     percent_discount: number;
     rating: number;
     title: string;
-    comments: number;
+    inStock: boolean;
+    isPublished: boolean;
+    categoryIds: number[];
+    commentsCount: number;
     like: { id: number; uuid: string } | null;
-    descriptionPoints: string[]
+    descriptionPoints: string[];
+    seoTitle?: string;
+    seoDescription?: string;
+    isFromNotifications?: boolean; // Для товаров из уведомлений
 } & TBasicDataBaseData;
 
 export type TComment = {
     text: string;
-    rating: string;
+    rating: number;
     user: TUser;
 } & TBasicDataBaseData;
 
@@ -38,4 +45,5 @@ export type TProductFull = {
     desc: string; // a json object of some product properties
     comments: TComment[];
     categories: TSubcategory[];
+    canComment?: boolean;
 } & TProduct;

@@ -8,6 +8,7 @@ import { Panel } from '../../../../components/Panel';
 import { DescriptionEditor } from '../../../../components/CreateProduct/components/DescriptionEditor';
 import { TagsInput } from '../../../../../../components/TagsInput';
 import { TProduct } from '../../../../../../common/services/category/types/common';
+import { TProductFull } from '../../../../../../common/services/category/types/common';
 import { redirect, useParams } from 'react-router-dom';
 import { Service } from '../../../../../../common/services';
 import { ImageSelector } from '../../../../components/ImageSelector';
@@ -22,11 +23,11 @@ export const AdminProductEdit = () => {
     const { uuid } = useParams();
     const { categories } = useUserData();
     const [isHidden, setIsHidden] = useState(false);
+    const [inStock, setInStock] = useState(true);
     const [description, setDescription] = useState<RawDraftContentState>();
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-    const [product, setProduct] = useState<TProduct>();
+    const [product, setProduct] = useState<TProductFull>();
     const [isEdited, setIsEdited] = useState<boolean>(false);
-    const [imageFile, setImageFile] = useState<File | null>(null);
     const [selectedImageFromArchive, setSelectedImageFromArchive] = useState<FileEntity | null>(null);
     const [showArchiveModal, setShowArchiveModal] = useState(false);
 
@@ -47,6 +48,7 @@ export const AdminProductEdit = () => {
                 if (!res.data) return;
 
                 setProduct(res.data);
+                setInStock(res.data.inStock || false);
                 console.log(res.data);
                 try {
                     setDescription(convertToRaw(stateFromHTML(res.data.desc)));
@@ -71,13 +73,40 @@ export const AdminProductEdit = () => {
     }
 
     const categoriesToTags = () => {
+        console.log('=== categoriesToTags DEBUG ===');
+        console.log('Categories from useUserData:', categories);
+        
         const arr: Tag[] = [];
-                categories.forEach(category => {
-            category.childrens.forEach((subcategory: any) => {
-                arr.push({ label: (subcategory as any).name, value: (subcategory as any).uuid });
-            })
-        })
+        categories.forEach(category => {
+            console.log('Processing category:', category);
+            console.log('Category childrens:', category.childrens);
+            
+            if (category.childrens && Array.isArray(category.childrens)) {
+                category.childrens.forEach((subcategory: any) => {
+                    console.log('Processing subcategory:', subcategory);
+                    // Пробуем получить имя из разных источников
+                    const subcategoryName = subcategory?.translate?.[0]?.name || subcategory?.name;
+                    console.log('Subcategory name:', subcategoryName);
+                    console.log('Subcategory ID:', subcategory?.id);
+                    
+                    if (subcategoryName && subcategory?.id) {
+                        const categoryName = category.name_ukr || category.name || `Категорія без назви #${category.id}`;
+                        const displayName = `${categoryName} → ${subcategoryName}`;
+                        arr.push({ 
+                            label: displayName, 
+                            value: subcategory.id.toString() // Используем числовой ID, конвертированный в строку
+                        });
+                        console.log('Added tag:', { label: displayName, value: subcategory.id.toString() });
+                    } else {
+                        console.log('Skipping subcategory - missing name or id');
+                    }
+                });
+            } else {
+                console.log('Category has no childrens or childrens is not array');
+            }
+        });
 
+        console.log('Final tags array:', arr);
         return arr;
     }
     const getUpdatedFieldsOnly = (formData: FormData) => {
@@ -115,9 +144,9 @@ export const AdminProductEdit = () => {
         const translate: any = {language: 'ukr'}
 
         for (const [key, value] of Object.entries(fields)) {
-            if (key === 'title' || key === 'shortDesc') {
+            if (key === 'title' || key === 'shortDesc' || key === 'seoTitle' || key === 'seoDescription') {
                 if (!payload.translate) payload.translate = {};
-                payload.translate[key] = value;
+                (payload.translate as any)[key] = value;
                 // add field to translate obejct in payload
                 // if (!payload.translate) payload.translate = [];
                 // payload.translate.push({
@@ -141,6 +170,11 @@ export const AdminProductEdit = () => {
             payload.translate.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
         }
 
+        // Добавляем inStock если он изменился
+        if (inStock !== product?.inStock) {
+            payload.inStock = inStock;
+        }
+
         // payload.translate.push(translate)
 
         return payload;
@@ -152,64 +186,47 @@ export const AdminProductEdit = () => {
 
         if (!product) return;
 
-    // Если выбран новый файл изображения, используем новый эндпоинт
-    if (imageFile) {
-            // First upload image to archive, then update product using existing_file_id
-            try {
-                const uploadResp = await Service.UploadService.uploadImage({ file: imageFile });
-                const fileId = uploadResp.file.id;
-
-                // Use the existing-file update endpoint
-                await apiPrivate.patch(`/products/update-with-existing-image/${product.uuid}`, { existing_file_id: fileId });
-
-                setIsEdited(true);
-                setImageFile(null);
-                // Update local preview
-                setProduct(prev => prev ? ({ ...prev, photo_url: uploadResp.file.url } as any) : prev);
-            } catch (err) {
-                console.error('Error uploading image and updating product:', err);
-            }
-        } else {
-                // If selected image from archive (and no new file), update via existing-file endpoint
-                if (selectedImageFromArchive && !imageFile) {
-                    apiPrivate.patch(`/products/update-with-existing-image/${product.uuid}`, { existing_file_id: selectedImageFromArchive.id })
-                        .then(() => {
-                            setIsEdited(true);
-                            // Update local product preview
-                            setProduct(prev => prev ? ({ ...prev, photo_url: selectedImageFromArchive.url } as any) : prev);
-                            setSelectedImageFromArchive(null);
-                        })
-                        .catch((err) => {
-                            console.error('Error updating product with existing image:', err);
-                        });
-                    return;
-                }
-            // Используем старый метод для обновления без изображения
-            // check if all fields are filled
-            formData.forEach((value, key) => {
-                console.log(`${key}: ${value}`);
-            });
-
-            // get only updated fields
-            const updatedFields = getUpdatedFieldsOnly(formData);
-            console.log('updatedFields => ', updatedFields);
-
-            // create payload for request
-            const payload = generatePayload(updatedFields);
-            console.log(payload)
-            payload.categoryIds = selectedTags.map(item => {
-                console.log(item);
-                return Number(item.value)
-            })
-            
-            Service.ProductService.update({ productUid: product.uuid, toUpdate: payload })
-                .then(res => {
+        // Если выбрано изображение из архива, обновляем изображение продукта
+        if (selectedImageFromArchive) {
+            apiPrivate.patch(`/products/update-with-existing-image/${product.uuid}`, { existing_file_id: selectedImageFromArchive.id })
+                .then(() => {
                     setIsEdited(true);
+                    // Update local product preview
+                    setProduct(prev => prev ? ({ ...prev, photo_url: selectedImageFromArchive.url } as any) : prev);
+                    setSelectedImageFromArchive(null);
                 })
-                .catch(err => {
-                    console.log('err => ', err);
+                .catch((err) => {
+                    console.error('Error updating product with existing image:', err);
                 });
+            return;
         }
+
+        // Используем старый метод для обновления без изображения
+        // check if all fields are filled
+        formData.forEach((value, key) => {
+            console.log(`${key}: ${value}`);
+        });
+
+        // get only updated fields
+        const updatedFields = getUpdatedFieldsOnly(formData);
+        console.log('updatedFields => ', updatedFields);
+
+        // create payload for request
+        const payload = generatePayload(updatedFields);
+        console.log(payload)
+        payload.categoryIds = selectedTags.map(item => {
+            console.log(item);
+            const id = Number(item.value);
+            return isNaN(id) ? null : id;
+        }).filter(id => id !== null) as number[]
+        
+        Service.ProductService.update({ productUid: product.uuid, toUpdate: payload })
+            .then(res => {
+                setIsEdited(true);
+            })
+            .catch(err => {
+                console.log('err => ', err);
+            });
     }
 
     const handleAddTag = (tag: Tag) => {
@@ -245,20 +262,10 @@ export const AdminProductEdit = () => {
                                             selectedImage={selectedImageFromArchive ? selectedImageFromArchive : product ? ({ id: product.uuid as any, url: product.photo_url, original_name: '' } as any) : undefined}
                                             onImageSelect={(file: FileEntity) => {
                                                 setSelectedImageFromArchive(file);
-                                                if (file) {
-                                                    setImageFile(null);
-                                                }
                                             }}
-                                            onFileUpload={(file: File | null) => {
-                                                setImageFile(file);
-                                            }}
+                                            showUploadOption={false}
                                             label="Product Image"
                                         />
-                                        {imageFile && (
-                                            <span style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-                                                Selected file: {imageFile.name}
-                                            </span>
-                                        )}
                                     </div>
                                     <Panel.FormInput 
                                         defaultValue={product?.price_currency} 
@@ -266,6 +273,10 @@ export const AdminProductEdit = () => {
                                         name='price_currency'
                                         type='number' />
                                 </Row>
+                                <Panel.Checkbox 
+                                    label='In Stock' 
+                                    state={inStock} 
+                                    onChange={() => setInStock(prev => !prev)} />
                                 {/* <Panel.FormInput 
                                     defaultValue={product?.shortDesc} 
                                     title='Card description' 
@@ -276,6 +287,18 @@ export const AdminProductEdit = () => {
                                     title='Short description' 
                                     name='shortDesc'
                                     isTextArea />
+                                
+                                {/* SEO поля */}
+                                <Panel.FormInput 
+                                    defaultValue={(product as any)?.seoTitle} 
+                                    title='SEO Title (рекомендуется до 60 символов)' 
+                                    name='seoTitle' />
+                                <Panel.FormInput 
+                                    defaultValue={(product as any)?.seoDescription} 
+                                    title='SEO Description (рекомендуется до 160 символов)' 
+                                    name='seoDescription'
+                                    isTextArea />
+
                                 <Panel.FormInput
                                     defaultValue={product?.descriptionPoints?.join('\n')}
                                     title='Detailed points (one per line)'

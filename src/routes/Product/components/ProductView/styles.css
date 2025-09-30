@@ -17,7 +17,17 @@
 }
 
 .product-avatar {
-    width: 70%;
+    width: 100%;
+    object-fit: cover;
+    max-width: 500px;
+    height: 100%;
+}
+
+/* Для контейнера увеличительного стекла */
+.product-view-container .image-magnifier-container {
+    width: 100%;
+    max-width: 400px;
+    max-height: 320px;
 }
 
 .product-title {
@@ -86,6 +96,13 @@
 
 @media (width <= 1000px) {
     .product-avatar {
+        justify-self: center;
+        width: 100%;
+    }
+    
+    .product-view-container .image-magnifier-container {
+        width: 100%;
+        max-width: none;
         justify-self: center;
     }
 }

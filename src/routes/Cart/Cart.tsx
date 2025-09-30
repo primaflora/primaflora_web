@@ -16,11 +16,18 @@ export const Cart = () => {
     const { t } = useTranslation();
     const { isAuth } = useUserData();
     const [cart, setCart] = useState<TCartItem[]>([]);
+    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const navigate = useNavigate();
 
     useEffect(() => {
         if (isAuth) {
-            Service.CartService.getAll().then(res => {setCart(res.data); console.log('cart => ', res.data)});
+            Service.CartService.getAll().then(res => {
+                setCart(res.data);
+                // По умолчанию выбираем все товары
+                const allItemIds = new Set(res.data.map(item => item.uuid));
+                setSelectedItems(allItemIds);
+                console.log('cart => ', res.data);
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuth]);
@@ -56,24 +63,63 @@ export const Cart = () => {
     const handleCartItemRemove = (cartItemUid: string) => {
         Service.CartService.delete({ uuid: cartItemUid }).then(() => {
             setCart(cart.filter(item => item.uuid !== cartItemUid));
+            // Убираем из выбранных при удалении
+            setSelectedItems(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(cartItemUid);
+                return newSet;
+            });
         });
     };
 
-    const calculateTotalPrice = () => {
-        return cart.reduce(
-            (total, item) =>
-                total +
-                (item.product.percent_discount
-                    ? item.product.price_currency *
-                      ((100 - item.product.percent_discount) / 100)
-                    : item.product.price_currency) *
-                    item.quantity,
-            0,
-        );
+    const handleItemSelect = (itemUuid: string, isSelected: boolean) => {
+        setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            if (isSelected) {
+                newSet.add(itemUuid);
+            } else {
+                newSet.delete(itemUuid);
+            }
+            return newSet;
+        });
     };
 
+    const handleSelectAll = (selectAll: boolean) => {
+        if (selectAll) {
+            const allItemIds = new Set(cart.map(item => item.uuid));
+            setSelectedItems(allItemIds);
+        } else {
+            setSelectedItems(new Set());
+        }
+    };
+
+    const calculateTotalPrice = () => {
+        return cart
+            .filter(item => selectedItems.has(item.uuid))
+            .reduce(
+                (total, item) =>
+                    total +
+                    (item.product.percent_discount
+                        ? item.product.price_currency *
+                          ((100 - item.product.percent_discount) / 100)
+                        : item.product.price_currency) *
+                        item.quantity,
+                0,
+            );
+    };
+
+    const getSelectedItemsCount = () => selectedItems.size;
+
     const handleSubmit = () => {
-        const invoicePayload = cart.map(item => (
+        // Фильтруем только выбранные товары
+        const selectedCartItems = cart.filter(item => selectedItems.has(item.uuid));
+        
+        if (selectedCartItems.length === 0) {
+            alert('Выберите товары для заказа');
+            return;
+        }
+
+        const invoicePayload = selectedCartItems.map(item => (
             {
                 name: item.product.title,
                 qty: item.quantity,
@@ -117,18 +163,44 @@ export const Cart = () => {
                         {t('global.empty')}
                     </h1>
                 ) : (
-                    <div>
+                    <div style={{marginTop: 40}}>
+                        {/* Заголовок с чекбоксом "Выбрать все" */}
+                        <div className="flex items-center justify-between mb-4 p-3 border-b border-gray-200">
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="checkbox"
+                                    id="select-all"
+                                    checked={selectedItems.size === cart.length && cart.length > 0}
+                                    onChange={(e) => handleSelectAll(e.target.checked)}
+                                    className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                                />
+                                <label htmlFor="select-all" className="text-sm font-medium text-gray-700">
+                                    {t('cart.select-all')} ({getSelectedItemsCount()} из {cart.length})
+                                </label>
+                            </div>
+                            <div className="text-sm text-gray-600">
+                                {selectedItems.size > 0 && `${t('cart.selected')}: ${getSelectedItemsCount()}`}
+                            </div>
+                        </div>
+
                         {cart.map(item => (
                             <CartItem
                                 key={item.uuid}
                                 item={item}
                                 onQuantityChange={onCartItemQuantityChange}
                                 onRemove={handleCartItemRemove}
+                                isSelected={selectedItems.has(item.uuid)}
+                                onSelect={(isSelected) => handleItemSelect(item.uuid, isSelected)}
                             />
                         ))}
 
                         <div className="cart-total-price-container pb-4">
-                            <TotalPrice onSubmit={() => navigate('/checkout')} price={calculateTotalPrice()} />
+                            <TotalPrice 
+                                onSubmit={handleSubmit} 
+                                price={calculateTotalPrice()}
+                                selectedItemsCount={getSelectedItemsCount()}
+                                totalItemsCount={cart.length}
+                            />
                         </div>
                     </div>
                 )}

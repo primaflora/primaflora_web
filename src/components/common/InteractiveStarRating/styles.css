@@ -1,0 +1,33 @@
+.interactive-star-rating {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.interactive-star {
+    transition: all 0.2s ease-in-out;
+}
+
+.interactive-star.clickable:hover {
+    transform: scale(1.1);
+}
+
+.interactive-star.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.interactive-star-rating.small .interactive-star {
+    width: 16px;
+    height: 16px;
+}
+
+.interactive-star-rating.medium .interactive-star {
+    width: 20px;
+    height: 20px;
+}
+
+.interactive-star-rating.large .interactive-star {
+    width: 24px;
+    height: 24px;
+}

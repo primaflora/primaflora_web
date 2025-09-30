@@ -6,12 +6,15 @@ import { LogInModal } from '../../../Modals/LogInModal';
 import { useState } from 'react';
 import { SignInModal } from '../../../Modals/SignInModal';
 import { useTranslation } from 'react-i18next';
+import { useAvailableProducts } from '../../../../../common/hooks/useAvailableProducts';
+import AvailableNotificationIcon from '../../../../../assets/svg/AvailableNotificationIcon';
 
 export const NavLinks = ({ isAuth, isAdmin = false, isMob = false }: TNavLinksProps) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+    const { hasAvailableProducts } = useAvailableProducts(isAuth);
 
     const handleLogInModalPress = () => {
         setIsLoginModalOpen(true);
@@ -47,8 +50,19 @@ export const NavLinks = ({ isAuth, isAdmin = false, isMob = false }: TNavLinksPr
                     </div>
                     <Link
                         to={isAuth ? '/likes' : '#'}
-                        className={isAuth ? 'like-enabled' : 'like-disabled'}>
+                        className={isAuth ? 'like-enabled' : 'like-disabled'}
+                        style={{ position: 'relative' }}>
                         <img src={Images.LinedLikeIconMob} alt="likes" />
+                        {isAuth && hasAvailableProducts && (
+                            <div style={{
+                                position: 'absolute',
+                                top: 2,
+                                right: -2,
+                                zIndex: 10
+                            }}>
+                                <AvailableNotificationIcon style={{ width: 12, height: 10 }} />
+                            </div>
+                        )}
                     </Link>
                     <Link to="/cart">
                         <img src={Images.CartIconMob} alt="cart" />
@@ -61,7 +75,19 @@ export const NavLinks = ({ isAuth, isAdmin = false, isMob = false }: TNavLinksPr
                     <Link to="#">{t('navigation.delivery')}</Link>
                     <Link to="/cart">{t('navigation.cart')}</Link>
                     {isAuth && (
-                        <Link to="/likes">{t('navigation.like-title')}</Link>
+                        <Link to="/likes" style={{ 
+                            position: 'relative', 
+                            display: 'inline-flex', 
+                            alignItems: 'center', 
+                            gap: '4px' 
+                        }}>
+                            {t('navigation.like-title')}
+                            <div style={{ position: 'absolute', top: -9, right: -17 }}>
+                                {hasAvailableProducts && (
+                                    <AvailableNotificationIcon />
+                                )}
+                            </div>
+                        </Link>
                     )}
                     {isAuth && (
                         <Link to="/user-info">

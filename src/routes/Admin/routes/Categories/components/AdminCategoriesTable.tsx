@@ -114,19 +114,16 @@ const AdminCategoriesTable = () => {
 
   const handleEditCategory = (category: any) => {
     setEditingCategory(category);
-    setEditCategoryData({ name_ukr: category.name_ukr });
+    setEditCategoryData({ name_ukr: category.name_ukr || "" });
   };
 
   const handleSaveCategory = async () => {
-    if (!editCategoryData.name_ukr) {
-      alert("Заполните все поля!");
-      return;
-    }
-
+    // Разрешаем сохранение категорий без названия
     try {
-      await axios.put(`${process.env.REACT_APP_HOST_URL}/categories/${editingCategory.uuid}`, editCategoryData);
+      const categoryData = editCategoryData.name_ukr.trim() === "" ? { name_ukr: null } : editCategoryData;
+      await axios.put(`${process.env.REACT_APP_HOST_URL}/categories/${editingCategory.uuid}`, categoryData);
       const updatedCategories = categories.map((category) =>
-        category.uuid === editingCategory.uuid ? { ...category, ...editCategoryData } : category
+        category.uuid === editingCategory.uuid ? { ...category, ...categoryData } : category
       );
       setCategories(updatedCategories);
       setEditingCategory(null);
@@ -162,7 +159,7 @@ const AdminCategoriesTable = () => {
                           onChange={(e) =>
                             setEditCategoryData({ ...editCategoryData, name_ukr: e.target.value })
                           }
-                          placeholder="Назва"
+                          placeholder="Назва (оставьте пустым для категории-контейнера)"
                           style={{ width: "100%", padding: "5px" }}
                         />
                         <div style={{ marginTop: "10px" }}>
@@ -213,7 +210,7 @@ const AdminCategoriesTable = () => {
                                 textWrap: "nowrap",
                               }}
                             >
-                              {category.name_ukr}
+                              {category.name_ukr || `Категорія без назви #${category.id || 'N/A'}`}
                             </p>
                           </td>
                           <td style={{ border: "1px solid #ddd", padding: "10px" }}>

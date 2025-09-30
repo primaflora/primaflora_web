@@ -1,0 +1,1 @@
+export { WatchedProducts } from './WatchedProducts';
