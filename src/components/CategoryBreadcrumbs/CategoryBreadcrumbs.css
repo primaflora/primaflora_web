@@ -29,4 +29,7 @@
   .breadcrump-wrapper {
     padding: 14px 0;
     border-bottom: 2px solid #EBEFF1;
+    min-height: 49px; /* Добавляем минимальную высоту чтобы избежать скачков */
+    display: flex;
+    align-items: center;
   }

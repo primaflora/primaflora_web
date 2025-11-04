@@ -48,8 +48,15 @@ const AdminSubcategoryEdit = () => {
             translate: translation,
         };
         
-        console.log("Setting subcategory data:", subcategoryData);
-        setSubcategory(subcategoryData);
+        // Добавляем поля лейбла, если их нет
+        const enrichedSubcategory = {
+            ...subcategoryData,
+            label: subcategoryData.label || '',
+            labelColor: subcategoryData.labelColor || '#72BF44'
+        };
+        
+        console.log("Setting subcategory data:", enrichedSubcategory);
+        setSubcategory(enrichedSubcategory);
         // setSubcategory(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке подкатегории:", error);
@@ -99,7 +106,9 @@ const AdminSubcategoryEdit = () => {
             {
               existing_file_id: selectedArchiveImage.id,
               translate: subcategory.translate,
-              parentId: subcategory.parent?.uuid
+              parentId: subcategory.parent?.uuid,
+              label: subcategory.label || null,
+              labelColor: subcategory.labelColor || null
             },
             {
               headers: {
@@ -113,7 +122,9 @@ const AdminSubcategoryEdit = () => {
             `/categories/subcategory/${subcategoryId}`,
             {
               ...subcategory,
-              parentId: subcategory.parent?.uuid
+              parentId: subcategory.parent?.uuid,
+              label: subcategory.label || null,
+              labelColor: subcategory.labelColor || null
             }
           );
         }
@@ -252,6 +263,41 @@ const AdminSubcategoryEdit = () => {
                         borderRadius: "4px",
                     }}
                 ></textarea>
+            </div>
+
+            {/* Поля для лейбла */}
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+                Лейбл (опціонально):
+              </label>
+              <input
+                type="text"
+                value={subcategory.label || ''}
+                onChange={(e) => setSubcategory((prev: any) => ({ ...prev, label: e.target.value }))}
+                placeholder="Наприклад: НОВИНКА, АКЦІЯ, ТОП"
+                style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
+              />
+            </div>
+            
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+                Колір лейбла:
+              </label>
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <input
+                  type="color"
+                  value={subcategory.labelColor || '#72BF44'}
+                  onChange={(e) => setSubcategory((prev: any) => ({ ...prev, labelColor: e.target.value }))}
+                  style={{ width: "50px", height: "40px", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer" }}
+                />
+                <input
+                  type="text"
+                  value={subcategory.labelColor || '#72BF44'}
+                  onChange={(e) => setSubcategory((prev: any) => ({ ...prev, labelColor: e.target.value }))}
+                  placeholder="#72BF44"
+                  style={{ flex: 1, padding: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
+                />
+              </div>
             </div>
   
         <button

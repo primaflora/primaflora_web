@@ -25,6 +25,7 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalFiles, setTotalFiles] = useState(0);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadFiles, setUploadFiles] = useState<File[] | null>(null);
   const [uploadDescription, setUploadDescription] = useState('');
@@ -56,12 +57,13 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
       console.log('Loading files from archive...');
       const response = await Service.UploadService.getArchive({
         page: currentPage,
-        limit: 20,
+        limit: 50,
         searchTerm: searchTerm || undefined,
       });
       console.log('Files loaded:', response);
       setFiles(response.files);
-      setTotalPages(response.pages);
+      setTotalPages(response.totalPages || response.pages);
+      setTotalFiles(response.total || 0);
     } catch (error) {
       console.error('Error loading files:', error);
       setNotification('Ошибка при загрузке списка файлов');
@@ -403,7 +405,7 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
 
       {/* Список файлов */}
       <Panel.Container>
-        <Panel.Header title={`Архив изображений (${files.length} из общего количества)`} />
+        <Panel.Header title={`Архив изображений (показано ${files.length} из ${totalFiles} файлов)`} />
         <Panel.Body>
           {/* Панель управления выбором */}
           <div className="selection-controls">
@@ -625,23 +627,71 @@ export const ImageArchive: React.FC<ImageArchiveProps> = ({
               {/* Пагинация */}
               {totalPages > 1 && (
                 <div className="archive-pagination">
-                  <button 
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className="pagination-button"
-                  >
-                    Предыдущая
-                  </button>
-                  <span className="pagination-info">
-                    Страница {currentPage} из {totalPages}
-                  </span>
-                  <button 
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className="pagination-button"
-                  >
-                    Следующая
-                  </button>
+                  <div className="pagination-controls">
+                    <button 
+                      onClick={() => setCurrentPage(1)}
+                      disabled={currentPage === 1}
+                      className="pagination-button"
+                      title="Первая страница"
+                    >
+                      ««
+                    </button>
+                    <button 
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="pagination-button"
+                    >
+                      Предыдущая
+                    </button>
+                    
+                    <div className="pagination-pages">
+                      {/* Показываем до 7 номеров страниц */}
+                      {(() => {
+                        const pages = [];
+                        let startPage = Math.max(1, currentPage - 3);
+                        let endPage = Math.min(totalPages, startPage + 6);
+                        
+                        // Корректируем начальную страницу если мы близко к концу
+                        if (endPage - startPage < 6) {
+                          startPage = Math.max(1, endPage - 6);
+                        }
+                        
+                        for (let i = startPage; i <= endPage; i++) {
+                          pages.push(
+                            <button
+                              key={i}
+                              onClick={() => setCurrentPage(i)}
+                              disabled={i === currentPage}
+                              className={`pagination-number ${i === currentPage ? 'active' : ''}`}
+                            >
+                              {i}
+                            </button>
+                          );
+                        }
+                        return pages;
+                      })()}
+                    </div>
+                    
+                    <button 
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="pagination-button"
+                    >
+                      Следующая
+                    </button>
+                    <button 
+                      onClick={() => setCurrentPage(totalPages)}
+                      disabled={currentPage === totalPages}
+                      className="pagination-button"
+                      title="Последняя страница"
+                    >
+                      »»
+                    </button>
+                  </div>
+                  
+                  <div className="pagination-info">
+                    Страница {currentPage} из {totalPages} • Показано {files.length} из {totalFiles} файлов
+                  </div>
                 </div>
               )}
             </>

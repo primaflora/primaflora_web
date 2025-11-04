@@ -8,6 +8,8 @@ export type TSubcategoryWithProducts = {
         image: string;
         order: number;
         parentOrder: number;
+        label?: string;
+        labelColor?: string;
     };
     products: TProductShort[];
 };
@@ -25,6 +27,16 @@ type TProductShort = {
     shortDesc: string;
     isPublished: boolean;
     inStock: boolean;
+    categories?: {
+        id: number;
+        uuid: string;
+        label?: string;
+        labelColor?: string;
+        translate: {
+            name: string;
+            language: string;
+        }[];
+    }[];
 };
 
 export type TGetRandomBySubcategories = TRequest<void, TSubcategoryWithProducts[]>;

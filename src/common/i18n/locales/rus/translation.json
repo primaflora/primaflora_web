@@ -73,7 +73,7 @@
         "add-like": "Вы добавили {{title}} в список желаемого",
         "remove-like": "Вы удалили {{title}} из списка желаемого",
         "add-cart": "Вы добавили {{title}} в корзину",
-        "remove-cart": "Вы добавили {{title}} в корзину"
+        "remove-cart": "Вы удалили {{title}} из корзины"
     },
     "admin": {
         "create-product-title": "Создать Товар"

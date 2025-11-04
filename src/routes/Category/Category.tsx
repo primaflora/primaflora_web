@@ -34,7 +34,9 @@ export const Category = () => {
 
     useEffect(() => {
         dispatch(productSliceActions.setSelectedProduct(null));
-    }, [])
+        // Скролл к началу страницы при переходе на категорию
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [uuid]) // Добавляем uuid в зависимости, чтобы скролл работал при смене категории
 
     return (
         <div className="home-container py-[40px]">

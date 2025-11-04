@@ -4,6 +4,7 @@ import { Row } from '../../../../components/common';
 import { QuantityPicker } from '../QuantityPicker';
 import './styles.css';
 import { TCartItemProps } from './types';
+import { useTranslation } from 'react-i18next';
 
 // TODO: add quantity and price
 export const CartItem = ({
@@ -13,6 +14,7 @@ export const CartItem = ({
     isSelected,
     onSelect,
 }: TCartItemProps) => {
+    const { t } = useTranslation();
     const [quantity, setQuantity] = useState(item.quantity);
 
     // Функция для формирования полного URL изображения
@@ -40,7 +42,7 @@ export const CartItem = ({
                     type="checkbox"
                     checked={isSelected}
                     onChange={(e) => onSelect(e.target.checked)}
-                    className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 mt-2"
+                    className="cart-checkbox mt-2"
                 />
             </div>
             <img
@@ -74,7 +76,7 @@ export const CartItem = ({
                     <div className="absolute right-0 bottom-0 h-min">
                         {item.product.percent_discount && (
                             <p className="card-price-old">
-                                {item.product.price_currency} грн.
+                                {item.product.price_currency} {t('cart.currency')}
                             </p>
                         )}
                         <p className="card-price-main">
@@ -82,7 +84,7 @@ export const CartItem = ({
                                 ? item.product.price_currency *
                                   ((100 - item.product.percent_discount) / 100)
                                 : item.product.price_currency}{' '}
-                            грн.
+                            {t('cart.currency')}
                         </p>
                     </div>
                 </div>
@@ -99,7 +101,7 @@ export const CartItem = ({
                         <Row style={{ justifyContent: 'end' }}>
                             {item.product.percent_discount && (
                                 <p className="card-price-old">
-                                    {item.product.price_currency} грн.
+                                    {item.product.price_currency} {t('cart.currency')}
                                 </p>
                             )}
                         </Row>
@@ -110,7 +112,7 @@ export const CartItem = ({
                                       ((100 - item.product.percent_discount) /
                                           100)
                                     : item.product.price_currency}
-                                {''}грн.
+                                {''}{t('cart.currency')}
                             </p>
                         </Row>
                     </div>

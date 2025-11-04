@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import './styles.css';
 import { TagInputFieldProps } from './types';
 import { TagsList } from './components/TagsList';
@@ -11,16 +11,18 @@ export const TagInputField = ({ tags }: TagInputFieldProps) => {
     const [suggestedTags, setSuggestedTags] = useState<Tag[]>(tags);
     const [currentTag, setCurrentTag] = useState<Tag>(); // needed for list navigation by arrows
     const { selectTag } = useContext(TagsInputContext);
+    const isMouseOverList = useRef(false);
 
     const handleTextChange = (newText: string) => {
-
         setText(newText);
         updateSuggestedTags(newText);
 
         if (newText.length > 0) {
             setShowSuggestions(true);
         } else {
-            setShowSuggestions(false);
+            // Если текст пустой, но поле в фокусе, показываем все категории
+            setSuggestedTags(tags);
+            setShowSuggestions(true);
             setCurrentTag(undefined);
         }
     }
@@ -42,6 +44,23 @@ export const TagInputField = ({ tags }: TagInputFieldProps) => {
         setShowSuggestions(false);
         selectTag(tag);
         setCurrentTag(undefined);
+    }
+
+    const handleFocus = () => {
+        // При фокусе показываем все доступные категории
+        setSuggestedTags(tags);
+        setShowSuggestions(true);
+    }
+
+    const handleBlur = () => {
+        // Задержка, чтобы клик по элементу списка успел обработаться
+        setTimeout(() => {
+            // Скрываем список только если мышь не над ним
+            if (!isMouseOverList.current) {
+                setShowSuggestions(false);
+                setCurrentTag(undefined);
+            }
+        }, 100);
     }
 
     // for list navigation by arrows
@@ -80,6 +99,13 @@ export const TagInputField = ({ tags }: TagInputFieldProps) => {
 
     const updateSuggestedTags = (filterText: string) => {
         filterText = filterText.trim();
+        
+        if (filterText.length === 0) {
+            // Если текст пустой, показываем все категории
+            setSuggestedTags(tags);
+            return;
+        }
+
         const filteredTags = tags.filter(tag => tag.label.toLowerCase().includes(filterText.toLowerCase()));
 
         if (filteredTags.length > 0) {
@@ -98,15 +124,22 @@ export const TagInputField = ({ tags }: TagInputFieldProps) => {
                 value={text} 
                 onChange={e => handleTextChange(e.target.value)} 
                 onKeyDown={handleKeyDown}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
                 placeholder='Enter your tag'/>
             
             {
                 showSuggestions && (
-                    <TagsList
-                        tags={suggestedTags}
-                        currentTag={currentTag}
-                        onTagSelected={handleTagListSelected}
-                    />
+                    <div
+                        onMouseEnter={() => { isMouseOverList.current = true; }}
+                        onMouseLeave={() => { isMouseOverList.current = false; }}
+                    >
+                        <TagsList
+                            tags={suggestedTags}
+                            currentTag={currentTag}
+                            onTagSelected={handleTagListSelected}
+                        />
+                    </div>
                 )
             }
         </form>

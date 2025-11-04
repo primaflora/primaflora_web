@@ -25,7 +25,10 @@ export const TagsList = ({ tags, currentTag, onTagSelected }: TagsListProps) => 
                         className="tag"
                         key={tag.value}
                         id={tag.value}
-                        onClick={() => onTagSelected(tag)}>
+                        onMouseDown={(e) => {
+                            e.preventDefault(); // Предотвращает blur
+                            onTagSelected(tag);
+                        }}>
                         <h2 
                             className={tag.value === currentTag?.value ? 'tag-selected' : ''}>
                                 {tag.label}

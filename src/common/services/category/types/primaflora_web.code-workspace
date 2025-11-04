@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		},
+		{
+			"path": "../../../../../../../back/primaflora_backend"
+		}
+	],
+    "settings": {
+        "typescript.validate.enable": true
+    }
+}

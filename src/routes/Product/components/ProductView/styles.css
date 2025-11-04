@@ -27,7 +27,6 @@
 .product-view-container .image-magnifier-container {
     width: 100%;
     max-width: 400px;
-    max-height: 320px;
 }
 
 .product-title {
@@ -50,11 +49,16 @@
 
 .product-description li {
     margin-bottom: 15px;
+    padding-left: 45px;
+    text-indent: -20px;
+    list-style: none;
 }
 
 .product-description li::before {
     content: '━';
     padding-right: 10px;
+    display: inline-block;
+    width: 20px;
 }
 
 .product-price-old {

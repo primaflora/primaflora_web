@@ -61,7 +61,10 @@
         "make-order": "ОФОРМИТИ ЗАМОВЛЕННЯ",
         "total": "Разом",
         "selected": "Обрано",
-        "select-all": "Обрати все"
+        "select-all": "Обрати все",
+        "select-items-for-order": "Оберіть товари для замовлення",
+        "unit": "шт.",
+        "currency": "грн."
     },
     "errors": {
         "invite-not-found": "Такого запрошення не існує!",
@@ -73,7 +76,7 @@
         "add-like": "Ви додали {{title}} до списку побажань.",
         "remove-like": "Ви видалили {{title}} зі списку побажань.",
         "add-cart": "Ви додали {{title}} до корзини",
-        "remove-cart": "Ви додали {{title}} до корзини"
+        "remove-cart": "Ви видалили {{title}} з корзини"
     },
     "admin": {
         "create-product-title": "Створити Товар"

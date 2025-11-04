@@ -115,7 +115,7 @@ export const Cart = () => {
         const selectedCartItems = cart.filter(item => selectedItems.has(item.uuid));
         
         if (selectedCartItems.length === 0) {
-            alert('Выберите товары для заказа');
+            alert(t('cart.select-items-for-order'));
             return;
         }
 
@@ -128,7 +128,7 @@ export const Cart = () => {
                     ((100 - item.product.percent_discount) / 100) * 100
                     : item.product.price_currency * 100, 
                 icon: item.product.photo_url,
-                unit: 'шт.',
+                unit: t('cart.unit'),
                 code: item.product.uuid,
             }
         ));
@@ -172,10 +172,10 @@ export const Cart = () => {
                                     id="select-all"
                                     checked={selectedItems.size === cart.length && cart.length > 0}
                                     onChange={(e) => handleSelectAll(e.target.checked)}
-                                    className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                                    className="cart-checkbox"
                                 />
                                 <label htmlFor="select-all" className="text-sm font-medium text-gray-700">
-                                    {t('cart.select-all')} ({getSelectedItemsCount()} из {cart.length})
+                                    {t('cart.select-all')} ({getSelectedItemsCount()} з {cart.length})
                                 </label>
                             </div>
                             <div className="text-sm text-gray-600">

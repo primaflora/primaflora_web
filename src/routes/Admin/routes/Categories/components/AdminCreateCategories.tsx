@@ -14,6 +14,8 @@ const AdminCreateCategories = () => {
     translate: [
       { language: "ukr", name: "", desc: "" },
     ],
+    label: "",
+    labelColor: "#72BF44",
   });
 
   // Обработчик добавления новой категории
@@ -48,6 +50,12 @@ const AdminCreateCategories = () => {
         formData.append('parent_uid', selectedCategory);
         formData.append('translate', JSON.stringify(newSubcategory.translate));
         formData.append('image', newSubcategory.imageFile);
+        if (newSubcategory.label) {
+          formData.append('label', newSubcategory.label);
+        }
+        if (newSubcategory.labelColor) {
+          formData.append('labelColor', newSubcategory.labelColor);
+        }
         
         response = await axios.post(
           `${process.env.REACT_APP_HOST_URL}/categories/subcategory/create-with-image`,
@@ -65,7 +73,9 @@ const AdminCreateCategories = () => {
           {
             existing_file_id: newSubcategory.archiveImage.id,
             parent: selectedCategory,
-            translate: newSubcategory.translate
+            translate: newSubcategory.translate,
+            label: newSubcategory.label || null,
+            labelColor: newSubcategory.labelColor || null
           },
           {
             headers: {
@@ -83,6 +93,8 @@ const AdminCreateCategories = () => {
         translate: [
           { language: "ukr", name: "", desc: "" },
         ],
+        label: "",
+        labelColor: "#72BF44",
       });
     } catch (error) {
       console.error("Ошибка при добавлении подкатегории:", error);
@@ -190,6 +202,42 @@ const AdminCreateCategories = () => {
           placeholder="Опис підкатегорії"
           style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
         ></textarea>
+        
+        {/* Поля для лейбла */}
+        <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+            Лейбл (опціонально):
+          </label>
+          <input
+            type="text"
+            value={newSubcategory.label}
+            onChange={(e) => setNewSubcategory({ ...newSubcategory, label: e.target.value })}
+            placeholder="Наприклад: НОВИНКА, АКЦІЯ, ТОП"
+            style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
+          />
+        </div>
+        
+        <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+            Колір лейбла:
+          </label>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <input
+              type="color"
+              value={newSubcategory.labelColor}
+              onChange={(e) => setNewSubcategory({ ...newSubcategory, labelColor: e.target.value })}
+              style={{ width: "50px", height: "40px", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer" }}
+            />
+            <input
+              type="text"
+              value={newSubcategory.labelColor}
+              onChange={(e) => setNewSubcategory({ ...newSubcategory, labelColor: e.target.value })}
+              placeholder="#72BF44"
+              style={{ flex: 1, padding: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
+            />
+          </div>
+        </div>
+        
         <button
           onClick={handleAddSubcategory}
           style={{

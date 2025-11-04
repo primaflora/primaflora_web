@@ -10,6 +10,13 @@ export enum TInlineStyles {
 export enum TBlockTypes {
     UL = 'unordered-list-item',
     OL = 'ordered-list-item',
+    H1 = 'header-one',
+    H2 = 'header-two', 
+    H3 = 'header-three',
+    H4 = 'header-four',
+    H5 = 'header-five',
+    H6 = 'header-six',
+    UNSTYLED = 'unstyled',
 }
 
 export type TDescriptionEditorProps = {
@@ -17,30 +24,16 @@ export type TDescriptionEditorProps = {
     defaultRawState?: RawDraftContentState;
 }
 
-export const CustomFontStyleMap = {
-    'H6': {
-        fontSize: '11px',
-        fontWeight: 700
+// Теперь заголовки будут настраиваться через blockStyleFn, а не через inline стили
+export const CustomInlineStyleMap = {
+    'BOLD': {
+        fontWeight: 'bold'
     },
-    'H5': {
-        fontSize: '13px',
-        fontWeight: 700
+    'ITALIC': {
+        fontStyle: 'italic'
     },
-    'H4': {
-        fontSize: '17px',
-        fontWeight: 700
-    },
-    'H3': {
-        fontSize: '20px',
-        fontWeight: 700
-    },
-    'H2': {
-        fontSize: '23px',
-        fontWeight: 700
-    },
-    'H1': {
-        fontSize: '26px',
-        fontWeight: 700
+    'UNDERLINE': {
+        textDecoration: 'underline'
     }
 }
 
@@ -54,6 +47,26 @@ export const CustomDefaultStyle = {
     },
 }
 
-export const CustomStyleMap = {...CustomFontStyleMap, ...CustomDefaultStyle};
+export const CustomStyleMap = {...CustomInlineStyleMap, ...CustomDefaultStyle};
 
-export type TFontStyle = 'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'H6'
+// Функция для настройки стилей блоков (заголовков)
+export const getBlockStyle = (block: any): string => {
+    switch (block.getType()) {
+        case 'header-one':
+            return 'header-one';
+        case 'header-two':
+            return 'header-two';
+        case 'header-three':
+            return 'header-three';
+        case 'header-four':
+            return 'header-four';
+        case 'header-five':
+            return 'header-five';
+        case 'header-six':
+            return 'header-six';
+        default:
+            return '';
+    }
+};
+
+// Удаляем TFontStyle, так как теперь заголовки - это block types

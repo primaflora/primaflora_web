@@ -1,14 +1,13 @@
+import React, { FC } from 'react';
 import { Images } from '../../../assets';
 import { TLikeProps } from './types';
 import './style.css';
 
-export const Like = ({ isLiked, onLike, onDislike }: TLikeProps) => {
+export const Like: FC<TLikeProps> = ({ isLiked, onLike, onDislike }) => {
     const handleLike = () => {
         if (isLiked) {
-            isLiked = false;
             onDislike();
         } else {
-            isLiked = true;
             onLike();
         }
     };

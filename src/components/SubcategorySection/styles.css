@@ -6,15 +6,25 @@
     box-sizing: border-box;
 }
 
+.subcategory-link {
+    font-family: 'Raleway';
+    font-size: 14px;
+    font-weight: 600;
+    position: absolute;
+    bottom: 0px;
+    color: #C7C7C7;
+    width: max-content;
+    right: -30px;
+}
+
 .subcategory-header {
     margin-bottom: 24px;
 }
 
 .subcategory-info {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+    display: inline-block;
     padding-bottom: 16px;
+    position: relative;
 }
 
 .subcategory-image {
@@ -28,7 +38,7 @@
 .subcategory-section-title {
     font-size: 32px;
     font-weight: 700;
-    color: #333;
+    color: #454545;
     margin: 0;
 }
 

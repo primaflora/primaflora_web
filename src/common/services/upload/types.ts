@@ -33,6 +33,9 @@ export interface GetArchiveResponse {
   files: FileEntity[];
   total: number;
   pages: number;
+  totalPages: number;
+  page: number;
+  limit: number;
 }
 
 export interface UpdateFileRequest {

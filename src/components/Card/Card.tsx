@@ -4,10 +4,12 @@ import { Images } from '../../assets';
 import { Service } from '../../common/services';
 import { useToast } from '../../common/toast';
 import { useCartStatus } from '../../common/hooks/useCartStatus';
+import { useLikes } from '../../common/hooks/useLikes';
 import { useProductSeries } from '../../common/hooks/useProductSeries';
 import { Button, Like } from '../buttons';
 import { Row, StarRating } from '../common';
 import { LogInModal } from '../common/Modals/LogInModal/LogInModal';
+import ProductLabel from '../ProductLabel';
 import './styles.css';
 import { TCardProps } from './types';
 import { useUserData } from '../../store/tools';
@@ -19,7 +21,8 @@ export const Card = ({ card, index }: TCardProps) => {
     const { t } = useTranslation();
     const { user, isAuth } = useUserData();
     const { notifySuccess, notifyError } = useToast();
-    const { isInCart, addToCart } = useCartStatus(card.uuid);
+    const { addLike, removeLike } = useLikes();
+    const { isInCart, addToCart, removeFromCart } = useCartStatus(card.uuid);
     const { setCurrentProductIndex } = useProductSeries();
     
     // Для отладки
@@ -65,44 +68,79 @@ export const Card = ({ card, index }: TCardProps) => {
             return;
         }
 
-        const like = await Service.ProductService.setLike({
-            productUuid: card.uuid,
-        });
-        setLike(like.data);
-        notifySuccess(t('messages.add-like', { title: card.title }));
-    };
-
-    const handleDislike = () => {
-        console.log('cardLike: ', card.like);
-        console.log('like: ', like);
-        if (!like) {
-            notifyError('Error while tring to dislike product');
+        // Проверяем, не добавлен ли уже товар в избранное
+        if (like) {
+            notifyError('Товар вже в списку побажань');
             return;
         }
 
-        Service.LikesService.deleteLike({ productUuid: card.uuid });
-        setLike(null);
-        notifySuccess(t('messages.remove-like', { title: card.title }));
+        try {
+            const likeResponse = await Service.ProductService.setLike({
+                productUuid: card.uuid,
+            });
+            addLike(likeResponse.data); // Обновляем глобальное состояние
+            setLike(likeResponse.data); // Обновляем локальное состояние
+            notifySuccess(t('messages.add-like', { title: card.title }));
+        } catch (error) {
+            console.error('Error adding like:', error);
+            notifyError('Помилка при додаванні до побажань');
+        }
     };
 
-    const handleAddToCart = async () => {
+    const handleDislike = async () => {
+        console.log('cardLike: ', card.like);
+        console.log('like: ', like);
+        if (!like) {
+            notifyError('Помилка при видаленні з побажань');
+            return;
+        }
+
+        if (!isAuth) {
+            setIsLogInModalOpen(true);
+            return;
+        }
+
+        try {
+            await Service.LikesService.deleteLike({ productUuid: card.uuid });
+            // removeLike expects the like id (not the product id). Use the local like.id if available.
+            removeLike(like.id);
+            setLike(null); // Обновляем локальное состояние
+            notifySuccess(t('messages.remove-like', { title: card.title }));
+        } catch (error) {
+            console.error('Error removing like:', error);
+            notifyError('Помилка при видаленні з побажань');
+        }
+    };
+
+    // Если prop card.like изменился (например, был обогащен извне), синхронизируем локальное состояние
+    useEffect(() => {
+        setLike(card.like);
+    }, [card.like]);
+
+    const handleCartAction = async () => {
         if (!card.inStock) {
             notifyError('Товар немає в наявності');
             return;
         }
 
         if (!isAuth) {
-            // notifyError('Для добавления в корзину необходимо войти в аккаунт');
             setIsLogInModalOpen(true);
             return;
         }
 
         try {
-            await addToCart(1);
-            notifySuccess(t('messages.add-cart', { title: card.title }));
+            if (isInCart) {
+                // Если товар уже в корзине, удаляем его
+                await removeFromCart();
+                notifySuccess(t('messages.remove-cart', { title: card.title }));
+            } else {
+                // Если товара нет в корзине, добавляем его
+                await addToCart(1);
+                notifySuccess(t('messages.add-cart', { title: card.title }));
+            }
         } catch (err) {
             console.log(err);
-            notifyError('Ошибка при добавлении товара в корзину');
+            notifyError(isInCart ? 'Помилка при видаленні товару з кошика' : 'Помилка при додаванні товару до кошика');
         }
     };
 
@@ -160,8 +198,86 @@ export const Card = ({ card, index }: TCardProps) => {
         }
     };
 
+    // Получаем информацию о специальных лейблах для плашек
+    const getSpecialLabel = () => {
+        console.log(`[${card.title}] Полные данные карточки:`, card);
+        
+        if (!card.categories || card.categories.length === 0) {
+            console.log(`[${card.title}] Нет категорий для отображения лейбла`);
+            return null;
+        }
+
+        console.log(`[${card.title}] Проверяем категории:`, card.categories);
+
+        // Специальные категории с их лейблами и цветами
+        const specialCategories: Record<string, { label: string; labelColor: string }> = {
+            'ТОП продажів': { label: 'Топ продажів', labelColor: '#72BF44' },
+            'Акції': { label: 'Акція', labelColor: '#FF4141' },
+            'Актуально зараз': { label: 'Актуально зараз', labelColor: '#9747FF' }
+        };
+
+        // Проверяем каждую категорию товара
+        for (const category of card.categories) {
+            console.log(`[${card.title}] Обрабатываем категорию:`, category);
+            
+            // Проверяем есть ли translate массив
+            if (category.translate && category.translate.length > 0) {
+                const categoryName = category.translate[0].name;
+                console.log(`[${card.title}] Название категории из translate:`, categoryName);
+                
+                if (categoryName && specialCategories[categoryName]) {
+                    console.log(`[${card.title}] ✅ Найдена специальная категория:`, categoryName, specialCategories[categoryName]);
+                    return specialCategories[categoryName];
+                }
+            }
+            
+            // Проверяем прямое имя категории (если нет translate) - используем any для отладки
+            if ((category as any).name_ukr) {
+                console.log(`[${card.title}] Название категории из name_ukr:`, (category as any).name_ukr);
+                
+                if (specialCategories[(category as any).name_ukr]) {
+                    console.log(`[${card.title}] ✅ Найдена специальная категория через name_ukr:`, (category as any).name_ukr, specialCategories[(category as any).name_ukr]);
+                    return specialCategories[(category as any).name_ukr];
+                }
+            }
+            
+            // Проверяем name
+            if ((category as any).name) {
+                console.log(`[${card.title}] Название категории из name:`, (category as any).name);
+                
+                if (specialCategories[(category as any).name]) {
+                    console.log(`[${card.title}] ✅ Найдена специальная категория через name:`, (category as any).name, specialCategories[(category as any).name]);
+                    return specialCategories[(category as any).name];
+                }
+            }
+        }
+
+        // Если нет специальной категории, проверяем обычный лейбл подкатегории
+        const firstCategory = card.categories[0];
+        if (firstCategory && firstCategory.label) {
+            console.log(`[${card.title}] Используем обычный лейбл подкатегории:`, firstCategory.label);
+            return {
+                label: firstCategory.label,
+                labelColor: firstCategory.labelColor || '#72BF44'
+            };
+        }
+
+        console.log(`[${card.title}] Лейбл не найден`);
+        return null;
+    };
+
+    const specialLabel = getSpecialLabel();
+    console.log(`[${card.title}] specialLabel результат:`, specialLabel);
+
     return (
         <div className="card">
+            {/* Отображение специальной плашки */}
+            {specialLabel && (
+                <ProductLabel 
+                    label={specialLabel.label} 
+                    labelColor={specialLabel.labelColor} 
+                />
+            )}
             <Link to={`/product/${card.uuid}`} onClick={handleCardClick} style={{ position: 'relative' }}>
                 <img src={getImageUrl(card.photo_url)} alt={card.title} className="card-image" />
                 {!card.inStock && (
@@ -263,13 +379,14 @@ export const Card = ({ card, index }: TCardProps) => {
                     borderRadius: 7, 
                     alignSelf: 'end', 
                     padding: "7px 0",
-                    backgroundColor: isInCart ? '#72BF44' : (!card.inStock ? '#ccc' : undefined),
-                    color: (isInCart || !card.inStock) ? 'white' : undefined,
-                    border: (isInCart || !card.inStock) ? 'none' : undefined,
-                    cursor: !card.inStock ? 'not-allowed' : undefined
+                    backgroundColor: !card.inStock ? '#ccc' : (isInCart ? '#E74C3C' : '#72BF44'),
+                    color: (isInCart || !card.inStock) ? 'white' : 'white',
+                    border: 'none',
+                    cursor: !card.inStock ? 'not-allowed' : 'pointer',
+                    transition: 'background-color 0.3s ease'
                 }}
-                onClick={handleAddToCart}
-                isClickable={!isInCart && card.inStock}
+                onClick={handleCartAction}
+                isClickable={card.inStock}
             />
             
             <LogInModal

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLikes } from '../../../../common/hooks/useLikes';
 import { useCartStatus } from '../../../../common/hooks/useCartStatus';
@@ -31,6 +31,22 @@ export const ProductView = ({ product }: TProductViewProps) => {
     const [isLogInModalOpen, setIsLogInModalOpen] = useState(false);
     const [seriesLoaded, setSeriesLoaded] = useState(false);
     const navigate = useNavigate();
+    const productContainerRef = useRef<HTMLDivElement>(null);
+    
+    // Обновляем состояние лайка при изменении продукта
+    useEffect(() => {
+        setIsLike(!!product.like);
+    }, [product.like]);
+
+    // Скроллим к контейнеру товара при изменении продукта
+    useEffect(() => {
+        if (productContainerRef.current) {
+            productContainerRef.current.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+    }, [product.uuid]);
     
     // Используем упрощенный хук для управления навигацией
     const {
@@ -116,16 +132,27 @@ export const ProductView = ({ product }: TProductViewProps) => {
             return;
         }
 
-        const like = await Service.ProductService.setLike({
-            productUuid: product.uuid,
-        });
-        addLike(like.data);
-        setIsLike(true);
-        product.like = like.data;
-        notifySuccess(`Ві додали ${product.title} до списку побажань`);
+        // Проверяем, не добавлен ли уже товар в избранное
+        if (isLike || product.like) {
+            notifyError('Товар вже в списку побажань');
+            return;
+        }
+
+        try {
+            const like = await Service.ProductService.setLike({
+                productUuid: product.uuid,
+            });
+            addLike(like.data);
+            setIsLike(true);
+            // Не изменяем product.like напрямую, так как объект readonly
+            notifySuccess(`Ви додали ${product.title} до списку побажань`);
+        } catch (error) {
+            console.error('Error adding like:', error);
+            notifyError('Помилка при додаванні до побажань');
+        }
     };
 
-    const handleDislike = () => {
+    const handleDislike = async () => {
         if (!isAuth) {
             // notifyError('Для удаления из избранного необходимо войти в аккаунт');
             setIsLogInModalOpen(true);
@@ -133,14 +160,21 @@ export const ProductView = ({ product }: TProductViewProps) => {
         }
 
         if (!product.like) {
-            notifyError('Error while tring to dislike product');
+            notifyError('Помилка при видаленні з побажань');
             return;
         }
 
-        Service.LikesService.deleteLike({ productUuid: product.uuid });
-        removeLike(product.id);
-        setIsLike(false);
-        notifySuccess(`Ви видалили ${product.title} зі списку побажань`);
+        try {
+            await Service.LikesService.deleteLike({ productUuid: product.uuid });
+            // removeLike expects the like id (from the server), not the product id
+            removeLike(product.like.id);
+            setIsLike(false);
+            // Не изменяем product.like напрямую, так как объект readonly
+            notifySuccess(`Ви видалили ${product.title} зі списку побажань`);
+        } catch (error) {
+            console.error('Error removing like:', error);
+            notifyError('Помилка при видаленні з побажань');
+        }
     };
 
     const handleMoveToCart = async () => {
@@ -188,7 +222,7 @@ export const ProductView = ({ product }: TProductViewProps) => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-            }}>
+            }} ref={productContainerRef}>
                 <h1 className="category-name">
                     {product.categories.map(category => {
                         console.log(category)
@@ -199,47 +233,54 @@ export const ProductView = ({ product }: TProductViewProps) => {
                     display: 'flex',
                     gap: 10,
                     alignItems: 'center',
+                    minHeight: '32px', // Резервируем место для кнопок
                 }}>
-                    <button 
-                        onClick={goToPreviousProduct}
-                        disabled={productsCount === 0 || currentIndex <= 0}
-                        style={{
-                            opacity: (productsCount === 0 || currentIndex <= 0) ? 0.5 : 1,
-                            cursor: (productsCount === 0 || currentIndex <= 0) ? 'not-allowed' : 'pointer',
-                            background: 'none',
-                            border: 'none',
-                            padding: 8,
-                            borderRadius: 4,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}
-                    >
-                        <LeftArrow/>
-                    </button>
-                    <span style={{ fontSize: '14px', color: '#666' }}>
-                        {productsCount > 0 && currentIndex >= 0 
-                            ? `${currentIndex + 1} / ${productsCount}` 
-                            : ''
-                        }
-                    </span>
-                    <button 
-                        onClick={goToNextProduct}
-                        disabled={productsCount === 0 || currentIndex >= productsCount - 1}
-                        style={{
-                            opacity: (productsCount === 0 || currentIndex >= productsCount - 1) ? 0.5 : 1,
-                            cursor: (productsCount === 0 || currentIndex >= productsCount - 1) ? 'not-allowed' : 'pointer',
-                            background: 'none',
-                            border: 'none',
-                            padding: 8,
-                            borderRadius: 4,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}
-                    >
-                        <RightArrow/>
-                    </button>
+                    {productsCount > 1 && (
+                        <button 
+                            onClick={goToPreviousProduct}
+                            disabled={currentIndex <= 0}
+                            style={{
+                                opacity: currentIndex <= 0 ? 0.5 : 1,
+                                cursor: currentIndex <= 0 ? 'not-allowed' : 'pointer',
+                                background: 'none',
+                                border: 'none',
+                                padding: 8,
+                                borderRadius: 4,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <LeftArrow/>
+                        </button>
+                    )}
+                    {productsCount > 1 && (
+                        <span style={{ fontSize: '14px', color: '#666' }}>
+                            {currentIndex >= 0 
+                                ? `${currentIndex + 1} / ${productsCount}` 
+                                : 'Загрузка...'
+                            }
+                        </span>
+                    )}
+                    {productsCount > 1 && (
+                        <button 
+                            onClick={goToNextProduct}
+                            disabled={currentIndex >= productsCount - 1}
+                            style={{
+                                opacity: currentIndex >= productsCount - 1 ? 0.5 : 1,
+                                cursor: currentIndex >= productsCount - 1 ? 'not-allowed' : 'pointer',
+                                background: 'none',
+                                border: 'none',
+                                padding: 8,
+                                borderRadius: 4,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <RightArrow/>
+                        </button>
+                    )}
                 </div>
             </div>
             <div className="product-view-container">
@@ -254,8 +295,8 @@ export const ProductView = ({ product }: TProductViewProps) => {
                     <h1 className="product-title">{product.title}</h1>
                     <ul className="product-description">
                         {
-                            product.descriptionPoints?.map((item: string) => (
-                                <li>{item}</li>
+                            product.descriptionPoints?.map((item: string, index: number) => (
+                                <li key={index}>{item}</li>
                             ))
                         }
                         {/* {product.shortDesc} */}

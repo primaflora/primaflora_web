@@ -54,11 +54,13 @@ export const CategoryView = () => {
 
     if (pickedSubcategory) {
         const categoryName = (pickedSubcategory as any).name || 'Категория';
+        // Исправляем путь к описанию - оно находится в translate[0].desc
+        const categoryDesc = (pickedSubcategory as any).translate?.[0]?.desc || `Купити ${categoryName.toLowerCase()} в інтернет-магазині Primaflora. Великий вибір квітів та рослин з доставкою.`;
         return (
             <div className="category-view-container">
                 <SEOHead 
                     title={`${categoryName} - Primaflora`}
-                    description={`Купити ${categoryName.toLowerCase()} в інтернет-магазині Primaflora. Великий вибір квітів та рослин з доставкою.`}
+                    description={categoryDesc}
                 />
                 <ProductsSection
                     title={categoryName}

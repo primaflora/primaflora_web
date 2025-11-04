@@ -376,11 +376,25 @@
 
 .archive-pagination {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   gap: 15px;
   margin-top: 20px;
   padding: 15px;
+  flex-wrap: wrap;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
 .pagination-button {
@@ -392,6 +406,7 @@
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s ease;
+  min-width: 44px;
 }
 
 .pagination-button:hover:not(:disabled) {
@@ -403,8 +418,90 @@
   cursor: not-allowed;
 }
 
-.pagination-info {
+.pagination-number {
+  background: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
   font-size: 14px;
+  transition: all 0.2s ease;
+  min-width: 36px;
+  text-align: center;
+}
+
+.pagination-number:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.pagination-number.active {
+  background: #72BF44;
+  color: white;
+  border-color: #72BF44;
+  font-weight: 600;
+}
+
+.pagination-number:disabled {
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 13px;
   color: #666;
   font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Адаптивность для пагинации */
+@media (max-width: 768px) {
+  .archive-pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .pagination-controls {
+    gap: 5px;
+  }
+  
+  .pagination-pages {
+    gap: 3px;
+  }
+  
+  .pagination-button {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 36px;
+  }
+  
+  .pagination-number {
+    padding: 4px 8px;
+    font-size: 12px;
+    min-width: 28px;
+  }
+  
+  .pagination-info {
+    font-size: 12px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-button {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-width: 32px;
+  }
+  
+  .pagination-number {
+    padding: 3px 6px;
+    font-size: 11px;
+    min-width: 24px;
+  }
+  
+  .pagination-info {
+    font-size: 11px;
+  }
 }

@@ -7,7 +7,7 @@ export class CategoryService {
     static async getCategoryWithProducts(
         data: TGetCategoryWithProductsRequest['payload'],
     ): Promise<TGetCategoryWithProductsRequest['response']> {
-        return await apiPublic.get(
+        return await apiPrivate.get(
             `/categories/findSubcategoryWithProducts/${data.subcategoryId}`,
             {
                 headers: {

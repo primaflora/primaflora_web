@@ -2,11 +2,15 @@ import { TBasicDataBaseData, TUser } from '../../types.ts';
 
 export type TSubcategory = {
     image: string;
+    name: string; // Добавляем прямое поле name
     translate: [{
         language: string;
         name: string;
+        desc: string;
     }]
     language: string;
+    label?: string;
+    labelColor?: string;
 } & TBasicDataBaseData;
 
 export type TCategory = {
@@ -27,6 +31,7 @@ export type TProduct = {
     inStock: boolean;
     isPublished: boolean;
     categoryIds: number[];
+    categories?: TSubcategory[]; // Добавляем опциональное поле для подкатегорий с лейблами
     commentsCount: number;
     like: { id: number; uuid: string } | null;
     descriptionPoints: string[];

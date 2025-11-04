@@ -16,6 +16,18 @@ export const Main = () => {
             try {
                 setLoading(true);
                 const response = await Service.ProductService.getRandomBySubcategories();
+                console.log('Home - Subcategories data loaded:', response.data);
+                
+                // Отладка: проверяем первую подкатегорию и её товары
+                if (response.data.length > 0) {
+                    const firstSubcategory = response.data[0];
+                    console.log('Home - Первая подкатегория:', firstSubcategory.subcategory);
+                    console.log('Home - Первые товары:', firstSubcategory.products.slice(0, 3).map(p => ({
+                        title: p.title,
+                        categories: p.categories
+                    })));
+                }
+                
                 setSubcategoriesData(response.data);
             } catch (error) {
                 console.error('Error loading subcategories data:', error);

@@ -60,11 +60,36 @@ export const useCartStatus = (productUuid: string) => {
         }
     };
 
+    // Функция для удаления товара из корзины
+    const removeFromCart = async () => {
+        if (!isAuth) {
+            throw new Error('User not authenticated');
+        }
+
+        try {
+            // Находим товар в корзине
+            const cartItem = cartItems.find(item => item.product.uuid === productUuid);
+            if (!cartItem) {
+                throw new Error('Product not found in cart');
+            }
+
+            await Service.CartService.delete({ uuid: cartItem.uuid });
+            
+            // Обновляем статус после удаления
+            await checkCartStatus();
+            return true;
+        } catch (error) {
+            console.error('Error removing from cart:', error);
+            throw error;
+        }
+    };
+
     return {
         isInCart,
         loading,
         cartItems,
         addToCart,
+        removeFromCart,
         refreshCart: checkCartStatus,
     };
 };

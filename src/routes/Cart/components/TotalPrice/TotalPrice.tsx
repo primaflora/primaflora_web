@@ -20,7 +20,7 @@ export const TotalPrice = ({
                         {t('cart.total')} 
                         {selectedItemsCount > 0 && totalItemsCount > 0 && (
                             <span className="text-sm text-gray-600 ml-2">
-                                ({selectedItemsCount} из {totalItemsCount})
+                                ({selectedItemsCount} з {totalItemsCount})
                             </span>
                         )}
                     </h1>
@@ -28,7 +28,7 @@ export const TotalPrice = ({
                         <h1 className="total-price-value">
                             {price}{' '}
                             <span className="total-price-value-currency">
-                                грн.
+                                {t('cart.currency')}
                             </span>
                         </h1>
                     </div>

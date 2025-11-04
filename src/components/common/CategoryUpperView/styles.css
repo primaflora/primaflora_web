@@ -26,6 +26,18 @@
     line-height: 16.44px;
     letter-spacing: 0.03em;
     text-align: center;
+    margin-bottom: 10px;
+}
+
+.text-description {
+    color: #666;
+    font-family: Raleway;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    margin-top: 8px;
 }
 
 .category-image {
@@ -43,6 +55,11 @@
         font-weight: 400 !important;
         line-height: 16.44px !important;
         letter-spacing: 0.03em !important;
+        text-align: left !important;
+    }
+    .text-description {
+        font-size: 11px !important;
+        line-height: 13px !important;
         text-align: left !important;
     }
     .text-container {

@@ -19,6 +19,109 @@ import { stateFromHTML } from 'draft-js-import-html';
 import { stateToHTML } from 'draft-js-export-html';
 import { apiPrivate } from '../../../../../../common/api';
 
+// Компонент модального окна с категориями
+const CategoriesModal = ({ categories, isOpen, onClose, onCategorySelect }: any) => {
+    if (!isOpen) return null;
+
+    const handleCategoryClick = (subcategory: any, categoryName: string) => {
+        const subcategoryName = subcategory?.translate?.[0]?.name;
+        if (subcategoryName) {
+            const displayName = `${categoryName} → ${subcategoryName}`;
+            const tag = {
+                label: displayName,
+                value: subcategory.id.toString()
+            };
+            onCategorySelect(tag);
+        }
+    };
+
+    return (
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000
+        }}>
+            <div style={{
+                backgroundColor: 'white',
+                padding: '20px',
+                borderRadius: '8px',
+                maxWidth: '80%',
+                maxHeight: '80%',
+                overflow: 'auto',
+                minWidth: '600px'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h3>Выберите категорию</h3>
+                    <button 
+                        onClick={onClose}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '24px',
+                            cursor: 'pointer',
+                            color: '#999'
+                        }}
+                    >
+                        ×
+                    </button>
+                </div>
+                
+                {categories.map((category: any) => (
+                    <div key={category.id} style={{ marginBottom: '20px' }}>
+                        <h4 style={{ 
+                            color: '#333', 
+                            borderBottom: '1px solid #eee', 
+                            paddingBottom: '8px',
+                            marginBottom: '12px'
+                        }}>
+                            {category.name_ukr || `Категорія #${category.id}`}
+                        </h4>
+                        <div style={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+                            gap: '8px',
+                            marginLeft: '15px'
+                        }}>
+                            {category.childrens?.map((subcategory: any) => {
+                                const subcategoryName = subcategory?.translate?.[0]?.name;
+                                if (!subcategoryName) return null;
+                                
+                                return (
+                                    <button
+                                        key={subcategory.id}
+                                        onClick={() => handleCategoryClick(subcategory, category.name_ukr)}
+                                        style={{
+                                            padding: '8px 12px',
+                                            border: '1px solid #ddd',
+                                            borderRadius: '4px',
+                                            backgroundColor: '#f9f9f9',
+                                            cursor: 'pointer',
+                                            textAlign: 'left',
+                                            fontSize: '14px',
+                                            transition: 'background-color 0.2s'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e9e9e9'}
+                                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+                                    >
+                                        {subcategoryName}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 export const AdminProductEdit = () => {
     const { uuid } = useParams();
     const { categories } = useUserData();
@@ -30,6 +133,9 @@ export const AdminProductEdit = () => {
     const [isEdited, setIsEdited] = useState<boolean>(false);
     const [selectedImageFromArchive, setSelectedImageFromArchive] = useState<FileEntity | null>(null);
     const [showArchiveModal, setShowArchiveModal] = useState(false);
+    const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
+    const [notification, setNotification] = useState<string>();
+    const [isDescriptionEditorTouched, setIsDescriptionEditorTouched] = useState(false);
 
     // Функция для формирования полного URL изображения
     const getImageUrl = (imageUrl: string) => {
@@ -70,6 +176,7 @@ export const AdminProductEdit = () => {
 
     const handleDescriptionApply = (state: RawDraftContentState) => {
         setDescription(state);
+        setIsDescriptionEditorTouched(false); // Сбрасываем флаг после применения
     }
 
     const categoriesToTags = () => {
@@ -162,12 +269,15 @@ export const AdminProductEdit = () => {
             }
         }
 
-        console.log(stateToHTML(convertFromRaw(description as RawDraftContentState )))
-        console.log(product?.desc);
-        console.log(stateToHTML(convertFromRaw(description as RawDraftContentState )) !== product?.desc)
-        if (stateToHTML(convertFromRaw(description as RawDraftContentState )) !== product?.desc) {
-            if (!payload.translate) payload.translate = {};
-            payload.translate.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
+        // Проверяем описание только если оно было применено (description не пустое)
+        if (description) {
+            console.log(stateToHTML(convertFromRaw(description as RawDraftContentState )))
+            console.log(product?.desc);
+            console.log(stateToHTML(convertFromRaw(description as RawDraftContentState )) !== product?.desc)
+            if (stateToHTML(convertFromRaw(description as RawDraftContentState )) !== product?.desc) {
+                if (!payload.translate) payload.translate = {};
+                payload.translate.desc = stateToHTML(convertFromRaw(description as RawDraftContentState ))
+            }
         }
 
         // Добавляем inStock если он изменился
@@ -237,15 +347,20 @@ export const AdminProductEdit = () => {
         setSelectedTags(selectedTags.filter(t => t !== tag));
     }
 
+    const handleCategorySelect = (tag: Tag) => {
+        // Проверяем, не выбрана ли уже эта категория
+        const isAlreadySelected = selectedTags.some(selectedTag => selectedTag.value === tag.value);
+        if (!isAlreadySelected) {
+            setSelectedTags([...selectedTags, tag]);
+        }
+        setIsCategoriesModalOpen(false);
+    };
+
     return (
         <div>
             <Panel.Title text='Edit Product!' />
             <Panel.Title text='TODO: make update categories!' />
-            { isEdited && 
-                <Panel.Notification onRemove={() => setIsEdited(false)} >
-                    Product updated!
-                </Panel.Notification> 
-            }
+
             <Row style={{ gap: '20px', alignItems: 'normal' }}>
                 <Column style={{ width: '65%', gap: '20px', marginBottom: '20px' }}>
                     <Panel.Form style={{ gap: '20px' }} onSubmit={handleSubmit}>
@@ -317,6 +432,17 @@ export const AdminProductEdit = () => {
                             </Panel.Body>
                         </Panel.Container>
                         <Panel.Button text={'Edit Product'} type='submit' />
+                        { isEdited && 
+                            <Panel.Notification onRemove={() => setIsEdited(false)} >
+                                Product updated!
+                            </Panel.Notification> 
+                        }
+                        { notification && 
+                            <Panel.Notification 
+                                onRemove={() => setNotification(undefined)}>
+                                    { notification }
+                            </Panel.Notification> 
+                        }
                     </Panel.Form>
                 </Column>
                 <Column style={{ maxWidth: '35%', width: '35%', gap: '20px' }}>
@@ -324,7 +450,20 @@ export const AdminProductEdit = () => {
                         <Panel.Header 
                             title='Change Category'
                             style={{ textAlign: 'center', justifyContent: 'space-between' }}>
-                                <Panel.Link to='/admin-page/categories' text='View all' />
+                                <button
+                                    type="button"
+                                    onClick={() => setIsCategoriesModalOpen(true)}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#007bff',
+                                        textDecoration: 'underline',
+                                        cursor: 'pointer',
+                                        fontSize: '14px'
+                                    }}
+                                >
+                                    Подивитися всі категорії
+                                </button>
                         </Panel.Header>
                         <Panel.Body>
                             <TagsInput 
@@ -336,6 +475,13 @@ export const AdminProductEdit = () => {
                     </Panel.Container>
                 </Column>
             </Row>
+            
+            <CategoriesModal
+                categories={categories}
+                isOpen={isCategoriesModalOpen}
+                onClose={() => setIsCategoriesModalOpen(false)}
+                onCategorySelect={handleCategorySelect}
+            />
         </div>
     );
 };

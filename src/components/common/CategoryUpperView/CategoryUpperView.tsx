@@ -5,7 +5,7 @@ import './styles.css';
 
 export const CategoryUpperView = () => {
     const { pickedSubcategory } = useUserData();
-
+    console.log('Picked subcategory:', pickedSubcategory);
     // Функция для формирования полного URL изображения
     const getImageUrl = (imageUrl: string) => {
         if (!imageUrl) return '';
@@ -23,7 +23,10 @@ export const CategoryUpperView = () => {
     return (
         <div className="main-container">
             <div className="text-container">
-                <p className="text">{(pickedSubcategory as any)?.name || ''}</p>
+                {/* <p className="text">{(pickedSubcategory as any)?.name || ''}</p> */}
+                {(pickedSubcategory as any)?.desc && (
+                    <p className="text-description">{(pickedSubcategory as any).desc}</p>
+                )}
             </div>
 
             <img
